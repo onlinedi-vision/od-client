@@ -37,11 +37,15 @@ export default {
       'channelTag':'text-channel1',
       'messages':
         [
-          {'div':'doru911', 'mess':'ma duc sa ma culc'},
-          {'div':'rub', 'mess':'ok pa'},
-          {'div':'rub', 'mess':'https://media1.tenor.com/m/SG2Y2dkZvqoAAAAd/ori.gif'},
-          {'div':'W', 'mess':'https://media1.tenor.com/m/cPuWFCXAUuMAAAAd/cat-hug.gif'},
-          {'div':'doru911', 'mess':'https://media1.tenor.com/m/AmUL0BkdH5QAAAAd/hug-couple.gif'}
+          {'div':'doru911', 'mess':'lol'},
+          {'div':'doru911', 'mess':'nu mai merge motoru la masina'},
+          {'div':'doru911', 'mess':'trebuie sa merg si maine la service'},
+          {'div':'doru911', 'mess':'ma duci tu?'},
+          {'div':'W', 'mess':'sure'},
+          {'div':'doru911', 'mess':'https://media1.tenor.com/m/AmUL0BkdH5QAAAAd/hug-couple.gif'},
+          {'div':'W', 'mess':'pe la ce ora doe?'},
+          {'div':'doru911', 'mess':'nush exact inca dupa 8 oricum'},
+          {'div':'W', 'mess':'okkk ma suni'},
         ]
       },
       {
@@ -63,7 +67,7 @@ export default {
       ],
 
       
-      svusers: [{'img':'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif', 'username':'W'}, {'img':'https://cdn.discordapp.com/attachments/1314144119010103319/1316541431518724096/IMG_4470.webp?ex=679f5181&is=679e0001&hm=b712b31c07433ade4cda2adb16863993be1c6421b16b24606b57e8267d3a239d&', 'username':'rub'}, {'img': 'https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&', 'username':'doru911'}],
+      svusers: [{'img':'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif', 'username':'W'}, {'img': 'https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&', 'username':'doru911'}],
       name: '',
       textChannel: 'text-channel1',
       username: 'W',
@@ -84,7 +88,11 @@ export default {
 
 </script>
 <template>
+  <main>
+
+  </main> 
   <main class="container">
+
     <form class="row" @submit.prevent="greet">
       <input id="greet-input" v-model="name" placeholder="Type a message..." />
       <button id="send" type="submit" @click="addDiv(name)">Send</button>
@@ -99,13 +107,22 @@ export default {
 
 
     <div class = "chanels">
-      <div style="border-bottom: 2px solid #1c0606; height: 60px;"> <h3> Server Name </h3> </div>
-      <button @click="change_channel('text-channel1')"># text-channel1</button>
-      <button @click="change_channel('text-channel2')"># text-channel2</button>
-      <button @click="change_channel('text-channel3')"># text-channel3</button>
-      <button @click="change_channel('text-channel4')"># text-channel4</button>
-      <button>> voice-channel</button>
+      <div style="border-bottom: 2px solid #1c0606; height: 60px;"> <h3> Friends List </h3> </div>
+      
+      <div class="comp-mess">
+<img src="https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&" width='50px' height='50px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;margin-left:10px;'/>
+    <h2 style="margin-left:20px;">doru911</h2>
+      </div>
+<div class="comp-mess">
+<img src="https://cdn.discordapp.com/attachments/1314144119010103319/1316541431518724096/IMG_4470.webp?ex=679f5181&is=679e0001&hm=b712b31c07433ade4cda2adb16863993be1c6421b16b24606b57e8267d3a239d&" width='50px' height='50px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;margin-left:10px;'/>
+<h2 style="margin-left:20px;"><b>rub</b></h2>
+      </div>
+<div class="comp-mess">
+<img src="https://cdn.discordapp.com/attachments/1001236756814897314/1335389970130669588/iu.png?ex=679ffe53&is=679eacd3&hm=b40459c141d9c23ec49cdaa2dd1b0fa457e0d9a64cdcefc820d554c13b2085e8&" width='50px' height='50px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;margin-left:10px;'/>
+    <h2 style="margin-left:20px;">finwel</h2>
+      </div>
     </div>
+    
 
     <div id="chat">
       <template v-for="(div, index) in divs[divs.findIndex(obj => obj.channelTag==textChannel)]['messages']" :key="index">
@@ -114,7 +131,7 @@ export default {
         <div class="message">
           
           <div class="user">
-            <div><RouterLink to='/profile'>{{div['div']}}</RouterLink></div>
+            <div><RouterLink to='/'>{{div['div']}}</RouterLink></div>
             <div style="font-size:10px;padding-left:5px;">08-01-2025 9:15</div>
           </div>
           <div v-if="div['mess'].startsWith('https:')">
@@ -128,6 +145,8 @@ export default {
       </template>
     </div>
     <div id="channel-header">
+      <img src="https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;margin-left:10px;'/>
+      <h2 style='margin-left:10px'>doru911</h2>
     </div>
     <!--<p>{{ greetMsg }}</p>-->
 
@@ -136,7 +155,8 @@ export default {
           <img v-bind:src="svuser['img']" width='50px' class="user-icon"/>
       </template>
     </div>
-  </main>
+    </main>
+    
 </template>
 
 
@@ -280,6 +300,7 @@ export default {
   left: 20vw;
   background-color: #331515;
   box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
 }
 
 ::-webkit-scrollbar {

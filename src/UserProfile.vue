@@ -38,7 +38,6 @@ export default {
       'messages':
         [
           {'div':'doru911', 'mess':'ma duc sa ma culc'},
-          {'div':'rub', 'mess':'ok pa'},
           {'div':'rub', 'mess':'https://media1.tenor.com/m/SG2Y2dkZvqoAAAAd/ori.gif'},
           {'div':'W', 'mess':'https://media1.tenor.com/m/cPuWFCXAUuMAAAAd/cat-hug.gif'},
           {'div':'doru911', 'mess':'https://media1.tenor.com/m/AmUL0BkdH5QAAAAd/hug-couple.gif'}
@@ -84,16 +83,17 @@ export default {
 
 </script>
 <template>
+  <main>
+
+  </main> 
   <main class="container">
+
     <form class="row" @submit.prevent="greet">
       <input id="greet-input" v-model="name" placeholder="Type a message..." />
       <button id="send" type="submit" @click="addDiv(name)">Send</button>
     </form>
 
     <div class = "column">  
-    <img src="https://cdn.discordapp.com/attachments/556118918217859083/1335390775579770910/cell-max-realized-he-aint-built-for-this-v0-36k6p9ymw7vb1.jpg?ex=679fff13&is=679ead93&hm=2b49f1eaf204073c73a98ec5debb1afe8fcaf135d93cf3e7fe17e7691514f19d&" width='60px' height='60px' class='user-icon' style='margin-top: 20px;margin-bottom:0px;'/>
-    <img src="https://cdn.discordapp.com/attachments/1001236756814897314/1335392112174301224/iu.png?ex=67a00051&is=679eaed1&hm=35ddd407f8649e5d8a244508e3d9dca263b02db836f085878f02d25648b57979&" width='60px' height='60px' class='user-icon' style='margin-top: 0px;margin-bottom:10px;'/>
-
     </div>
     
 
@@ -114,7 +114,7 @@ export default {
         <div class="message">
           
           <div class="user">
-            <div><RouterLink to='/profile'>{{div['div']}}</RouterLink></div>
+            <div><RouterLink to='/'>{{div['div']}}</RouterLink></div>
             <div style="font-size:10px;padding-left:5px;">08-01-2025 9:15</div>
           </div>
           <div v-if="div['mess'].startsWith('https:')">
@@ -136,7 +136,8 @@ export default {
           <img v-bind:src="svuser['img']" width='50px' class="user-icon"/>
       </template>
     </div>
-  </main>
+    </main>
+    
 </template>
 
 
