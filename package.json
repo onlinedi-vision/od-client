@@ -10,7 +10,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2",
+    "@tauri-apps/api": "^2.4.0",
     "@tauri-apps/plugin-opener": "^2",
     "progressbar.js": "^1.1.1",
     "vue": "^3.5.13",

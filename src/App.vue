@@ -29,7 +29,7 @@ function change_channel(chn) {
 <script setup lang="vue">
 //import tauriapi from '@tauri-apps/api';/
 //const { invoke } = tauriapi.tauri;
-
+  import { invoke } from '@tauri-apps/api/core';
 export default {
   data() {
     return {
@@ -40,14 +40,18 @@ export default {
           {'div':'doru911', 'mess':'ma duc sa ma culc'},
           {'div':'rub', 'mess':'ok pa'},
           {'div':'rub', 'mess':'https://media1.tenor.com/m/SG2Y2dkZvqoAAAAd/ori.gif'},
-          {'div':'W', 'mess':'https://media1.tenor.com/m/cPuWFCXAUuMAAAAd/cat-hug.gif'},
+          {'div':'ana', 'mess':'https://media1.tenor.com/m/cPuWFCXAUuMAAAAd/cat-hug.gif'},
           {'div':'doru911', 'mess':'https://media1.tenor.com/m/AmUL0BkdH5QAAAAd/hug-couple.gif'}
         ]
       },
       {
       'channelTag':'text-channel2',
       'messages': [
-          {'div':'rub', 'mess':'test'},
+          {'div':'rub', 'mess':'am fost pana acolo degeaba'},
+          {'div':'rub', 'mess':'nu era nimeni si am asteptat pe hol juma de ora'},
+          {'div':'ana', 'mess':':('},
+          {'div':'rub', 'mess':'like'},
+          {'div':'rub', 'mess':'bro shutup'}
         ]
       },
       {
@@ -63,18 +67,22 @@ export default {
       ],
 
       
-      svusers: [{'img':'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif', 'username':'W'}, {'img':'https://cdn.discordapp.com/attachments/1314144119010103319/1316541431518724096/IMG_4470.webp?ex=679f5181&is=679e0001&hm=b712b31c07433ade4cda2adb16863993be1c6421b16b24606b57e8267d3a239d&', 'username':'rub'}, {'img': 'https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&', 'username':'doru911'}],
+      svusers: [{'img':'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif', 'username':'ana'}, {'img':'https://cdn.discordapp.com/attachments/1314144119010103319/1316541431518724096/IMG_4470.webp?ex=679f5181&is=679e0001&hm=b712b31c07433ade4cda2adb16863993be1c6421b16b24606b57e8267d3a239d&', 'username':'rub'}, {'img': 'https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&', 'username':'doru911'}],
       name: '',
       textChannel: 'text-channel1',
-      username: 'W',
+      username: 'ana',
     };
   },
   methods: {
     async addDiv(message) {
-      this.divs[this.divs.findIndex(obj => obj.channelTag==this.textChannel)]['messages'].push({"div":this.username, "mess":message});
       console.log('here');
+      invoke('sendMessage', {token:'cb9877152a107fec6dd4ef804d6911437be08b3a7b7186c41547ca366cc0e809', m_content: message, username:'ana' }).then((res) => {
+        this.divs[this.divs.findIndex(obj => obj.channelTag==this.textChannel)]['messages'].push({"div":this.username, "mess":res});
+        this.name='';
+      }).catch((err) =>{
+      this.divs[this.divs.findIndex(obj => obj.channelTag==this.textChannel)]['messages'].push({"div":this.username, "mess":err});
       this.name='';
-      //await invoke('testRust');
+      });
     },
     change_channel(newChan) {
       this.textChannel = newChan;
@@ -114,7 +122,7 @@ export default {
         <div class="message">
           
           <div class="user">
-            <div><RouterLink to='/profile'>{{div['div']}}</RouterLink></div>
+            <div><RouterLink to='/profile'>@{{div['div']}}</RouterLink></div>
             <div style="font-size:10px;padding-left:5px;">08-01-2025 9:15</div>
           </div>
           <div v-if="div['mess'].startsWith('https:')">

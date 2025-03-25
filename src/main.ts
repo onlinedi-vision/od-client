@@ -4,7 +4,7 @@ import { createWebHistory, createRouter, RouteRecordRaw } from 'vue-router';
 import UserMessage from "./UserMessage.vue"
 import { RouterLink } from 'vue-router'
 const { BASE_URL } = import.meta.env
-
+import UserProfile from "./UserProfile.vue"
 /*const routes: Array<RouteRecordRaw> = [
   { path: '/profile', name:"profile", component: UserProfile },
   { path: '/', name: 'app', component: App}
@@ -15,7 +15,7 @@ const router: any = createRouter({
   routes,
 });*/
 
-createApp(UserMessage).mount("#app");
+createApp(App).mount("#app");
 /*;
 import App from "./App.vue";
 import VueRouter from "vue-router";
