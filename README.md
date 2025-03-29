@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This app is still in it's infancy and it is NOT production ready!
+
 ## division.client
 
 The official client for the division online app - a cross-platform GPL-free and open-source VoIP and Instant Messaging desktop app.
