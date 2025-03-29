@@ -69,8 +69,8 @@ export default {
     </form>
 
     <div class = "column">  
-    <img src="https://cdn.discordapp.com/attachments/556118918217859083/1335390775579770910/cell-max-realized-he-aint-built-for-this-v0-36k6p9ymw7vb1.jpg?ex=679fff13&is=679ead93&hm=2b49f1eaf204073c73a98ec5debb1afe8fcaf135d93cf3e7fe17e7691514f19d&" width='60px' height='60px' class='user-icon' style='margin-top: 20px;margin-bottom:0px;'/>
-    <img src="https://cdn.discordapp.com/attachments/1001236756814897314/1335392112174301224/iu.png?ex=67a00051&is=679eaed1&hm=35ddd407f8649e5d8a244508e3d9dca263b02db836f085878f02d25648b57979&" width='60px' height='60px' class='user-icon' style='margin-top: 0px;margin-bottom:10px;'/>
+    <img src="https://cdn.discordapp.com/attachments/556118918217859083/1335390775579770910/cell-max-realized-he-aint-built-for-this-v0-36k6p9ymw7vb1.jpg?ex=679fff13&is=679ead93&hm=2b49f1eaf204073c73a98ec5debb1afe8fcaf135d93cf3e7fe17e7691514f19d&" width='50px' height='50px' class='user-icon' style='margin-top: 20px;margin-bottom:0px;'/>
+    <img src="https://cdn.discordapp.com/attachments/1001236756814897314/1335392112174301224/iu.png?ex=67a00051&is=679eaed1&hm=35ddd407f8649e5d8a244508e3d9dca263b02db836f085878f02d25648b57979&" width='50px' height='50px' class='user-icon' style='margin-top: 0px;margin-bottom:10px;'/>
 
     </div>
     
@@ -107,7 +107,6 @@ export default {
     </div>
     <div id="channel-header">
     </div>
-    <!--<p>{{ greetMsg }}</p>-->
 
     <div class = "server-users">
       <template v-for="(svuser,index) in svusers" :key="index">
@@ -178,19 +177,21 @@ export default {
   display: flex;
   justify-content: center;
   position: absolute;
-  bottom: 0.4vw;
+  bottom: 5px;
   right: 0.5vw;
-  left: 20vw;
-  width: 79vw;
+  left: 260px;
+  width: calc(100vw - 267px);
+  z-index: 9999;
 }
 
 .column {
   background-color: #1c0606;
   position: absolute;
   top: 5px;
-  left: 0.5vw;
-  height: 98.5vh;
-  width: 4vw;
+  left: 5px;
+  height: calc(100vh - 15px);
+  width: 60px;
+  z-index: 9999;
   border-radius: 40px 0px 0px 40px;
   border: 2px solid transparent;
 }
@@ -199,9 +200,9 @@ export default {
   background-color: #1c0606;
   position: absolute;
   top: 5px;
-  right: 0.5vw;
-  height: 93vh;
-  width: 4vw;
+  right: 5px;
+  height: calc(100vh - 60px);
+  width: 60px;
   border-radius: 0px 0px 40px 40px;
   border: 2px solid transparent;
 }
@@ -210,11 +211,12 @@ export default {
   background-color: #331515;
   position: absolute;
   top: 5px;
-  left: 4.8vw;
-  height: 98.5vh;
-  width: 14.9vw;
+  left: 73px;
+  height: calc(100vh - 15px);
+  width: 180px;
   border: 2px  solid transparent;
   display: flex;
+  z-index: 9999;
   flex-direction: column;
   overflow-y: scroll;
 }
@@ -240,11 +242,11 @@ export default {
   display: flex;
   flex-direction: column;
   position: absolute;
-  left: 20vw;
-  width: 75vw;
+  left: 260px;
+  width: calc(100vw - 332px);
   top: 68px;
+  height: calc(100vh - 120px);
   overflow-y: scroll;
-  height: 88vh;
 }
 
 #channel-header {
@@ -253,9 +255,9 @@ export default {
   position: absolute;
   top: 5px;
   border-bottom: 2px solid #1c0606;
-  width: 75vw;
+  width: calc(100vw - 332px);
   height: 63px;
-  left: 20vw;
+  left: 260px;
   background-color: #331515;
   box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.2);
 }
@@ -320,7 +322,7 @@ input {
   padding-left: 0px;
   border-radius: 0px 10px 10px 0px;
   border: 2px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 10px 10px;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -328,6 +330,7 @@ input {
   background-color: #ffffff;
   transition: border-color 0.25s;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  width: 62px;
 }
 
 #send {
