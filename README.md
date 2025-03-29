@@ -21,7 +21,7 @@ After that building the app is just as simple as running:
 $ npm run tauri build
 ```
 (Keep in mind that this might take a couple of minutes, and getting an error related to "linuxdeploy" is completely normal and can be ignored)
-#### Usage
+### Usage
 The previous command should state the location to the "division.client" executable, but it is expected to be found within at "./src-tauri/target/release/division-client". As such, to run the app you should run that command, as follows:
 ```sh 
 $ ./src-tauri/target/realease/division-client
@@ -34,7 +34,7 @@ Now you should be able to run it more easily:
 ```sh 
 $ division-client 
 ```
-#### Troubleshooting
+### Troubleshooting
 1. "Failed to create GBM buffer of size 945x1044: Invalid argument"
 If you have and nVidia graphics card and use prime offloading you should be able to fix this by setting the __NV_PRIME_RENDER_OFFLOAD environment variable to 1 every time you run the app:
 ```sh 
