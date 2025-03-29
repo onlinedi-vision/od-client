@@ -1,4 +1,5 @@
-
+#![allow(unused_variables)]
+#![allow(non_snake_case)]
 
 #[tauri::command]
 fn test() -> (){

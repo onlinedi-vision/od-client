@@ -1,10 +1,10 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import { createWebHistory, createRouter, RouteRecordRaw } from 'vue-router';
-import UserMessage from "./UserMessage.vue"
-import { RouterLink } from 'vue-router'
-const { BASE_URL } = import.meta.env
-import UserProfile from "./UserProfile.vue"
+//import { createWebHistory, createRouter, RouteRecordRaw } from 'vue-router';
+//import UserMessage from "./UserMessage.vue"
+//import { RouterLink } from 'vue-router'
+//const { BASE_URL } = import.meta.env
+//import UserProfile from "./UserProfile.vue"
 /*const routes: Array<RouteRecordRaw> = [
   { path: '/profile', name:"profile", component: UserProfile },
   { path: '/', name: 'app', component: App}

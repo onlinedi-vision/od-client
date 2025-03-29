@@ -1,35 +1,5 @@
-<!--<script setup lang="ts">
-import { ref } from "vue";
-import { invoke } from "@tauri-apps/api/core";
-
-const greetMsg = ref("");
-const name = ref("");
-const channelName = ref("# text-channel1");
-const chatMessage = ref("");
-const divs = ['ddd'];
-
-async function greet() {
-  // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-  greetMsg.value = await invoke("greet", {name: name.value });
-}
-
-function sendMessage() {
-  chatMessage.value += "<div>test</div>"
-}
-
-function addDiv() {
-  divs.append(name.value as string);
-}
-
-function change_channel(chn) {
-  channelName.value = chn;
-}
-</script>
--->
-<script setup lang="vue">
-//import tauriapi from '@tauri-apps/api';/
-//const { invoke } = tauriapi.tauri;
-  import { invoke } from '@tauri-apps/api/core';
+<script>
+import { invoke } from '@tauri-apps/api/core';
 export default {
   data() {
     return {
