@@ -11,22 +11,22 @@ Installing the current version of the division.client app can be done in just a 
 - [cargo](https://www.rust-lang.org/tools/install)
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) (if not already installed)
 #### Building the app from source
-To be able to build the app from source you will first need to clone this repo:
+To be able to build the app from source, you will first need to clone this repo:
 ```sh
 $ git clone 'https://github.com/onlinedi-vision/od-client.git'
 $ cd od-client
 ```
-After that building the app is just as simple as running:
+After that, building the app is just as simple as running:
 ```sh 
 $ npm run tauri build
 ```
 (Keep in mind that this might take a couple of minutes, and getting an error related to "linuxdeploy" is completely normal and can be ignored)
 ### Usage
-The previous command should state the location to the "division.client" executable, but it is expected to be found within at "./src-tauri/target/release/division-client". As such, to run the app you should run that command, as follows:
+The previous command should state the location to the "division.client" executable. But - just in case - the file is expected to be found at "./src-tauri/target/release/division-client". As such, to run the app you should run the following command:
 ```sh 
 $ ./src-tauri/target/realease/division-client
 ```
-To make it more accesible you could also copy it to you user /bin directory, in my case:
+To make it more accesible you could also copy it to one of your /bin directories. For example:
 ```sh 
 $ cp ./src-tauri/target/release/divisiona /usr/bin/division-client
 ```
