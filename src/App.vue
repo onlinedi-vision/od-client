@@ -1,8 +1,10 @@
 <script>
 import { invoke } from '@tauri-apps/api/core';
+import UserMessage from './UserMessage.vue';
 export default {
   data() {
     return {
+      server:true,
       divs: [ {
       'channelTag':'text-channel1',
       'messages':
@@ -45,31 +47,36 @@ export default {
   },
   methods: {
     async addDiv(message) {
-      console.log('here');
+      
+      if(message==='')return;
+      let sname = this.name;
+      this.name = '';
       invoke('sendMessage', {token:'cb9877152a107fec6dd4ef804d6911437be08b3a7b7186c41547ca366cc0e809', m_content: message, username:'ana' }).then((res) => {
         this.divs[this.divs.findIndex(obj => obj.channelTag==this.textChannel)]['messages'].push({"div":this.username, "mess":res});
-        this.name='';
       }).catch((err) =>{
       this.divs[this.divs.findIndex(obj => obj.channelTag==this.textChannel)]['messages'].push({"div":this.username, "mess":err});
-      this.name='';
       });
+      this.server=false;
     },
     change_channel(newChan) {
       this.textChannel = newChan;
     }
-  }
+  },
+  
 };
 
 </script>
-<template>
+<template >
   <main class="container">
+
     <form class="row" @submit.prevent="greet">
       <input id="greet-input" v-model="name" placeholder="Type a message..." />
       <button id="send" type="submit" @click="addDiv(name)">Send</button>
     </form>
-
+    <img src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' width='60px' height='60px' class='cui' style='margin-bottom:0px;'/>
+<img src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' width='60px' height='60px' class='cui' style='top:75px;margin-bottom:0px;'/>
     <div class = "column">  
-    <img src="https://cdn.discordapp.com/attachments/556118918217859083/1335390775579770910/cell-max-realized-he-aint-built-for-this-v0-36k6p9ymw7vb1.jpg?ex=679fff13&is=679ead93&hm=2b49f1eaf204073c73a98ec5debb1afe8fcaf135d93cf3e7fe17e7691514f19d&" width='50px' height='50px' class='user-icon' style='margin-top: 20px;margin-bottom:0px;'/>
+    <img src="https://cdn.discordapp.com/attachments/556118918217859083/1335390775579770910/cell-max-realized-he-aint-built-for-this-v0-36k6p9ymw7vb1.jpg?ex=679fff13&is=679ead93&hm=2b49f1eaf204073c73a98ec5debb1afe8fcaf135d93cf3e7fe17e7691514f19d&" width='50px' height='50px' class='user-icon' style='margin-bottom:0px;'/>
     <img src="https://cdn.discordapp.com/attachments/1001236756814897314/1335392112174301224/iu.png?ex=67a00051&is=679eaed1&hm=35ddd407f8649e5d8a244508e3d9dca263b02db836f085878f02d25648b57979&" width='50px' height='50px' class='user-icon' style='margin-top: 0px;margin-bottom:10px;'/>
 
     </div>
@@ -78,11 +85,11 @@ export default {
 
     <div class = "chanels">
       <div style="border-bottom: 2px solid #1c0606; height: 60px;"> <h3> Server Name </h3> </div>
-      <button @click="change_channel('text-channel1')"># text-channel1</button>
-      <button @click="change_channel('text-channel2')"># text-channel2</button>
-      <button @click="change_channel('text-channel3')"># text-channel3</button>
-      <button @click="change_channel('text-channel4')"># text-channel4</button>
-      <button>> voice-channel</button>
+      <button @click="change_channel('text-channel1')" class="channel_button"># text-channel1</button>
+      <button @click="change_channel('text-channel2')" class="channel_button"># text-channel2</button>
+      <button @click="change_channel('text-channel3')" class="channel_button"># text-channel3</button>
+      <button @click="change_channel('text-channel4')" class="channel_button"># text-channel4</button>
+      <button class="channel_button"> voice-channel</button>
     </div>
 
     <div id="chat">
@@ -114,6 +121,7 @@ export default {
       </template>
     </div>
   </main>
+  
 </template>
 
 
@@ -165,8 +173,16 @@ export default {
 
 .user-icon {
   border-radius: 40px 40px 40px 40px;
-  border: 2px solid transparent;
   margin-top: 10px;
+}
+
+.cui {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  border-radius: 40px 40px 40px 40px;
+  border: 2px solid transparent;
+transition: 0.2s;
 }
 
 .logo.tauri:hover {
@@ -184,82 +200,89 @@ export default {
   z-index: 9999;
 }
 
+.channel_button {
+  background-color: #331515;
+}
+
 .column {
-  background-color: #1c0606;
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  height: calc(100vh - 15px);
-  width: 60px;
-  z-index: 9999;
-  border-radius: 40px 0px 0px 40px;
-  border: 2px solid transparent;
-}
+    transition: 0.2s; 
+    background-color: #1c0606;
+    position: absolute;
+    top: 145px;
+    left: 5px;
+    height: calc(100vh - 155px);
+    width: 60px;
+    z-index: 9999;
+    border-radius: 40px 40px 40px 40px;
+    border: 2px solid transparent;
+  }
 
-.server-users {
-  background-color: #1c0606;
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  height: calc(100vh - 60px);
-  width: 60px;
-  border-radius: 0px 0px 40px 40px;
-  border: 2px solid transparent;
-}
+  .server-users {
+    transition: 0.2s;
+    background-color: #1c0606;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    height: calc(100vh - 60px);
+    width: 60px;
+    border-radius: 40px 40px 40px 40px;
+    border: 2px solid transparent;
+  }
 
-.chanels {
-  background-color: #331515;
-  position: absolute;
-  top: 5px;
-  left: 73px;
-  height: calc(100vh - 15px);
-  width: 180px;
-  border: 2px  solid transparent;
-  display: flex;
-  z-index: 9999;
-  flex-direction: column;
-  overflow-y: scroll;
-}
+  .chanels {
 
-
-.message {
-  text-align: left;
-  padding-left: 10px;
-}
-
-.comp-mess {
-  text-align: left;
-  padding-left: 10px;
-  display: flex;
-}
+    background-color: #331515;
+    position: absolute;
+    top: 5px;
+    left: 73px;
+    height: calc(100vh - 15px);
+    width: 180px;
+    border: 2px  solid transparent;
+    display: flex;
+    z-index: 9999;
+    flex-direction: column;
+    overflow-y: scroll;
+  }
 
 
-.user {
-  display:flex;
-}
+  .message {
+    text-align: left;
+    padding-left: 10px;
+  }
 
-#chat {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  left: 260px;
-  width: calc(100vw - 332px);
-  top: 68px;
-  height: calc(100vh - 120px);
-  overflow-y: scroll;
-}
+  .comp-mess {
+    text-align: left;
+    padding-left: 10px;
+    display: flex;
+  }
 
-#channel-header {
-  justify-content: center;
-  text-align: left;
-  position: absolute;
-  top: 5px;
-  border-bottom: 2px solid #1c0606;
-  width: calc(100vw - 332px);
-  height: 63px;
-  left: 260px;
-  background-color: #331515;
-  box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.2);
+
+  .user {
+    display:flex;
+  }
+
+  #chat {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 260px;
+    width: calc(100vw - 332px);
+    top: 68px;
+    height: calc(100vh - 120px);
+    overflow-y: scroll;
+  }
+
+  #channel-header {
+    justify-content: center;
+    text-align: left;
+    position: absolute;
+    top: 5px;
+    border-bottom: 2px solid #1c0606;
+    width: calc(100vw - 332px);
+    height: 63px;
+    left: 260px;
+    background-color: #331515;
+    box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.2);
 }
 
 ::-webkit-scrollbar {
@@ -281,8 +304,8 @@ button {
 }
 
 button:hover {
-  background-color:#422828;
-
+  background-color:#efa7aa;
+  color: white;
 }
 
 .comp-mess:hover {
@@ -345,15 +368,27 @@ input {
 }
 
 .column:hover {
-  border-color: #efa7aa;
+  border-color: #1c0606;
+  border-radius: 20px 20px 20px 20px;
+
+  transition: border-radius 0.2s;
 }
 
 .server-users:hover {
-  border-color: #efa7aa;
+  border-color: #1c0606;
+  border-radius: 20px 20px 20px 20px;
+
+  transition: border-radius 0.2s;
 }
 
 .user-icon:hover {
-  border-color: #efa7aa;
+  border-radius: 25px 25px 25px 25px;
+  transition: 0.2s;
+}
+
+.cui:hover {
+  border-radius: 25px 25px 25px 25px;
+  transition: 0.2s;
 }
 
 .chanels:hover {

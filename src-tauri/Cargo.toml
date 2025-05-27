@@ -1,6 +1,6 @@
 [package]
 name = "division-client"
-version = "0.0.1"
+version = "0.0.2"
 description = "An open-source and GPL-free VoIP and instant messaging app."
 authors = ["kickhead13"]
 edition = "2021"

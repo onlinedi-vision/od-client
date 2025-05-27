@@ -16,7 +16,8 @@ const router: any = createRouter({
 });*/
 
 createApp(App).mount("#app");
-/*;
+
+/*)
 import App from "./App.vue";
 import VueRouter from "vue-router";
 
@@ -26,13 +27,23 @@ const routes = [
   {
     path: "/profile",
     component: UserProfile,
+  },
+  {
+    path: "/test",
+    component: App,
   }
 ];
 
 const router = new VueRouter({
-  mode: "hash",
-  base: "/",
+  mode: 'hash',
+  base: '/',
   routes,
 });
-createApp(App).mount("#app");
-*/
+Vue.config.productionTip = false
+Vue.use(VueRouter)
+new Vue({
+  router,
+  render: h => h(App),
+}).$mount('#app')
+
+  */

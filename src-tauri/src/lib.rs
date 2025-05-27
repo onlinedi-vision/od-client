@@ -14,7 +14,7 @@ async fn sendMessage(token: String, m_content: String, username: String) -> Stri
     map.insert("username", username.clone());
     println!("{}", m_content.clone());
     let client = reqwest::Client::new();
-    let res = client.post("https://onlinedi.vision:1313/servers/1313/api/main/send_message")
+    let res = client.post("https://onlinedi.vision/servers/1313/api/main/send_message")
         .json(&map)
         .send()
         .await;
