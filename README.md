@@ -58,7 +58,7 @@ file to add ```__NV_PRIME_RENDER_OFFLOAD=1``` at the beginning of the second lin
 __NV_PRIME_RENDER_OFFLOAD=1 /opt/division-online/division.client.AppDir/AppRun
 ```
 
-2."failed to run linuxdeploy" during Tauri Build. 
+2. "failed to run linuxdeploy" during Tauri Build. 
 This is a problem that has not been fully fixed by the Tauri devs. You can try running the build command using the ```NO_STRIP=true``` environment variable as follows:
 ```sh 
 $ NO_STRIP=true npm run tauri build
