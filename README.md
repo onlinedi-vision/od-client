@@ -38,9 +38,30 @@ Now you should be able to run it more easily:
 $ division-client 
 ```
 ### Troubleshooting
-1. "Failed to create GBM buffer of size 945x1044: Invalid argument"
+1. "Failed to create GBM buffer of size 945x1044: Invalid argument".
 If you have and nVidia graphics card and use prime offloading you should be able to fix this by setting the __NV_PRIME_RENDER_OFFLOAD environment variable to 1 every time you run the app:
 ```sh 
 $ __NV_PRIME_RENDER_OFFLOAD=1 division-client 
 ```
-(to make this easier you could also set a bash alias for the command ```alias do-client="__NV_PRIME_RENDER_OFFLOAD=1 division-client"```)
+(to make this easier you could also set a bash alias for the command ```alias do-client="__NV_PRIME_RENDER_OFFLOAD=1 division-client"```). <br>
+This problem could also happen on the quick install version (i.e. after installing the client with the i.sh script). If you install the client using:
+```sh 
+$ wget -qO- https://onlinedi.vision/cdn/install/i.sh | bash
+```
+you might get the same problem. In this case you could edit the:
+```sh 
+/usr/bin/division-online-client 
+```
+file to add ```__NV_PRIME_RENDER_OFFLOAD=1``` at the beginning of the second line. The script file should look like this after the edit:
+```
+#!/bin/bash 
+__NV_PRIME_RENDER_OFFLOAD=1 /opt/division-online/division.client.AppDir/AppRun
+```
+
+2."failed to run linuxdeploy" during Tauri Build. 
+This is a problem that has not been fully fixed by the Tauri devs. You can try running the build command using the ```NO_STRIP=true``` environment variable as follows:
+```sh 
+$ NO_STRIP=true npm run tauri build
+```
+This might still not fix the issue, so if it still doesn't work keep in mind that the appimage could've still been built. So you should still be able to find your appimage at the path I've described before.
+
