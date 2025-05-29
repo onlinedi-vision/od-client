@@ -3,63 +3,86 @@ import { invoke } from '@tauri-apps/api/core';
 import UserMessage from './UserMessage.vue';
 export default {
   data() {
-    return {
-      server:true,
-      divs: [ {
-      'channelTag':'text-channel1',
-      'messages':
-        [
-          {'div':'doru911', 'mess':'ma duc sa ma culc'},
-          {'div':'rub', 'mess':'ok pa'},
-          {'div':'rub', 'mess':'https://media1.tenor.com/m/SG2Y2dkZvqoAAAAd/ori.gif'},
-          {'div':'ana', 'mess':'https://media1.tenor.com/m/cPuWFCXAUuMAAAAd/cat-hug.gif'},
-          {'div':'doru911', 'mess':'https://media1.tenor.com/m/AmUL0BkdH5QAAAAd/hug-couple.gif'}
-        ]
-      },
-      {
-      'channelTag':'text-channel2',
-      'messages': [
-          {'div':'rub', 'mess':'am fost pana acolo degeaba'},
-          {'div':'rub', 'mess':'nu era nimeni si am asteptat pe hol juma de ora'},
-          {'div':'ana', 'mess':':('},
-          {'div':'rub', 'mess':'like'},
-          {'div':'rub', 'mess':'bro shutup'}
-        ]
-      },
-      {
-      'channelTag':'text-channel3',
-      'messages': [
-        ]
-      },
-      {
-      'channelTag':'text-channel4',
-      'messages': [
-        ]
+    let token="8d0e40b84a092bf4c5c863d8e64e7eb1281ac9aa9fc66d39363525795f9f30cb";
+    let server="1313";
+    function compareDate(a, b) {
+      if(Number(a.datetime) < Number(b.datetime)) {
+        return -1;
       }
-      ],
+      if(Number(a.datetime) > Number(b.datetime)) {
+        return 1;
+      }
+      return 0;
+
+    }
+    invoke('getChannels', {token: token, server: server, username: "ana"})
+      .then((res) => {
+        let channels = JSON.parse(res)['c_list'];
+        for(let i = 0; i<channels.length; i++) {
+        invoke('getMessages', {token: token, server:server, channel:channels[i]['channel_name'], username: "ana"})
+          .then((res) => {
+            this.divs.push({'channelTag': channels[i]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)})
+          })
+          .catch((err) => {
+            console.log('err');
+          });
+
+          this.divs.push
+        }
+        this.done=true;
+      })
+      .catch((err) => {
+        console.log('err channels');
+      }); 
+
+        return {
+          done:false,
+          token:token,
+          sid: "1313",
+          server:true,
+          divs: [ {
+              'channelTag':'info',
+            }
+          ],
 
       
-      svusers: [{'img':'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif', 'username':'ana'}, {'img':'https://cdn.discordapp.com/attachments/1314144119010103319/1316541431518724096/IMG_4470.webp?ex=679f5181&is=679e0001&hm=b712b31c07433ade4cda2adb16863993be1c6421b16b24606b57e8267d3a239d&', 'username':'rub'}, {'img': 'https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&', 'username':'doru911'}],
-      name: '',
-      textChannel: 'text-channel1',
-      username: 'ana',
+          svusers: [{'img':'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif', 'username':'ana'}, {'img':'https://cdn.discordapp.com/attachments/1314144119010103319/1316541431518724096/IMG_4470.webp?ex=679f5181&is=679e0001&hm=b712b31c07433ade4cda2adb16863993be1c6421b16b24606b57e8267d3a239d&', 'username':'rub'}, {'img': 'https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&', 'username':'doru911'}],
+          name: '',
+          textChannel: 'info',
+          username: 'ana',
     };
   },
   methods: {
-    async addDiv(message) {
-      
+    addDiv(message) {
+      console.log(message);
+
       if(message==='')return;
       let sname = this.name;
       this.name = '';
-      invoke('sendMessage', {token:'cb9877152a107fec6dd4ef804d6911437be08b3a7b7186c41547ca366cc0e809', m_content: message, username:'ana' }).then((res) => {
-        this.divs[this.divs.findIndex(obj => obj.channelTag==this.textChannel)]['messages'].push({"div":this.username, "mess":res});
+      invoke('sendMessage', {token:this.token, channel: this.textChannel, server: this.sid,  m_content: message, username:'ana' }).then((res) => {
+        console.log('!!!!' + this.divs.findIndex(obj => obj.channelTag===this.textChannel));
+        this.divs[this.divs.findIndex(obj => obj.channelTag===this.textChannel)]['messages'].push({"username":this.username, "m_content":res});
       }).catch((err) =>{
-      this.divs[this.divs.findIndex(obj => obj.channelTag==this.textChannel)]['messages'].push({"div":this.username, "mess":err});
+      this.divs[this.divs.findIndex(obj => obj.channelTag===this.textChannel)]['messages'].push({"username":this.username, "m_content":err});
       });
-      this.server=false;
+    },
+    get_messages(channel, server, token) {
+      invoke('getMessages', {token: token, server:server, channel:channel})
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log('err');
+        });
     },
     change_channel(newChan) {
       this.textChannel = newChan;
+    },
+    get_date(timestamp) {
+      let date = new Date(Number(timestamp));
+      let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      console.log(date);
+      return month[Number(date.getMonth())] + ' ' + date.getDate() + ' '+ date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes();
     }
   },
   
@@ -67,7 +90,7 @@ export default {
 
 </script>
 <template >
-  <main class="container">
+  <main class="container" v-if="server">
 
     <form class="row" @submit.prevent="greet">
       <input id="greet-input" v-model="name" placeholder="Type a message..." />
@@ -82,35 +105,40 @@ export default {
     </div>
     
 
-
-    <div class = "chanels">
+       <div class = "chanels">
       <div style="border-bottom: 2px solid #1c0606; height: 60px;"> <h3> Server Name </h3> </div>
-      <button @click="change_channel('text-channel1')" class="channel_button"># text-channel1</button>
-      <button @click="change_channel('text-channel2')" class="channel_button"># text-channel2</button>
-      <button @click="change_channel('text-channel3')" class="channel_button"># text-channel3</button>
-      <button @click="change_channel('text-channel4')" class="channel_button"># text-channel4</button>
+         <template v-if="done">
+
+      <template v-for="(div, index) in divs" :key="index">
+        <button @click="change_channel(div['channelTag'])" class="channel_button"># {{div['channelTag']}}</button>
+      </template>
+         </template>
       <button class="channel_button"> voice-channel</button>
     </div>
 
     <div id="chat">
+
+      <template v-if="done">
       <template v-for="(div, index) in divs[divs.findIndex(obj => obj.channelTag==textChannel)]['messages']" :key="index">
         <div class="comp-mess">
-        <img v-bind:src="svusers[svusers.findIndex(obj => obj.username==div['div'])]['img']" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
+        <img v-bind:src="svusers[svusers.findIndex(obj => obj.username==div['username'])]['img']" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
         <div class="message">
           
           <div class="user">
-            <div><RouterLink to='/profile'>@{{div['div']}}</RouterLink></div>
-            <div style="font-size:10px;padding-left:5px;">08-01-2025 9:15</div>
+            <div><RouterLink to='/profile'>@{{div['username']}}</RouterLink></div>
+            <div style="font-size:10px;padding-left:5px;">{{get_date(Number(div['datetime']))}}</div>
           </div>
-          <div v-if="div['mess'].startsWith('https:')">
-            <img v-bind:src="div['mess']">
+          <div v-if="div['m_content'].startsWith('https:')">
+            <img v-bind:src="div['m_content']">
           </div>
           <div v-else>
-            {{div['mess']}}
+            {{div['m_content']}}
           </div>
         </div>
         </div>
       </template>
+      </template
+        </div>
     </div>
     <div id="channel-header">
     </div>
@@ -120,6 +148,9 @@ export default {
           <img v-bind:src="svuser['img']" width='50px' class="user-icon"/>
       </template>
     </div>
+  </main>
+  <main v-else>
+    
   </main>
   
 </template>

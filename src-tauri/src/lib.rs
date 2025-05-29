@@ -1,5 +1,5 @@
-#![allow(unused_variables)]
-#![allow(non_snake_case)]
+mod structures;
+
 
 #[tauri::command]
 fn test() -> (){
@@ -7,14 +7,14 @@ fn test() -> (){
 }
 
 #[tauri::command(rename_all="snake_case")]
-async fn sendMessage(token: String, m_content: String, username: String) -> String {
+async fn sendMessage(token: String, channel: String, server: String,  m_content: String, username: String) -> String {
     let mut map = std::collections::HashMap::new();
     map.insert("token", token.clone());
     map.insert("m_content", m_content.clone());
     map.insert("username", username.clone());
     println!("{}", m_content.clone());
     let client = reqwest::Client::new();
-    let res = client.post("https://onlinedi.vision/servers/1313/api/main/send_message")
+    let res = client.post(format!("https://onlinedi.vision/servers/{}/api/{}/send_message", server, channel))
         .json(&map)
         .send()
         .await;
@@ -25,13 +25,51 @@ async fn sendMessage(token: String, m_content: String, username: String) -> Stri
     }
 }   
 
+#[tauri::command(rename_all="snake_case")]
+async fn getMessages(token: String, channel: String, server: String, username: String) -> String {
+    let mut map = std::collections::HashMap::new();
+    map.insert("token", token.clone());
+    map.insert("username", username.clone());
+    let client = reqwest::Client::new();
+    let res = client.post(format!("https://onlinedi.vision/servers/{}/api/{}/get_messages", server, channel))
+        .json(&map)
+        .send()
+        .await
+        .expect("err")
+        .text()
+        .await
+        .expect("err");
+    println!("{:?}", res);
+    res
+}
+
+#[tauri::command(rename_all="snake_case")]
+async fn getChannels(token: String, server: String, username: String) -> String {
+    let mut map = std::collections::HashMap::new();
+    map.insert("token", token.clone());
+    map.insert("username", username.clone());
+    let client = reqwest::Client::new();
+    let res = client.post(format!("https://onlinedi.vision/servers/{}/api/get_channels", server))
+        .json(&map)
+        .send()
+        .await
+        .expect("err")
+        .text()
+        .await
+        .expect("err");
+    println!("{:?}", res);
+    res
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             test,
-            sendMessage
+            sendMessage,
+            getMessages,
+            getChannels
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
