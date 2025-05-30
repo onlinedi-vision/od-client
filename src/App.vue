@@ -163,6 +163,7 @@ export default {
   <main class="container" v-if="done">
 
     <form class="row" @submit.prevent="greet">
+      <button id="send" style="font-size:15px;text-align:center;"><b>+</b></button>
       <input id="greet-input" v-model="name" placeholder="Type a message..." />
       <button id="send" type="submit" @click="addDiv(name)">Send</button>
     </form>
