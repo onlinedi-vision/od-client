@@ -9,10 +9,10 @@ export default {
     let server="1313";
     function compareDate(a, b) {
       if(Number(a.datetime) < Number(b.datetime)) {
-        return -1;
+        return 1;
       }
       if(Number(a.datetime) > Number(b.datetime)) {
-        return 1;
+        return -1;
       }
       return 0;
 
@@ -31,7 +31,7 @@ export default {
             this.token = servers.token;
             token = servers.token;
             
-            invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': token }) });
+            invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': this.token }) });
 
             for(let i = 0; i < servers['s_list'].length; i++) {
               invoke('getServerInfo', {sid: servers['s_list'][i]})
@@ -76,15 +76,24 @@ export default {
       })
       .catch((err) => {
         console.log(err)
+        this.loggedin = false;
       });
 
     
 
         return {
+          pli: true,
+          loggedin: true,
+          lusername: "",
+          password: "",
+          lemail: "",
           done:false,
           token:token,
           sid: "1",
           server:true,
+          lError: false,
+          lErrorText: "",
+          createChannelPopUp: false,
           uservers:[{
             'sid':'1',
             'name':'Welcome',
@@ -98,6 +107,10 @@ export default {
               'messages': [{
                 'username':'System',
                 'm_content':'Welcome to Division Online! Please feel at home! <3'
+              },
+              {
+                'username':'System',
+                'm_content':'https://www.w3schools.com/html/mov_bbb.mp4'
               }
               ]
               }
@@ -123,13 +136,126 @@ export default {
       if(this.sid=== '1') {message=''; this.name;}
       if(message==='')return;
       let sname = this.name;
-      this.name = '';
+      this.name = '...';
       invoke('sendMessage', {token:this.token, channel: this.textChannel, server: this.sid,  m_content: message, username:'ana' }).then((res) => {
-        
-        this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs[this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs.findIndex(obj => obj.channelTag==this.textChannel)]['messages'].push({"username":this.username, "m_content":res});
+        console.log('taaa');
+        this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs[this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs.findIndex(obj => obj.channelTag==this.textChannel)]['messages'].unshift({"username":this.username, "m_content":res});
+        this.name='';
       }).catch((err) =>{
-      this.divs[this.divs.findIndex(obj => obj.channelTag===this.textChannel)]['messages'].push({"username":this.username, "m_content":err});
+      this.divs[this.divs.findIndex(obj => obj.channelTag===this.textChannel)]['messages'].unshift({"username":this.username, "m_content":err});
       });
+      this.name='';
+    },
+    getUserServers() {
+      invoke('getServers', {token: this.token, username: this.username})
+          .then((res) => {
+            console.log('LOL' + this.token);
+            let servers = JSON.parse(res);
+            this.token = servers['token'];
+            
+            invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': this.token }) })
+              .then((res) => console.log(res))
+              .catch((err) => console.log(err));
+
+            for(let i = 0; i < servers['s_list'].length; i++) {
+              invoke('getServerInfo', {sid: servers['s_list'][i]})
+                .then((si) => {
+                  let sinfo = JSON.parse(si);
+                  this.uservers.push({'sid': servers['s_list'][i], 'name': sinfo['name'], 'desc': sinfo['desc'], 'img_url': sinfo['img_url']});
+                })
+                .catch((err) => {
+                  console.log(err);
+                })
+              this.info.push({'sid': servers['s_list'][i], 'divs':[]});
+              invoke('getChannels', {token: this.token, server: servers['s_list'][i], username: this.username})
+              .then((res) => {
+                let channels = JSON.parse(res)['c_list'];
+                for(let j = 0; j<channels.length; j++) {
+                  invoke('getMessages', {token: this.token, server:servers['s_list'][i], channel:channels[j]['channel_name'], username: this.username})
+                    .then((res) => {
+                      
+                      this.info[this.info.findIndex(obj => obj.sid == servers['s_list'][i])].divs.push({'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)});
+                      this.divs.push({'sid':servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)})
+                      })
+                      .catch((err) => {
+                        console.log('err');
+                      });
+
+                  }
+                  this.done=true;
+                  console.log(this.divs);
+                })
+                .catch((err) => {
+                  console.log('err channels');
+                }); 
+                }
+              console.log(this.info);
+              console.log('INFO');
+              console.log(this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+          this.done = true;
+
+    }
+    ,
+    logIn() {
+      invoke('logIn', {username: this.lusername, password: this.password})
+        .then((res) => {
+          console.log(res);
+          
+
+          let tokenJS = JSON.parse(res);
+          this.token = tokenJS['token'];
+
+          if(this.token === "") {
+            this.lError=true;
+            this.lErrorText="Authentification Failed";
+            return;
+          }
+
+          this.username = this.lusername;
+          this.password = "";
+          this.loggedin = true;
+
+          invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': this.token }) });
+          this.getUserServers();
+        })
+        .catch((err) => console.log(err));
+    },
+    signUp() {
+      if(this.password.length < 8) {
+            this.lError = true;
+            this.lErrorText = "Password is too short";
+            return
+          }
+      invoke('signUp', {username: this.lusername, password: this.password, email: this.lemail})
+        .then((res) => {
+          console.log(res);
+          
+          
+
+          let tokenJS = JSON.parse(res);
+          this.token = tokenJS['token'];
+
+          if(this.token === "") {
+            this.lError=true;
+            this.lErrorText="User @" + this.lusername + " exists.";
+            return;
+          }
+
+          this.username = this.lusername;
+          this.password = "";
+          this.loggedin = true;
+
+          invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': this.token }) });
+          this.getUserServers();
+        })
+        .catch((err) => console.log(err));
+    },
+    changeLogIn() {
+      this.pli = !this.pli;
     },
     get_messages(channel, server, token) {
       invoke('getMessages', {token: token, server:server, channel:channel})
@@ -149,7 +275,14 @@ export default {
      
       return month[Number(date.getMonth())] + ' ' + date.getDate() + ' '+ date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes();
     },
+    createChannel(svid) {
+      this.createChannelPopUp=!this.createChannelPopUp;
+    },
+    createServer() {
+      this.createChannelPopUp=!this.createChannelPopUp;
+    },
     change_server(sv) {
+      this.createChannelPopUp=!this.createChannelPopUp;
       this.sid = sv;
       console.log(this.sid);
       this.textChannel = this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs[0].channelTag;
@@ -160,7 +293,7 @@ export default {
 
 </script>
 <template >
-  <main class="container" v-if="done">
+  <main class="container" v-if="done && loggedin">
 
     <form class="row" @submit.prevent="greet">
       <button id="send" style="font-size:15px;text-align:center;"><b>+</b></button>
@@ -170,7 +303,7 @@ export default {
     <img src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' width='60px' height='60px' class='cui' style='margin-bottom:0px;'/>
   <img src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' width='60px' height='60px' class='cui' style='top:75px;margin-bottom:0px;'/>
 
-    <div class = "column">  
+    <div @click="createServer()" class = "column">  
       <template v-for="(sv, idx) in uservers">
         <img @click="change_server(sv['sid'])" v-bind:src="sv['img_url']" width='50px' height='50px' class='user-icon' style='margin-top: 0px;margin-top:10px;'/>
       </template>
@@ -182,29 +315,38 @@ export default {
            <template v-if="done">
              <template v-if="info[info.findIndex(obj => obj.sid == sid)].divs !== undefined">
               <template v-for="(div, index) in info[info.findIndex(obj => obj.sid == sid)].divs" :key="index">
-                <button @click="change_channel(div['channelTag'])" class="channel_button"># {{div['channelTag']}}</button>
+                <template v-if="div['channelTag'] === textChannel">     
+                  <button @click="change_channel(div['channelTag'])" class="channel_button" style="background-color: white"># {{div['channelTag']}}</button>
+                </template>
+                <template v-else>
+                  <button @click="change_channel(div['channelTag'])" class="channel_button"># {{div['channelTag']}}</button>
+                </template>
               </template>
             </template>
            </template>
-        <button class="channel_button"> voice-channel</button>
-        <button class="channel_button" style=" position: relative; text-align: center; padding-left: 0px; padding-right: 0px;"><b>+</b></button>
+        <button @click="createChannel(sid)" class="channel_button" style=" position: relative; text-align: center; padding-left: 0px; padding-right: 0px;"><b>+</b></button>
 
       </div>
+      <div v-if="createChannelPopUp" class="login"></div>
 
       <div id="chat">
 
         <template v-if="done">
-          <template v-for="(div, index) in info[info.findIndex(obj => obj.sid == sid)].divs[info[info.findIndex(obj => obj.sid == sid)].divs.findIndex(obj => obj.channelTag==textChannel)]['messages']" :key="index">
+          <template v-for="(div, index) in info[info.findIndex(obj => obj.sid == sid)].divs[info[info.findIndex(obj => obj.sid == sid)].divs.findIndex(obj => obj.channelTag==textChannel)]['messages']" :key="div">
           <div class="comp-mess">
           <img v-bind:src="svusers[svusers.findIndex(obj => obj.username==div['username'])]['img']" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
           <div class="message">
             
             <div class="user" style="padding-top:6px;">
-              <div ><RouterLink to='/profile'><i>{{div['username']}}</i></RouterLink></div>
+              <div ><i>{{div['username']}}</i></div>
               <div class="mdate" style="font-size:12px;padding-left:5px;padding-top:1px;"><i>{{get_date(Number(div['datetime']))}}</i></div>
             </div>
-            <div v-if="div['m_content'].startsWith('https:')">
+            <div v-if="div['m_content'].startsWith('https:') && ['.jpg','.png','.jpeg','.gif'].some(char => div['m_content'].endsWith(char))">
               <img v-bind:src="div['m_content']">
+            </div>
+            <div v-else-if="div['m_content'].startsWith('https:') && ['.ogg','.mp4'].some(char => div['m_content'].endsWith(char))">
+              <video v-bind:src="div['m_content']" type="video/ogg" controls>
+              </video>
             </div>
             <div style="font-size: 17px;" v-else>
               {{div['m_content']}}
@@ -225,8 +367,30 @@ export default {
         </template>
       </div>
     </main>
-    <main v-else>
-      
+    <main v-else-if="!loggedin">
+      <main v-if="pli">
+        
+        <div v-if="lError" class="loginError"><h4>{{lErrorText}}</h4></div>
+        <div class="login">
+        <h1 style="margin-top: 100px;">Login</h1>
+        <input class="username" v-model="lusername" placeholder="Username..." />      
+        <input type="password" class="password" v-model="password" placeholder="Password..." /> 
+        <button class="loginb" type="submit" @click="logIn()">Login</button>
+        </div>
+        <button class="change-login" type="submit" @click="changeLogIn()">I don't have an account</button>
+      </main>
+      <main v-else>
+
+        <div v-if="lError" class="loginError"><h4>{{lErrorText}}</h4></div>
+        <div class="login">
+        <h1 style="margin-top: 100px;">Signup</h1>
+        <input class="e-mail" v-model="lemail" placeholder="E-mail Address..." />      
+        <input class="username" style="margin-top: 10px" v-model="lusername" placeholder="Username..." />      
+        <input type="password" class="password" v-model="password" placeholder="Password..." /> 
+        <button class="loginb" type="submit" @click="signUp()">SignUp</button>
+        </div>
+        <button class="change-login" type="submit" @click="changeLogIn()">I have an account</button>
+      </main>
     </main>
     
   </template>
@@ -323,6 +487,35 @@ export default {
       border-radius: 40px 40px 40px 40px;
       border: 2px solid transparent;
     }
+    .login {
+      
+      background-color: #1c0606;
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      top: calc(50vh - 200px);
+      left: calc(50vw - 150px);
+      height: calc(100vh - 155px);
+      width: 300px;
+      height: 400px;
+      z-index: 9999;
+      text-align: center;
+    }
+
+    .loginError {
+      
+      background-color: #1c0606;
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      top: calc(50vh - 250px);
+      left: calc(50vw - 150px);
+      width: 300px;
+      height: 50px;
+      z-index: 9999;
+      color: red;
+      text-align: center;
+    }
 
     .server-users {
       transition: 0.2s;
@@ -375,7 +568,7 @@ export default {
   }
   #chat {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     position: absolute;
     left: 260px;
     width: calc(100vw - 332px);
@@ -531,6 +724,61 @@ button {
   position: sticky;
   bottom: 0;
   width: 100vw;
+}
+
+.e-mail {
+  background-color: #331515;/*#230d0e;*/ 
+  color: #efa7aa;
+  bottom: 0;
+  margin-top: 40px;
+  margin-left: 30px;
+  width: 200px;
+}
+
+.username {
+  background-color: #331515;/*#230d0e;*/ 
+  color: #efa7aa;
+  bottom: 0;
+  margin-top: 90px;
+  margin-left: 30px;
+  width: 200px;
+}
+
+.password {
+  background-color: #331515;/*#230d0e;*/ 
+  color: #efa7aa;
+  bottom: 0;
+  margin-top: 10px;
+  margin-left: 30px;
+  width: 200px;
+}
+
+.loginb {
+  cursor:pointer;
+  background-color: #331515;/*#230d0e;*/ 
+  color: #efa7aa;
+  bottom: 0;
+  margin-top: 10px;
+  margin-left: 30px;
+  height: 40px;
+  width: 240px;
+  justify-content: center;
+  text-align: center;
+}
+.change-login {
+  cursor:pointer;
+  background-color: #331515;/*#230d0e;*/ 
+  color: #efa7aa;
+  bottom: 0;
+  position: absolute;
+  top: calc(50vh + 190px);
+  left: calc(50vw - 180px);
+  margin-top: 10px;
+  margin-left: 30px;
+  height: 40px;
+  width: 300px;
+  justify-content: center;
+  text-align: center;
 }
 
 @media (prefers-color-scheme: dark) {

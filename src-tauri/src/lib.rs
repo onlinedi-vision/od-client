@@ -120,6 +120,45 @@ async fn writeCredentials(creds: String) -> () {
     }
 }
 
+#[tauri::command(rename_all="snake_case")]
+async fn logIn(password: String, username: String) -> String {
+    let mut map = std::collections::HashMap::new();
+    map.insert("password", password.clone());
+    map.insert("username", username.clone());
+    println!("logIn  {}", username);
+    let client = reqwest::Client::new();
+    let res = client.post("https://onlinedi.vision/api/try_login")
+        .json(&map)
+        .send()
+        .await
+        .expect("err")
+        .text()
+        .await
+        .expect("err");
+    println!("{:?}", res);
+    res
+}
+
+#[tauri::command(rename_all="snake_case")]
+async fn signUp(password: String, username: String, email: String) -> String {
+    let mut map = std::collections::HashMap::new();
+    map.insert("password", password.clone());
+    map.insert("username", username.clone());
+    map.insert("email", email.clone());
+    println!("signUp  {}", username);
+    let client = reqwest::Client::new();
+    let res = client.post("https://onlinedi.vision/api/new_user")
+        .json(&map)
+        .send()
+        .await
+        .expect("err")
+        .text()
+        .await
+        .expect("err");
+    println!("{:?}", res);
+    res
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -132,7 +171,9 @@ pub fn run() {
             getServers,
             getServerInfo,
             getLocalToken,
-            writeCredentials
+            writeCredentials,
+            logIn,
+            signUp
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
