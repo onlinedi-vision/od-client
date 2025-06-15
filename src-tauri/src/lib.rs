@@ -226,7 +226,7 @@ async fn joinServer(username: String, token: String, sid: String) -> String {
     map.insert("token", token.clone());
     println!("{:?}", map);
     let client = reqwest::Client::new();
-    let res = client.post(format!("https://onlinedi.vision/servers/{}/api/create_server", sid.clone()))
+    let res = client.post(format!("https://onlinedi.vision/servers/{}/api/join", sid.clone()))
         .json(&map)
         .send()
         .await

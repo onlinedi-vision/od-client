@@ -158,7 +158,7 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
       if(message==='')return;
       let sname = this.name;
       this.name = '...';
-      invoke('sendMessage', {token:this.token, channel: this.textChannel, server: this.sid,  m_content: message, username:'ana' }).then((res) => {
+      invoke('sendMessage', {token:this.token, channel: this.textChannel, server: this.sid,  m_content: message, username:this.username }).then((res) => {
         console.log('taaa');
         this.name='';
       }).catch((err) =>{
