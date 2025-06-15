@@ -1,6 +1,9 @@
 <script>
 import { invoke } from '@tauri-apps/api/core';
 import UserMessage from './UserMessage.vue';
+import { shallowRef, ref } from "vue"
+const inputRef = shallowRef()
+
 
 export default {
   data() {
@@ -17,6 +20,16 @@ export default {
       return 0;
 
     }
+    const socket = new WebSocket("wss://onlinedi.vision/chat/");
+    socket.addEventListener('message', (event) => {
+      const words = event.data.split(' ');
+      const [msid, mchn, muser, ...mess] = words;
+      console.log(msid);
+      console.log(mchn);
+      console.log(muser);
+      console.log(mess);
+this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.findIndex(obj => obj.sid == msid)].divs.findIndex(obj => obj.channelTag==mchn)]['messages'].unshift({"username":muser, "m_content":mess.join(' ')});
+    });
     
      invoke('getLocalToken')
       .then((res) => {
@@ -124,10 +137,18 @@ export default {
           ],
 
       
-          svusers: [{'img':'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif', 'username':'ana'}, {'img':'https://cdn.discordapp.com/attachments/1314144119010103319/1316541431518724096/IMG_4470.webp?ex=679f5181&is=679e0001&hm=b712b31c07433ade4cda2adb16863993be1c6421b16b24606b57e8267d3a239d&', 'username':'System'}, {'img': 'https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&', 'username':'alex'}],
+          svusers: [{'img':'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif', 'username':'ana'}, {'img':'https://cdn.discordapp.com/attachments/1314144119010103319/1316541431518724096/IMG_4470.webp?ex=679f5181&is=679e0001&hm=b712b31c07433ade4cda2adb16863993be1c6421b16b24606b57e8267d3a239d&', 'username':'System'}, {'img': 'https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&', 'username':'alesx'}],
           name: '',
           textChannel: 'welcome',
           username: 'ana',
+          filename: '',
+          nchn: '',
+          createServerPopUp: false,
+          newSvName: '',
+          newShDesc: '',
+          newImgUrl: '',
+          joinsid: '',
+          showSIDvar: false
     };
   },
   methods: {
@@ -139,7 +160,6 @@ export default {
       this.name = '...';
       invoke('sendMessage', {token:this.token, channel: this.textChannel, server: this.sid,  m_content: message, username:'ana' }).then((res) => {
         console.log('taaa');
-        this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs[this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs.findIndex(obj => obj.channelTag==this.textChannel)]['messages'].unshift({"username":this.username, "m_content":res});
         this.name='';
       }).catch((err) =>{
       this.divs[this.divs.findIndex(obj => obj.channelTag===this.textChannel)]['messages'].unshift({"username":this.username, "m_content":err});
@@ -275,17 +295,79 @@ export default {
      
       return month[Number(date.getMonth())] + ' ' + date.getDate() + ' '+ date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes();
     },
-    createChannel(svid) {
+    create_channel(svid) {
       this.createChannelPopUp=!this.createChannelPopUp;
+      this.createServerPopUp=false;
     },
     createServer() {
-      this.createChannelPopUp=!this.createChannelPopUp;
+      this.createServerPopUp=!this.createServerPopUp;
+      this.createChannelPopUp=false;
     },
     change_server(sv) {
-      this.createChannelPopUp=!this.createChannelPopUp;
       this.sid = sv;
       console.log(this.sid);
       this.textChannel = this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs[0].channelTag;
+    },
+    change_filename(ev) {
+      this.filename = document.getElementById("file-upload").files[0];
+      var reader = new FileReader();
+      reader.readAsBinaryString(this.filename);
+      reader.onload = function(ev) {
+        console.log(ev.target.result);
+        invoke('sendFile', {cont: ev.target.result})
+          .then((res) => {
+            let url = JSON.parse(res)['url'];
+            this.addDiv(url);
+          })
+          .catch((res) =>  {
+            console.log(res);
+          });
+      }
+    },
+    createChannel() {
+      invoke('createChannel', {"username": this.username, "sid": this.sid, "token": this.token, "channel_name": this.nchn})
+        .then((res) => {
+          this.token = JSON.parse(res)['token'];
+          this.info[this.info.findIndex(obj => obj.sid === this.sid)].divs.push({'channelTag': this.nchn, 'messages': []});
+
+          invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': this.token }) })
+              .then((res) => console.log(res))
+              .catch((err) => console.log(err));
+          this.createChannelPopUp=!this.createChannelPopUp;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    createSeverForReal() {
+      invoke("createServer", {"img_url": this.newImgUrl, "desc": this.newShDesc, "name":this.newSvName, "username": this.username, "token": this.token})
+        .then((res) => {
+          this.token=JSON.parse(res)['token'];
+          invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': this.token }) })
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
+          this.createServerPopUp=!this.createServerPopUp;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    showSID() {
+      this.showSIDvar=!this.showSIDvar;
+    },
+    joinServer() {
+      invoke('joinServer', {"username": this.username, "token": this.token, "sid": this.joinsid})
+        .then((res) => {
+          this.token=JSON.parse(res)['token'];
+          invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': this.token }) })
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
+          this.createServerPopUp=!this.createServerPopUp;
+
+        })  
+        .catch((err) => {
+          console.log(err);
+        })
     }
   },
   
@@ -296,22 +378,28 @@ export default {
   <main class="container" v-if="done && loggedin">
 
     <form class="row" @submit.prevent="greet">
-      <button id="send" style="font-size:15px;text-align:center;"><b>+</b></button>
-      <input id="greet-input" v-model="name" placeholder="Type a message..." />
+      <input ref="inputRef" id="file-upload" type="file" @change="change_filename()"/>
+      <label for="file-upload" class="custom-file-upload">
+        <h3 style="margin-top: 10px;"class="fa fa-cloud-upload fa-plus"><b>+</b></h3>
+      </label>
+      <input  id="greet-input" v-model="name" placeholder="Type a message..." />
       <button id="send" type="submit" @click="addDiv(name)">Send</button>
     </form>
     <img src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' width='60px' height='60px' class='cui' style='margin-bottom:0px;'/>
-  <img src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' width='60px' height='60px' class='cui' style='top:75px;margin-bottom:0px;'/>
-
-    <div @click="createServer()" class = "column">  
+    <button class="createSButton" @click="createServer()"><h2 style="margin-top: 12px">+</h2></button>
+    <div  class = "column">  
       <template v-for="(sv, idx) in uservers">
         <img @click="change_server(sv['sid'])" v-bind:src="sv['img_url']" width='50px' height='50px' class='user-icon' style='margin-top: 0px;margin-top:10px;'/>
       </template>
     </div>
-    
-
+      
+    <div v-if="showSIDvar" class="login" style="display:flex;flex-direction:row; left:100px; top:50px; height:30px; width:660px; z-index:999999;">
+      <i style="font-size: 12px"> {{sid}} </i>
+    </div>
        <div class = "chanels">
-         <div class ="server-header" style="border-bottom: 2px solid #1c0606; height: 60px;"> <h3> {{uservers[uservers.findIndex(obj => obj.sid == sid)].name}} </h3> </div>
+         <div class ="server-header" @click="showSID()" style="border-bottom: 2px solid #1c0606; height: 60px;"> <h3 style="margin-bottom: 0px;margin-top:5px"> {{uservers[uservers.findIndex(obj => obj.sid == sid)].name}} </h3> 
+
+         </div>
            <template v-if="done">
              <template v-if="info[info.findIndex(obj => obj.sid == sid)].divs !== undefined">
               <template v-for="(div, index) in info[info.findIndex(obj => obj.sid == sid)].divs" :key="index">
@@ -324,17 +412,38 @@ export default {
               </template>
             </template>
            </template>
-        <button @click="createChannel(sid)" class="channel_button" style=" position: relative; text-align: center; padding-left: 0px; padding-right: 0px;"><b>+</b></button>
+        <button @click="create_channel(sid)" class="channel_button" style=" position: relative; text-align: center; padding-left: 0px; padding-right: 0px;"><b>+</b></button>
 
       </div>
-      <div v-if="createChannelPopUp" class="login"></div>
+      <div v-if="createChannelPopUp" class="login" style="display:flex;flex-direction:row; left:200px; top:100px; height:50px; width:280px">
+        <input id="greet-input" v-model="nchn" style="width:200px" placeholder="new_channel_name..."/>
+        <button id="send" type="submit" style="width:80px" @click="createChannel()">Create</button>
+
+      </div>
+
+
+
+      <div v-if="createServerPopUp" class="login">
+        <h3>Create Server</h3>
+        <input class="csv" v-model="newSvName" placeholder="Server Name..." />
+        <input class="csv" v-model="newImgUrl" placeholder="Image URL..." />
+        <input class="csv" v-model="newShDesc" placeholder="Short Description...">
+        <button class="csvb" @click="createSeverForReal()">Create Server</button>
+      
+        <h3 style="padding-top:30px" >Join Server</h3>
+        <input class="csv" v-model="joinsid" placeholder="Server ID..."/>
+        <button class="csvb" @click="joinServer()">Join Server</button>
+      </div>
+
+
 
       <div id="chat">
 
         <template v-if="done">
           <template v-for="(div, index) in info[info.findIndex(obj => obj.sid == sid)].divs[info[info.findIndex(obj => obj.sid == sid)].divs.findIndex(obj => obj.channelTag==textChannel)]['messages']" :key="div">
           <div class="comp-mess">
-          <img v-bind:src="svusers[svusers.findIndex(obj => obj.username==div['username'])]['img']" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
+          <img v-if="svusers[svusers.findIndex(obj => obj.username==div['username'])] !== undefined" v-bind:src="svusers[svusers.findIndex(obj => obj.username==div['username'])]['img']" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
+          <img v-else src="https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
           <div class="message">
             
             <div class="user" style="padding-top:6px;">
@@ -424,7 +533,16 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
   }
-
+input[type="file"] {
+    display: none;
+}
+.custom-file-upload {
+    display: inline-block;
+    width: 100px;
+    cursor: pointer;
+    background-color: #331515;
+    height:43px;
+}
   .container {
     margin: 0;
     height: 100%;
@@ -441,6 +559,25 @@ export default {
     will-change: filter;
     transition: 0.75s;
   }
+
+  .csv {  
+    background-color:#1c0606;
+    color: #efa7aa;
+  }
+  .csv::placeholder {
+    color: #efa7aa;
+  }
+  .csv:hover {
+    border-color: #efa7aa;
+  }
+
+  .csvb {
+height: 40px; text-align:center; background-color:#1c0606;
+  }
+  .csvb:hover {
+    border-color: #efa7aa;
+  }
+
 
   .user-icon {
     border-radius: 40px 40px 40px 40px;
@@ -479,13 +616,26 @@ export default {
       transition: 0.2s; 
       background-color: #1c0606;
       position: absolute;
-      top: 145px;
+      top: 75px;
       left: 5px;
       height: calc(100vh - 155px);
       width: 60px;
       z-index: 9999;
       border-radius: 40px 40px 40px 40px;
       border: 2px solid transparent;
+    }
+.createSButton {
+      transition: 0.2s; 
+      background-color: #1c0606;
+      position: absolute;
+      top:calc(100vh - 70px);
+      left: 5px;
+      height: 60px;
+      width: 60px;
+      z-index: 9999;
+      border-radius: 60px 60px 60px 60px;
+      border: 2px solid transparent;
+      text-align: center;
     }
     .login {
       

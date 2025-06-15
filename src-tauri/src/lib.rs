@@ -1,5 +1,5 @@
 mod structures;
-
+use base64::prelude::*;
 
 #[tauri::command]
 fn test() -> (){
@@ -159,6 +159,85 @@ async fn signUp(password: String, username: String, email: String) -> String {
     res
 }
 
+#[tauri::command(rename_all="snake_case")]
+async fn sendFile(cont: String) -> String {
+    let mut map = std::collections::HashMap::new();
+    map.insert("cont", BASE64_STANDARD.encode(cont.clone()));
+    println!("signUp  {}", cont);
+    let client = reqwest::Client::new();
+    let res = client.post("https://onlinedi.vision/api/cdn")
+        .json(&map)
+        .send()
+        .await
+        .expect("err")
+        .text()
+        .await
+        .expect("err");
+    println!("{:?}", res);
+    res
+}
+
+#[tauri::command(rename_all="snake_case")]
+async fn createChannel(username: String, token: String, sid: String, channel_name:String) -> String {
+    let mut map = std::collections::HashMap::new();
+    map.insert("username", username.clone());
+    map.insert("channel_name", channel_name.clone());
+    map.insert("token", token.clone());
+    let client = reqwest::Client::new();
+    let res = client.post(format!("https://onlinedi.vision/servers/{}/api/create_channel", sid.clone()))
+        .json(&map)
+        .send()
+        .await
+        .expect("err")
+        .text()
+        .await
+        .expect("err");
+    println!("{:?}", res);
+    res
+}
+
+
+#[tauri::command(rename_all="snake_case")]
+async fn createServer(username: String, token: String, name: String, img_url:String, desc: String) -> String {
+    let mut map = std::collections::HashMap::new();
+    map.insert("username", username.clone());
+    map.insert("name", name.clone());
+    map.insert("desc", desc.clone());
+    map.insert("img_url", img_url.clone());
+    map.insert("token", token.clone());
+    println!("{:?}", map);
+    let client = reqwest::Client::new();
+    let res = client.post("https://onlinedi.vision/api/create_server")
+        .json(&map)
+        .send()
+        .await
+        .expect("err")
+        .text()
+        .await
+        .expect("err");
+    println!("{:?}", res);
+    res
+}
+
+#[tauri::command(rename_all="snake_case")]
+async fn joinServer(username: String, token: String, sid: String) -> String {
+    let mut map = std::collections::HashMap::new();
+    map.insert("username", username.clone());
+    map.insert("token", token.clone());
+    println!("{:?}", map);
+    let client = reqwest::Client::new();
+    let res = client.post(format!("https://onlinedi.vision/servers/{}/api/create_server", sid.clone()))
+        .json(&map)
+        .send()
+        .await
+        .expect("err")
+        .text()
+        .await
+        .expect("err");
+    println!("{:?}", res);
+    res
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -173,7 +252,11 @@ pub fn run() {
             getLocalToken,
             writeCredentials,
             logIn,
-            signUp
+            signUp,
+            sendFile,
+            createChannel,
+            createServer,
+            joinServer
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

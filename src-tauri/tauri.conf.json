@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "division.client",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "identifier": "onlinedi.vision",
   "build": {
     "beforeDevCommand": "npm run dev",
