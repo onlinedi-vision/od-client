@@ -95,12 +95,22 @@ async fn getChannels(token: String, server: String, username: String) -> String 
     res
 }
 
+fn getCredentialFile() -> String {
+	if cfg!(windows) {
+		return "\\AppData\\Roaming\\OnlineDivision\\credentials.json".to_string();
+	} else if cfg!(unix) {
+		return "/.division-online/credentials.json".to_string();
+	} else {
+		panic!("FATAL ERROR: unidentified OS type");
+	}
+}
+
 #[tauri::command(rename_all="snake_case")]
 async fn getLocalToken() -> String {
     println!("here");
     match std::env::home_dir() {
         Some(home_dih) => 
-            std::fs::read_to_string(format!("{}/.division-online/credentials.json", home_dih.display()))
+            std::fs::read_to_string(format!("{}{}", home_dih.display(), getCredentialFile()))
                 .expect("Should have been able to read the file"),
         _ => "Failed".to_string()
     }
@@ -111,7 +121,7 @@ async fn writeCredentials(creds: String) -> () {
     println!("write");
     match std::env::home_dir() {
         Some(home_dih) => { 
-            std::fs::write(format!("{}/.division-online/credentials.json", home_dih.display()), creds)
+            std::fs::write(format!("{}{}", home_dih.display(), getCredentialFile()), creds)
                 .expect("Should have been able to write the file"); 
         },
         _ =>  {
