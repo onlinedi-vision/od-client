@@ -56,11 +56,11 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
                   console.log(err);
                 })
               this.info.push({'sid': servers['s_list'][i], 'divs':[]});
-              invoke('getChannels', {token: token, server: servers['s_list'][i], username: this.username})
+              invoke('getChannels', {'https://onlinedi.vison', token: token, server: servers['s_list'][i], username: this.username})
               .then((res) => {
                 let channels = JSON.parse(res)['c_list'];
                 for(let j = 0; j<channels.length; j++) {
-                  invoke('getMessages', {token: token, server:servers['s_list'][i], channel:channels[j]['channel_name'], username: this.username})
+                  invoke('getMessages', {'https://onlindi.vision'token: token, server:servers['s_list'][i], channel:channels[j]['channel_name'], username: this.username})
                     .then((res) => {
                       
                       this.info[this.info.findIndex(obj => obj.sid == servers['s_list'][i])].divs.push({'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)});
@@ -158,7 +158,7 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
       if(message==='')return;
       let sname = this.name;
       this.name = '...';
-      invoke('sendMessage', {token:this.token, channel: this.textChannel, server: this.sid,  m_content: message, username:this.username }).then((res) => {
+      invoke('sendMessage', {'https://onlinedi.vision', token:this.token, channel: this.textChannel, server: this.sid,  m_content: message, username:this.username }).then((res) => {
         console.log('taaa');
         this.name='';
       }).catch((err) =>{
@@ -187,11 +187,11 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
                   console.log(err);
                 })
               this.info.push({'sid': servers['s_list'][i], 'divs':[]});
-              invoke('getChannels', {token: this.token, server: servers['s_list'][i], username: this.username})
+              invoke('getChannels', {'https://onlinedi.vision', token: this.token, server: servers['s_list'][i], username: this.username})
               .then((res) => {
                 let channels = JSON.parse(res)['c_list'];
                 for(let j = 0; j<channels.length; j++) {
-                  invoke('getMessages', {token: this.token, server:servers['s_list'][i], channel:channels[j]['channel_name'], username: this.username})
+                  invoke('getMessages', {'https://onlinedi.vision', token: this.token, server:servers['s_list'][i], channel:channels[j]['channel_name'], username: this.username})
                     .then((res) => {
                       
                       this.info[this.info.findIndex(obj => obj.sid == servers['s_list'][i])].divs.push({'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)});
@@ -278,7 +278,7 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
       this.pli = !this.pli;
     },
     get_messages(channel, server, token) {
-      invoke('getMessages', {token: token, server:server, channel:channel})
+      invoke('getMessages', {'https://onlinedi.vision', token: token, server:server, channel:channel})
         .then((res) => {
           console.log(res);
         })
@@ -325,7 +325,7 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
       }
     },
     createChannel() {
-      invoke('createChannel', {"username": this.username, "sid": this.sid, "token": this.token, "channel_name": this.nchn})
+      invoke('createChannel', {'https://onlinedi.vision', "username": this.username, "sid": this.sid, "token": this.token, "channel_name": this.nchn})
         .then((res) => {
           this.token = JSON.parse(res)['token'];
           this.info[this.info.findIndex(obj => obj.sid === this.sid)].divs.push({'channelTag': this.nchn, 'messages': []});
@@ -356,7 +356,7 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
       this.showSIDvar=!this.showSIDvar;
     },
     joinServer() {
-      invoke('joinServer', {"username": this.username, "token": this.token, "sid": this.joinsid})
+      invoke('joinServer', {'https://onlinedi.vision', "username": this.username, "token": this.token, "sid": this.joinsid})
         .then((res) => {
           this.token=JSON.parse(res)['token'];
           invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': this.token }) })
