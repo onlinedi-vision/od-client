@@ -22,6 +22,8 @@ $ cd od-client
 After that, building the app is just as simple as running:
 ```sh 
 $ npm run tauri build
+$ # or for a debug version:
+$ npm run tauri dev
 ```
 (Keep in mind that this might take a couple of minutes, and getting an error related to "linuxdeploy" is completely normal and can be ignored)
 ### Usage
@@ -37,6 +39,17 @@ Now you should be able to run it more easily:
 ```sh 
 $ division-client 
 ```
+### Using nix-shell
+Run the following
+```sh
+$ nix-shell shell.nix
+[nix-shell]$ npm run tauri dev 
+```
+On wayland you may need to set the following env vars:
+```sh
+[nix-shell]$ WEBKIT_DISABLE_DMABUF_RENDERER=1 WAYLAND_DISPLAY= WEBKIT_DISABLE_COMPOSITING_MODR=1 npm run tauri dev
+```
+
 ### Troubleshooting
 1. "Failed to create GBM buffer of size 945x1044: Invalid argument".
 If you have and nVidia graphics card and use prime offloading you should be able to fix this by setting the __NV_PRIME_RENDER_OFFLOAD environment variable to 1 every time you run the app:
@@ -65,3 +78,8 @@ $ NO_STRIP=true npm run tauri build
 ```
 This might still not fix the issue, so if it still doesn't work keep in mind that the appimage could've still been built. So you should still be able to find your appimage at the path I've described before.
 
+3. Gdk-Message: Error 71 (Protocol error) dispatching to Wayland display
+This may happen on wayland. To fix this try running the client using these env vars:
+```sh
+$ WEBKIT_DISABLE_DMABUF_RENDERER=1 WAYLAND_DISPLAY= WEBKIT_DISABLE_COMPOSITING_MODR=1 division-client
+```
