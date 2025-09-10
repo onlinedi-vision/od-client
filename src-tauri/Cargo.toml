@@ -19,8 +19,7 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 crossbeam-channel = "0.5.15"
-openssl = "0.10.72"
-glib = "0.20.0"
+rustls = "0.23.31"
 tauri = { version = "2", features = [] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
