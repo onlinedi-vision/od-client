@@ -8,6 +8,7 @@ in pkgs.mkShell {
     cargo-tauri
     rust-analyzer
     glib.dev
+    openssl.dev
     pango.dev
     cairo.dev
     glib
