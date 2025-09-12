@@ -25,6 +25,14 @@
     "linux": {
       "appimage": {
         "bundleMediaFramework":true
+      },
+      "deb": {
+      	"files": {
+      		"/usr/bin/division-setup": "./scripts/postinstall.sh"
+      	}
+      },
+      "rpm": {
+      	"postInstallScript": "./scripts/postinstall.sh"
       }
     },
 	"windows": {
