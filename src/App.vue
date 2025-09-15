@@ -2,7 +2,7 @@
 import { invoke } from '@tauri-apps/api/core';
 import UserMessage from './UserMessage.vue';
 import { shallowRef, ref } from "vue"
-const inputRef = shallowRef()
+// const inputRef = shallowRef()
 
 
 export default {
@@ -84,6 +84,7 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
           })
           .catch((err) => {
             console.log(err);
+            this.loggedin = false;
           });
           this.done = true;
       })
@@ -152,8 +153,47 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
     };
   },
   methods: {
-    addDiv(message) {
-      console.log(message);
+    send_message(message) {
+      const fileElement= document.querySelector("#file-form");
+      const fileData = new FormData();
+      const fileInput = document.getElementById("file-upload");
+      if(fileInput.files.length) {
+
+        fileData.append("file", fileInput.files[0]);
+
+        console.log(fileData);
+        for (var pair of fileData.entries()) {
+            console.log(pair[0]+ '!!!!' + pair[1]); 
+        }
+        fetch("https://onlinedi.vision:7377/upload", {
+          method: 'POST',
+          body: fileData
+        }).then(response => {
+          response.text().then(mess => {
+            const to_append =  "https://onlinedi.vision:7377" + mess.split(/\r?\n/).pop();
+             console.log(to_append);
+            message += to_append;
+             
+            if(this.sid=== '1') {message=''; this.name;}
+            if(message==='')return;
+            let sname = this.name;
+            this.name = '...';
+            invoke('sendMessage', {host_url: 'https://onlinedi.vision/servers', token:this.token, channel: this.textChannel, server: this.sid,  m_content: message, username:this.username }).then((res) => {
+              console.log('taaa');
+              this.name='';
+            }).catch((err) =>{
+            this.divs[this.divs.findIndex(obj => obj.channelTag===this.textChannel)]['messages'].unshift({"username":this.username, "m_content":err});
+            });
+            this.name='';
+          });
+        })
+        .catch(error => {
+          console.error(error);
+        });
+        return;
+      }
+
+      
       if(this.sid=== '1') {message=''; this.name;}
       if(message==='')return;
       let sname = this.name;
@@ -308,22 +348,6 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
       console.log(this.sid);
       this.textChannel = this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs[0].channelTag;
     },
-    change_filename(ev) {
-      this.filename = document.getElementById("file-upload").files[0];
-      var reader = new FileReader();
-      reader.readAsBinaryString(this.filename);
-      reader.onload = function(ev) {
-        console.log(ev.target.result);
-        invoke('sendFile', {cont: ev.target.result})
-          .then((res) => {
-            let url = JSON.parse(res)['url'];
-            this.addDiv(url);
-          })
-          .catch((res) =>  {
-            console.log(res);
-          });
-      }
-    },
     createChannel() {
       invoke('createChannel', {host_url: 'https://onlinedi.vision/servers', "username": this.username, "sid": this.sid, "token": this.token, "channel_name": this.nchn})
         .then((res) => {
@@ -370,20 +394,20 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
         })
     }
   },
-  
+ 
 };
 
 </script>
 <template >
   <main class="container" v-if="done && loggedin">
 
-    <form class="row" @submit.prevent="greet">
-      <input ref="inputRef" id="file-upload" type="file" @change="change_filename()"/>
+    <form enctype='multipart/form-data' id="file-form" class="row" @submit.prevent="greet">
+      <input id="file-upload" type="file"/>
       <label for="file-upload" class="custom-file-upload">
         <h3 style="margin-top: 10px;"class="fa fa-cloud-upload fa-plus"><b>+</b></h3>
       </label>
       <input  id="greet-input" v-model="name" placeholder="Type a message..." />
-      <button id="send" type="submit" @click="addDiv(name)">Send</button>
+      <button id="send" type="submit" @click="send_message(name)">Send</button>
     </form>
     <img src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' width='60px' height='60px' class='cui' style='margin-bottom:0px;'/>
     <button class="createSButton" @click="createServer()"><h2 style="margin-top: 12px">+</h2></button>
@@ -398,7 +422,6 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
     </div>
        <div class = "chanels">
          <div class ="server-header" @click="showSID()" style="border-bottom: 2px solid #1c0606; height: 60px;"> <h3 style="margin-bottom: 0px;margin-top:5px"> {{uservers[uservers.findIndex(obj => obj.sid == sid)].name}} </h3> 
-
          </div>
            <template v-if="done">
              <template v-if="info[info.findIndex(obj => obj.sid == sid)].divs !== undefined">
