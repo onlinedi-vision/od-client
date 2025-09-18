@@ -3,7 +3,8 @@ import { invoke } from '@tauri-apps/api/core';
 import UserMessage from './UserMessage.vue';
 import { shallowRef, ref } from "vue"
 // const inputRef = shallowRef()
-
+const bgUrl = 'https://pcm-30170.picsz.qpic.cn/product-test/20220927164754/5e9a0934aadc7543ba3c3cea2bc38a8d.jpg'
+const urlData = `url('${bgUrl}')`
 
 export default {
   data() {
@@ -108,6 +109,9 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
           lError: false,
           lErrorText: "",
           createChannelPopUp: false,
+          config_frontend_server: {
+            background_image:'https://onlinedi.vision:7377/eda460dbe66d8aedabae81347f033b5ab8fa416d8c7b083406b02586988d0930/01994e1eaf4173a29c4356288daa4a39.jpeg'
+          },
           uservers:[{
             'sid':'1',
             'name':'Welcome',
@@ -537,6 +541,13 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
     filter: drop-shadow(0 0 2em #249b73);
   }
 
+  
+
+#app {
+  height: 100%;
+
+  background-image: v-bind(urlData);
+}
   </style>
   <style>
   :root {
@@ -547,6 +558,7 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
       
     color: #a87678;
     background-color: #3d2222;/*#422828;*/
+
 
 
 
@@ -891,6 +903,8 @@ button {
 
 #app {
   height: 100%;
+
+  background-image: v-bind(urlData);
 }
 
 #greet-input {
