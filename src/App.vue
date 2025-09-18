@@ -421,13 +421,13 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
       <i style="font-size: 12px"> {{sid}} </i>
     </div>
        <div class = "chanels">
-         <div class ="server-header" @click="showSID()" style="border-bottom: 2px solid #1c0606; height: 60px;"> <h3 style="margin-bottom: 0px;margin-top:5px"> {{uservers[uservers.findIndex(obj => obj.sid == sid)].name}} </h3> 
+         <div class ="server-header" @click="showSID()" style="border-bottom: 2px solid #141414; height: 60px;"> <h3 style="margin-bottom: 0px;margin-top:5px"> {{uservers[uservers.findIndex(obj => obj.sid == sid)].name}} </h3> 
          </div>
            <template v-if="done">
              <template v-if="info[info.findIndex(obj => obj.sid == sid)].divs !== undefined">
               <template v-for="(div, index) in info[info.findIndex(obj => obj.sid == sid)].divs" :key="index">
                 <template v-if="div['channelTag'] === textChannel">     
-                  <button @click="change_channel(div['channelTag'])" class="channel_button" style="background-color: #efa7aa"># {{div['channelTag']}}</button>
+                  <button @click="change_channel(div['channelTag'])" class="channel_button" style="background-color: #a87678; color: white"># {{div['channelTag']}}</button>
                 </template>
                 <template v-else>
                   <button @click="change_channel(div['channelTag'])" class="channel_button"># {{div['channelTag']}}</button>
@@ -545,7 +545,7 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
     line-height: 24px;
     font-weight: 400;
       
-    color: #efa7aa;
+    color: #a87678;
     background-color: #3d2222;/*#422828;*/
 
 
@@ -563,8 +563,12 @@ input[type="file"] {
     display: inline-block;
     width: 100px;
     cursor: pointer;
-    background-color: #331515;
+    background-color: #1a1717;
     height:43px;
+}
+.custom-file-upload:hover {
+  color: white;
+  background-color:#a87678;
 }
   .container {
     margin: 0;
@@ -584,21 +588,21 @@ input[type="file"] {
   }
 
   .csv {  
-    background-color:#1c0606;
-    color: #efa7aa;
+    background-color:#141414;
+    color: #a87678;
   }
   .csv::placeholder {
-    color: #efa7aa;
+    color: #a87678;
   }
   .csv:hover {
-    border-color: #efa7aa;
+    border-color: #a87678;
   }
 
   .csvb {
-height: 40px; text-align:center; background-color:#1c0606;
+height: 40px; text-align:center; background-color:#141414;
   }
   .csvb:hover {
-    border-color: #efa7aa;
+    border-color: #a87678;
   }
 
 
@@ -632,12 +636,12 @@ height: 40px; text-align:center; background-color:#1c0606;
   }
 
   .channel_button {
-    background-color: #331515;
+    background-color: #1a1717;
   }
 
   .column {
       transition: 0.2s; 
-      background-color: #1c0606;
+      background-color: #141414;
       position: absolute;
       top: 75px;
       left: 5px;
@@ -649,7 +653,7 @@ height: 40px; text-align:center; background-color:#1c0606;
     }
 .createSButton {
       transition: 0.2s; 
-      background-color: #1c0606;
+      background-color: #141414;
       position: absolute;
       top:calc(100vh - 70px);
       left: 5px;
@@ -662,7 +666,7 @@ height: 40px; text-align:center; background-color:#1c0606;
     }
     .login {
       
-      background-color: #1c0606;
+      background-color: #141414;
       position: absolute;
       display: flex;
       flex-direction: column;
@@ -677,7 +681,7 @@ height: 40px; text-align:center; background-color:#1c0606;
 
     .loginError {
       
-      background-color: #1c0606;
+      background-color: #141414;
       position: absolute;
       display: flex;
       flex-direction: column;
@@ -692,7 +696,7 @@ height: 40px; text-align:center; background-color:#1c0606;
 
     .server-users {
       transition: 0.2s;
-      background-color: #1c0606;
+      background-color: #141414;
       position: absolute;
       top: 5px;
       right: 5px;
@@ -704,7 +708,7 @@ height: 40px; text-align:center; background-color:#1c0606;
 
     .chanels {
 
-      background-color: #331515;
+      background-color: #1a1717;
       position: absolute;
       top: 5px;
       left: 73px;
@@ -737,7 +741,7 @@ height: 40px; text-align:center; background-color:#1c0606;
       color: transparent;
   }
   .comp-mess:hover  .mdate  {
-    color: #efa7aa;
+    color: #a87678;
   }
   #chat {
     display: flex;
@@ -755,11 +759,11 @@ height: 40px; text-align:center; background-color:#1c0606;
     text-align: left;
     position: absolute;
     top: 5px;
-    border-bottom: 2px solid #1c0606;
+    border-bottom: 2px solid #141414;
     width: calc(100vw - 332px);
     height: 63px;
     left: 260px;
-    background-color: #331515;
+    background-color: #1a1717;
     box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -773,8 +777,8 @@ body {
 }
 
 button {
- background-color: #331515;
- color: #efa7aa;
+ background-color: #1a1717;
+ color: #a87678;
  outline: none;
  border: 0px;
   text-align: left;
@@ -782,12 +786,12 @@ button {
 }
 
 button:hover {
-  background-color:#efa7aa;
+  background-color:#a87678;
   color: white;
 }
 
 .comp-mess:hover {
-  background-color: #331515;
+  background-color: #1a1717;
 }
 
 a {
@@ -836,24 +840,24 @@ input {
 
 #send {
   cursor: pointer;
-  background-color: #331515;
-  color: #efa7aa;
+  background-color: #1a1717;
+  color: #a87678;
 }
 
 #greet-input:hover {
-  border-color: #efa7aa;
-  background-color:#351818; 
+  border-color: #a87678;
+  background-color:#141414; 
 }
 
 .column:hover {
-  border-color: #1c0606;
+  border-color: #141414;
   border-radius: 20px 20px 20px 20px;
 
   transition: border-radius 0.2s;
 }
 
 .server-users:hover {
-  border-color: #1c0606;
+  border-color: #141414;
   border-radius: 20px 20px 20px 20px;
 
   transition: border-radius 0.2s;
@@ -870,12 +874,12 @@ input {
 }
 
 .chanels:hover {
-border-color: #efa7aa;
+border-color: #a87678;
 }
 
 #send:hover {
-  border-color: #efa7aa;
-  background-color:#efa7aa; 
+  border-color: #a87678;
+  background-color:#a87678; 
   color: #ffffff;
 }
 
@@ -891,8 +895,8 @@ button {
 
 #greet-input {
   margin-right: 0px;
-  background-color: #331515;/*#230d0e;*/ 
-  color: #efa7aa;
+  background-color: #1a1717;/*#230d0e;*/ 
+  color: #a87678;
   position: -webkit-sticky;
   position: sticky;
   bottom: 0;
@@ -900,8 +904,8 @@ button {
 }
 
 .e-mail {
-  background-color: #331515;/*#230d0e;*/ 
-  color: #efa7aa;
+  background-color: #1a1717;/*#230d0e;*/ 
+  color: #a87678;
   bottom: 0;
   margin-top: 40px;
   margin-left: 30px;
@@ -909,8 +913,8 @@ button {
 }
 
 .username {
-  background-color: #331515;/*#230d0e;*/ 
-  color: #efa7aa;
+  background-color: #1a1717;/*#230d0e;*/ 
+  color: #a87678;
   bottom: 0;
   margin-top: 90px;
   margin-left: 30px;
@@ -918,8 +922,8 @@ button {
 }
 
 .password {
-  background-color: #331515;/*#230d0e;*/ 
-  color: #efa7aa;
+  background-color: #1a1717;/*#230d0e;*/ 
+  color: #a87678;
   bottom: 0;
   margin-top: 10px;
   margin-left: 30px;
@@ -928,8 +932,8 @@ button {
 
 .loginb {
   cursor:pointer;
-  background-color: #331515;/*#230d0e;*/ 
-  color: #efa7aa;
+  background-color: #1a1717;/*#230d0e;*/ 
+  color: #a87678;
   bottom: 0;
   margin-top: 10px;
   margin-left: 30px;
@@ -940,8 +944,8 @@ button {
 }
 .change-login {
   cursor:pointer;
-  background-color: #331515;/*#230d0e;*/ 
-  color: #efa7aa;
+  background-color: #1a1717;/*#230d0e;*/ 
+  color: #a87678;
   bottom: 0;
   position: absolute;
   top: calc(50vh + 190px);
@@ -974,4 +978,9 @@ button {
   }
 }
 
+input::placeholder {
+  color: #a87678;
+}
+
 </style>
+
