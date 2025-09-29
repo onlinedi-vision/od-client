@@ -19,6 +19,10 @@ To be able to build the app from source, you will first need to clone this repo:
 $ git clone 'https://github.com/onlinedi-vision/od-client.git'
 $ cd od-client
 ```
+Then, install the node dependencies:
+```sh
+$ npm i
+```
 After that, building the app is just as simple as running:
 ```sh 
 $ npm run tauri build
