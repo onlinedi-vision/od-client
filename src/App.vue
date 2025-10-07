@@ -427,7 +427,7 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
              <template v-if="info[info.findIndex(obj => obj.sid == sid)].divs !== undefined">
               <template v-for="(div, index) in info[info.findIndex(obj => obj.sid == sid)].divs" :key="index">
                 <template v-if="div['channelTag'] === textChannel">     
-                  <button @click="change_channel(div['channelTag'])" class="channel_button" style="background-color: #efa7aa"># {{div['channelTag']}}</button>
+                  <button @click="change_channel(div['channelTag'])" class="channel_button" style="background-color: #efa7aa; color:#1c0606;"># {{div['channelTag']}}</button>
                 </template>
                 <template v-else>
                   <button @click="change_channel(div['channelTag'])" class="channel_button"># {{div['channelTag']}}</button>
@@ -862,6 +862,7 @@ input {
 .user-icon:hover {
   border-radius: 25px 25px 25px 25px;
   transition: 0.2s;
+  box-shadow: 0px 0px 10px gray;
 }
 
 .cui:hover {
