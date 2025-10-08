@@ -1,16 +1,11 @@
 <script>
 import { invoke } from '@tauri-apps/api/core';
-import UserMessage from './UserMessage.vue';
 import { shallowRef, ref } from "vue"
-// const inputRef = shallowRef()
-const bgUrl = 'https://pcm-30170.picsz.qpic.cn/product-test/20220927164754/5e9a0934aadc7543ba3c3cea2bc38a8d.jpg'
-const urlData = `url('${bgUrl}')`
 
 export default {
   data() {
     let token="16ec6209e46700a7f29fea7b792b53b8f61d3705092bacf4eb853d9f497161b0";
    
-    let server="1313";
     function compareDate(a, b) {
       if(Number(a.datetime) < Number(b.datetime)) {
         return 1;
@@ -21,26 +16,13 @@ export default {
       return 0;
 
     }
-    const socket = new WebSocket("wss://onlinedi.vision/chat/");
-    socket.addEventListener('message', (event) => {
-      const words = event.data.split(' ');
-      const [msid, mchn, muser, ...mess] = words;
-      console.log(msid);
-      console.log(mchn);
-      console.log(muser);
-      console.log(mess);
-this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.findIndex(obj => obj.sid == msid)].divs.findIndex(obj => obj.channelTag==mchn)]['messages'].unshift({"username":muser, "m_content":mess.join(' ')});
-    });
-    
+   
      invoke('getLocalToken')
       .then((res) => {
         token = JSON.parse(res)['token'];
         this.username = JSON.parse(res)['username'];
-        console.log(this.username);
-        console.log(res);
         invoke('getServers', {token: token, username: this.username})
           .then((res) => {
-            console.log('LOL' + token);
             let servers = JSON.parse(res);
             this.token = servers.token;
             token = servers.token;
@@ -73,15 +55,11 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
 
                   }
                   this.done=true;
-                  console.log(this.divs);
                 })
                 .catch((err) => {
                   console.log('err channels');
                 }); 
                 }
-              console.log(this.info);
-              console.log('INFO');
-              console.log(this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs);
           })
           .catch((err) => {
             console.log(err);
@@ -109,9 +87,6 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
           lError: false,
           lErrorText: "",
           createChannelPopUp: false,
-          config_frontend_server: {
-            background_image:'https://onlinedi.vision:7377/eda460dbe66d8aedabae81347f033b5ab8fa416d8c7b083406b02586988d0930/01994e1eaf4173a29c4356288daa4a39.jpeg'
-          },
           uservers:[{
             'sid':'1',
             'name':'Welcome',
@@ -134,14 +109,13 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
               }
             ]
           }],
-          username: 'ana',
+          username: 'noone',
           divs: [ {
               'sid':'1313',
               'channelTag':'info',
             }
           ],
 
-      
           svusers: [{'img':'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif', 'username':'ana'}, {'img':'https://cdn.discordapp.com/attachments/1314144119010103319/1316541431518724096/IMG_4470.webp?ex=679f5181&is=679e0001&hm=b712b31c07433ade4cda2adb16863993be1c6421b16b24606b57e8267d3a239d&', 'username':'System'}, {'img': 'https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&', 'username':'alesx'}],
           name: '',
           textChannel: 'welcome',
@@ -165,7 +139,6 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
 
         fileData.append("file", fileInput.files[0]);
 
-        console.log(fileData);
         for (var pair of fileData.entries()) {
             console.log(pair[0]+ '!!!!' + pair[1]); 
         }
@@ -213,7 +186,6 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
     getUserServers() {
       invoke('getServers', {token: this.token, username: this.username})
           .then((res) => {
-            console.log('LOL' + this.token);
             let servers = JSON.parse(res);
             this.token = servers['token'];
             
@@ -253,9 +225,6 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
                   console.log('err channels');
                 }); 
                 }
-              console.log(this.info);
-              console.log('INFO');
-              console.log(this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs);
           })
           .catch((err) => {
             console.log(err);
@@ -296,10 +265,6 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
           }
       invoke('signUp', {username: this.lusername, password: this.password, email: this.lemail})
         .then((res) => {
-          console.log(res);
-          
-          
-
           let tokenJS = JSON.parse(res);
           this.token = tokenJS['token'];
 
@@ -349,7 +314,6 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
     },
     change_server(sv) {
       this.sid = sv;
-      console.log(this.sid);
       this.textChannel = this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs[0].channelTag;
     },
     createChannel() {
@@ -463,36 +427,35 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
       </div>
 
 
-
       <div id="chat">
-
         <template v-if="done">
           <template v-for="(div, index) in info[info.findIndex(obj => obj.sid == sid)].divs[info[info.findIndex(obj => obj.sid == sid)].divs.findIndex(obj => obj.channelTag==textChannel)]['messages']" :key="div">
-          <div class="comp-mess">
-          <img v-if="svusers[svusers.findIndex(obj => obj.username==div['username'])] !== undefined" v-bind:src="svusers[svusers.findIndex(obj => obj.username==div['username'])]['img']" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
-          <img v-else src="https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
-          <div class="message">
+            <div class="comp-mess">
+              <img v-if="svusers[svusers.findIndex(obj => obj.username==div['username'])] !== undefined" v-bind:src="svusers[svusers.findIndex(obj => obj.username==div['username'])]['img']" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
+              <img v-else src="https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
+              <div class="message">
             
-            <div class="user" style="padding-top:6px;">
-              <div ><i>{{div['username']}}</i></div>
-              <div class="mdate" style="font-size:12px;padding-left:5px;padding-top:1px;"><i>{{get_date(Number(div['datetime']))}}</i></div>
+                <div class="user" style="padding-top:6px;">
+                  <div ><i>{{div['username']}}</i></div>
+                  <div class="mdate" style="font-size:12px;padding-left:5px;padding-top:1px;"><i>{{get_date(Number(div['datetime']))}}</i></div>
+                </div>
+                <div v-if="div['m_content'].startsWith('https:') && ['.jpg','.png','.jpeg','.gif'].some(char => div['m_content'].endsWith(char))">
+                  <img v-bind:src="div['m_content']">
+                </div>
+                <div v-else-if="div['m_content'].startsWith('https:') && ['.ogg','.mp4'].some(char => div['m_content'].endsWith(char))">
+                  <video v-bind:src="div['m_content']" type="video/ogg" controls>
+                  </video>
+                </div>
+                <div style="font-size: 17px;" v-else>
+                  {{div['m_content']}}
+                </div>
+              </div>
             </div>
-            <div v-if="div['m_content'].startsWith('https:') && ['.jpg','.png','.jpeg','.gif'].some(char => div['m_content'].endsWith(char))">
-              <img v-bind:src="div['m_content']">
-            </div>
-            <div v-else-if="div['m_content'].startsWith('https:') && ['.ogg','.mp4'].some(char => div['m_content'].endsWith(char))">
-              <video v-bind:src="div['m_content']" type="video/ogg" controls>
-              </video>
-            </div>
-            <div style="font-size: 17px;" v-else>
-              {{div['m_content']}}
-            </div>
-          </div>
-          </div>
-        </template>
+          </template>
         </template
-          </div>
       </div>
+    </div>
+
       <div id="channel-header">
         <h3>{{this.textChannel}}</h3>
       </div>
@@ -502,7 +465,7 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
             <img v-bind:src="svuser['img']" width='50px' class="user-icon"/>
         </template>
       </div>
-    </main>
+  </main>
     <main v-else-if="!loggedin">
       <main v-if="pli">
         
@@ -529,45 +492,43 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
       </main>
     </main>
     
-  </template>
+</template>
+
+<style scoped>
+.logo.vite:hover {
+  filter: drop-shadow(0 0 2em #747bff);
+}
+
+.logo.vue:hover {
+  filter: drop-shadow(0 0 2em #249b73);
+}
 
 
-  <style scoped>
-  .logo.vite:hover {
-    filter: drop-shadow(0 0 2em #747bff);
-  }
-
-  .logo.vue:hover {
-    filter: drop-shadow(0 0 2em #249b73);
-  }
-
-  
 
 #app {
   height: 100%;
 
-  background-image: v-bind(urlData);
 }
-  </style>
-  <style>
-  :root {
-    font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 400;
-      
-    color: #a87678;
-    background-color: #3d2222;/*#422828;*/
+</style>
+<style>
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+    
+  color: #a87678;
+  background-color: #3d2222;/*#422828;*/
 
 
 
 
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-text-size-adjust: 100%;
-  }
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
 input[type="file"] {
     display: none;
 }
@@ -582,201 +543,201 @@ input[type="file"] {
   color: white;
   background-color:#a87678;
 }
-  .container {
-    margin: 0;
-    height: 100%;
-    /*padding-top: 10vh;*/
-    /*display: flex;
-    --flex-direction: column;*/
-    justify-content: center;
+.container {
+  margin: 0;
+  height: 100%;
+  /*padding-top: 10vh;*/
+  /*display: flex;
+  --flex-direction: column;*/
+  justify-content: center;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: 0.75s;
+}
+
+.csv {  
+  background-color:#141414;
+  color: #a87678;
+}
+.csv::placeholder {
+  color: #a87678;
+}
+.csv:hover {
+  border-color: #a87678;
+}
+
+.csvb {
+height: 40px; text-align:center; background-color:#141414;
+}
+.csvb:hover {
+  border-color: #a87678;
+}
+
+
+.user-icon {
+  border-radius: 40px 40px 40px 40px;
+  margin-top: 10px;
+}
+
+.cui {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  border-radius: 40px 40px 40px 40px;
+  border: 2px solid transparent;
+transition: 0.2s;
+}
+
+.logo.tauri:hover {
+  filter: drop-shadow(0 0 2em #24c8db);
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 5px;
+  right: 0.5vw;
+  left: 260px;
+  width: calc(100vw - 267px);
+  z-index: 9999;
+}
+
+.channel_button {
+  background-color: #1a1717;
+}
+
+.column {
+    transition: 0.2s; 
+    background-color: #141414;
+    position: absolute;
+    top: 75px;
+    left: 5px;
+    height: calc(100vh - 155px);
+    width: 60px;
+    z-index: 9999;
+    border-radius: 40px 40px 40px 40px;
+    border: 2px solid transparent;
+}
+.createSButton {
+    transition: 0.2s; 
+    background-color: #141414;
+    position: absolute;
+    top:calc(100vh - 70px);
+    left: 5px;
+    height: 60px;
+    width: 60px;
+    z-index: 9999;
+    border-radius: 60px 60px 60px 60px;
+    border: 2px solid transparent;
+    text-align: center;
+  }
+  .login {
+    
+    background-color: #141414;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: calc(50vh - 200px);
+    left: calc(50vw - 150px);
+    height: calc(100vh - 155px);
+    width: 300px;
+    height: 400px;
+    z-index: 9999;
     text-align: center;
   }
 
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: 0.75s;
+  .loginError {
+    
+    background-color: #141414;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: calc(50vh - 250px);
+    left: calc(50vw - 150px);
+    width: 300px;
+    height: 50px;
+    z-index: 9999;
+    color: red;
+    text-align: center;
   }
 
-  .csv {  
-    background-color:#141414;
-    color: #a87678;
-  }
-  .csv::placeholder {
-    color: #a87678;
-  }
-  .csv:hover {
-    border-color: #a87678;
-  }
-
-  .csvb {
-height: 40px; text-align:center; background-color:#141414;
-  }
-  .csvb:hover {
-    border-color: #a87678;
-  }
-
-
-  .user-icon {
-    border-radius: 40px 40px 40px 40px;
-    margin-top: 10px;
-  }
-
-  .cui {
+  .server-users {
+    transition: 0.2s;
+    background-color: #141414;
     position: absolute;
     top: 5px;
-    left: 5px;
+    right: 5px;
+    height: calc(100vh - 60px);
+    width: 60px;
     border-radius: 40px 40px 40px 40px;
     border: 2px solid transparent;
-  transition: 0.2s;
   }
 
-  .logo.tauri:hover {
-    filter: drop-shadow(0 0 2em #24c8db);
-  }
+  .chanels {
 
-  .row {
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    bottom: 5px;
-    right: 0.5vw;
-    left: 260px;
-    width: calc(100vw - 267px);
-    z-index: 9999;
-  }
-
-  .channel_button {
     background-color: #1a1717;
-  }
-
-  .column {
-      transition: 0.2s; 
-      background-color: #141414;
-      position: absolute;
-      top: 75px;
-      left: 5px;
-      height: calc(100vh - 155px);
-      width: 60px;
-      z-index: 9999;
-      border-radius: 40px 40px 40px 40px;
-      border: 2px solid transparent;
-    }
-.createSButton {
-      transition: 0.2s; 
-      background-color: #141414;
-      position: absolute;
-      top:calc(100vh - 70px);
-      left: 5px;
-      height: 60px;
-      width: 60px;
-      z-index: 9999;
-      border-radius: 60px 60px 60px 60px;
-      border: 2px solid transparent;
-      text-align: center;
-    }
-    .login {
-      
-      background-color: #141414;
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      top: calc(50vh - 200px);
-      left: calc(50vw - 150px);
-      height: calc(100vh - 155px);
-      width: 300px;
-      height: 400px;
-      z-index: 9999;
-      text-align: center;
-    }
-
-    .loginError {
-      
-      background-color: #141414;
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      top: calc(50vh - 250px);
-      left: calc(50vw - 150px);
-      width: 300px;
-      height: 50px;
-      z-index: 9999;
-      color: red;
-      text-align: center;
-    }
-
-    .server-users {
-      transition: 0.2s;
-      background-color: #141414;
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      height: calc(100vh - 60px);
-      width: 60px;
-      border-radius: 40px 40px 40px 40px;
-      border: 2px solid transparent;
-    }
-
-    .chanels {
-
-      background-color: #1a1717;
-      position: absolute;
-      top: 5px;
-      left: 73px;
-      height: calc(100vh - 15px);
-      width: 180px;
-      border: 2px  solid transparent;
-      display: flex;
-      z-index: 9999;
-      flex-direction: column;
-      overflow-y: scroll;
-    }
-
-
-    .message {
-      text-align: left;
-      padding-left: 10px;
-    }
-
-    .comp-mess {
-      text-align: left;
-      padding-left: 10px;
-      display: flex;
-    }
-
-
-    .user {
-      display:flex;
-    }
-    .mdate {
-      color: transparent;
-  }
-  .comp-mess:hover  .mdate  {
-    color: #a87678;
-  }
-  #chat {
-    display: flex;
-    flex-direction: column-reverse;
     position: absolute;
-    left: 260px;
-    width: calc(100vw - 332px);
-    top: 68px;
-    height: calc(100vh - 120px);
+    top: 5px;
+    left: 73px;
+    height: calc(100vh - 15px);
+    width: 180px;
+    border: 2px  solid transparent;
+    display: flex;
+    z-index: 9999;
+    flex-direction: column;
     overflow-y: scroll;
   }
 
-  #channel-header {
-    justify-content: center;
+
+  .message {
     text-align: left;
-    position: absolute;
-    top: 5px;
-    border-bottom: 2px solid #141414;
-    width: calc(100vw - 332px);
-    height: 63px;
-    left: 260px;
-    background-color: #1a1717;
-    box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.2);
+    padding-left: 10px;
+  }
+
+  .comp-mess {
+    text-align: left;
+    padding-left: 10px;
+    display: flex;
+  }
+
+
+  .user {
+    display:flex;
+  }
+  .mdate {
+    color: transparent;
+}
+.comp-mess:hover  .mdate  {
+  color: #a87678;
+}
+#chat {
+  display: flex;
+  flex-direction: column-reverse;
+  position: absolute;
+  left: 260px;
+  width: calc(100vw - 332px);
+  top: 68px;
+  height: calc(100vh - 120px);
+  overflow-y: scroll;
+}
+
+#channel-header {
+  justify-content: center;
+  text-align: left;
+  position: absolute;
+  top: 5px;
+  border-bottom: 2px solid #141414;
+  width: calc(100vw - 332px);
+  height: 63px;
+  left: 260px;
+  background-color: #1a1717;
+  box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.2);
 }
 
 ::-webkit-scrollbar {
@@ -904,7 +865,6 @@ button {
 #app {
   height: 100%;
 
-  background-image: v-bind(urlData);
 }
 
 #greet-input {
