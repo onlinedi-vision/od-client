@@ -24,6 +24,15 @@ Then, install the node dependencies:
 ```sh
 $ npm i
 ```
+Before running the app you will need to create the credentials file on your computer. On windows you have to create this file (it can be empty):
+```
+%AppData%\Roaming\OnlineDivision\credentials.json
+```
+On Unix systems it must be created (it can also be empty) at:
+```
+~/.division-online/credentials.json
+```
+
 After that, building the app is just as simple as running:
 ```sh 
 $ npm run tauri build
