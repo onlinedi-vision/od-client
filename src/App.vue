@@ -427,7 +427,7 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
              <template v-if="info[info.findIndex(obj => obj.sid == sid)].divs !== undefined">
               <template v-for="(div, index) in info[info.findIndex(obj => obj.sid == sid)].divs" :key="index">
                 <template v-if="div['channelTag'] === textChannel">     
-                  <button @click="change_channel(div['channelTag'])" class="channel_button" style="background-color: #efa7aa"># {{div['channelTag']}}</button>
+                  <button @click="change_channel(div['channelTag'])" class="channel_button" style="background-color: #676767"># {{div['channelTag']}}</button>
                 </template>
                 <template v-else>
                   <button @click="change_channel(div['channelTag'])" class="channel_button"># {{div['channelTag']}}</button>
@@ -546,7 +546,7 @@ this.info[this.info.findIndex(obj => obj.sid == msid)].divs[this.info[this.info.
     font-weight: 400;
       
     color: #efa7aa;
-    background-color: #3d2222;/*#422828;*/
+    background-color: #3d6767;/*#672828;*/
 
 
 
@@ -637,7 +637,7 @@ height: 40px; text-align:center; background-color:#1c0606;
 
   .column {
       transition: 0.2s; 
-      background-color: #1c0606;
+      background-color: #9E412F;
       position: absolute;
       top: 75px;
       left: 5px;
@@ -773,7 +773,7 @@ body {
 }
 
 button {
- background-color: #331515;
+ background-color: #3676767;
  color: #efa7aa;
  outline: none;
  border: 0px;
