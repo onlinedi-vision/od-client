@@ -31,6 +31,21 @@ export default {
 		logInSelected: {
 			type: Boolean,
 			required: true
+		},
+		lError: {
+			type: Boolean,
+			required: false
+		},
+		lErrorText: {
+			type: String,
+			required: false
+		}
+	},
+	data(){
+		return{
+		  lusername: "",
+          password: "",
+          lemail: ""
 		}
 	}
 }

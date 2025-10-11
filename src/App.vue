@@ -100,7 +100,7 @@
       </div>
   </main>
     <main v-else-if="!loggedin">
-      <LogInWindow :logInSelected='logInSelected' @changeLogIn='changeLogIn' @login='logIn' @signup='signUp' />
+      <LogInWindow :logInSelected='logInSelected' :lError='lError' :lErrorText='lErrorText' @changeLogIn='changeLogIn' @login='logIn' @signup='signUp' />
     </main>
     
 </template>
