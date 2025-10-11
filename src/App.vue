@@ -14,19 +14,19 @@
     <button class="createSButton" @click="createServer()"><h2 style="margin-top: 12px">+</h2></button>
     <div  class = "column">  
       <template v-for="(sv, idx) in uservers">
-        <img @click="change_server(sv['sid'])" v-bind:src="sv['img_url']" width='50px' height='50px' class='user-icon' style='margin-top: 0px;margin-top:10px;'/>
+        <img @click="change_server(sv['serverID'])" v-bind:src="sv['img_url']" width='50px' height='50px' class='user-icon' style='margin-top: 0px;margin-top:10px;'/>
       </template>
     </div>
       
     <div v-if="showSIDvar" class="login" style="display:flex;flex-direction:row; left:100px; top:50px; height:30px; width:660px; z-index:999999;">
-      <i style="font-size: 12px"> {{sid}} </i>
+      <i style="font-size: 12px"> {{serverID}} </i>
     </div>
        <div class = "chanels">
-         <div class ="server-header" @click="showSID()" style="border-bottom: 2px solid #141414; height: 60px;"> <h3 style="margin-bottom: 0px;margin-top:5px"> {{uservers[uservers.findIndex(obj => obj.sid == sid)].name}} </h3> 
+         <div class ="server-header" @click="showSID()" style="border-bottom: 2px solid #141414; height: 60px;"> <h3 style="margin-bottom: 0px;margin-top:5px"> {{uservers[uservers.findIndex(obj => obj.serverID == serverID)].name}} </h3> 
          </div>
            <template v-if="done">
-             <template v-if="info[info.findIndex(obj => obj.sid == sid)].divs !== undefined">
-              <template v-for="(div, index) in info[info.findIndex(obj => obj.sid == sid)].divs" :key="index">
+             <template v-if="appState[appState.findIndex(obj => obj.serverID == serverID)].storedChannels !== undefined">
+              <template v-for="(div, index) in appState[appState.findIndex(obj => obj.serverID == serverID)].storedChannels" :key="index">
                 <template v-if="div['channelTag'] === textChannel">     
                   <button @click="change_channel(div['channelTag'])" class="channel_button" style="background-color: #a87678; color: white"># {{div['channelTag']}}</button>
                 </template>
@@ -36,7 +36,7 @@
               </template>
             </template>
            </template>
-        <button @click="create_channel(sid)" class="channel_button" style=" position: relative; text-align: center; padding-left: 0px; padding-right: 0px;"><b>+</b></button>
+        <button @click="create_channel(serverID)" class="channel_button" style=" position: relative; text-align: center; padding-left: 0px; padding-right: 0px;"><b>+</b></button>
 
       </div>
       <div v-if="createChannelPopUp" class="login" style="display:flex;flex-direction:row; left:200px; top:100px; height:50px; width:280px">
@@ -55,14 +55,14 @@
         <button class="csvb" @click="createSeverForReal()">Create Server</button>
       
         <h3 style="padding-top:30px" >Join Server</h3>
-        <input class="csv" v-model="joinsid" placeholder="Server ID..."/>
+        <input class="csv" v-model="joinserverID" placeholder="Server ID..."/>
         <button class="csvb" @click="joinServer()">Join Server</button>
       </div>
 
 
       <div id="chat">
         <template v-if="done">
-          <template v-for="(div, index) in info[info.findIndex(obj => obj.sid == sid)].divs[info[info.findIndex(obj => obj.sid == sid)].divs.findIndex(obj => obj.channelTag==textChannel)]['messages']" :key="div">
+          <template v-for="(div, index) in appState[appState.findIndex(obj => obj.serverID == serverID)].storedChannels[appState[appState.findIndex(obj => obj.serverID == serverID)].storedChannels.findIndex(obj => obj.channelTag==textChannel)]['messages']" :key="div">
             <div class="comp-mess">
               <img v-if="svusers[svusers.findIndex(obj => obj.username==div['username'])] !== undefined" v-bind:src="svusers[svusers.findIndex(obj => obj.username==div['username'])]['img']" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
               <img v-else src="https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>

@@ -29,15 +29,15 @@ export default {
             invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': this.token }) });
 
             for(let i = 0; i < servers['s_list'].length; i++) {
-              invoke('getServerInfo', {sid: servers['s_list'][i]})
+              invoke('getServerInfo', {serverID: servers['s_list'][i]})
                 .then((si) => {
-                  let sinfo = JSON.parse(si);
-                  this.uservers.push({'sid': servers['s_list'][i], 'name': sinfo['name'], 'desc': sinfo['desc'], 'img_url': sinfo['img_url']});
+                  let serverInfo = JSON.parse(si);
+                  this.userServers.push({'serverID': servers['s_list'][i], 'name': serverInfo['name'], 'desc': serverInfo['desc'], 'img_url': serverInfo['img_url']});
                 })
                 .catch((err) => {
                   console.log(err);
                 })
-              this.info.push({'sid': servers['s_list'][i], 'divs':[]});
+              this.appState.push({'serverID': servers['s_list'][i], 'storedChannels':[]});
               invoke('getChannels', {host_url: 'https://onlinedi.vision/servers', token: token, server: servers['s_list'][i], username: this.username})
               .then((res) => {
                 let channels = JSON.parse(res)['c_list'];
@@ -45,8 +45,8 @@ export default {
                   invoke('getMessages', {host_url: 'https://onlinedi.vision/servers', token: token, server:servers['s_list'][i], channel:channels[j]['channel_name'], username: this.username})
                     .then((res) => {
                       
-                      this.info[this.info.findIndex(obj => obj.sid == servers['s_list'][i])].divs.push({'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)});
-                      this.divs.push({'sid':servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)})
+                      this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].storedChannels.push({'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)});
+                      this.storedChannels.push({'serverID':servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)})
                       })
                       .catch((err) => {
                         console.log('err');
@@ -81,20 +81,20 @@ export default {
           lemail: "",
           done:false,
           token:token,
-          sid: "1",
+          serverID: "1",
           server:true,
           lError: false,
           lErrorText: "",
           createChannelPopUp: false,
-          uservers:[{
-            'sid':'1',
+          userServers:[{
+            'serverID':'1',
             'name':'Welcome',
             'img_url': 'https://onlinedi.vision/cdn/test/stest.jpeg',
             'desc':'Welcome!'
           }],
-          info: [{
-            'sid':'1',
-            'divs':[{
+          appState: [{
+            'serverID':'1',
+            'storedChannels':[{
               'channelTag':'welcome',
               'messages': [{
                 'username':'System',
@@ -109,8 +109,8 @@ export default {
             ]
           }],
           username: 'noone',
-          divs: [ {
-              'sid':'1313',
+          storedChannels: [ {
+              'serverID':'1313',
               'channelTag':'info',
             }
           ],
@@ -125,7 +125,7 @@ export default {
           newSvName: '',
           newShDesc: '',
           newImgUrl: '',
-          joinsid: '',
+          joinserverID: '',
           showSIDvar: false
     };
   },
@@ -150,15 +150,15 @@ export default {
              console.log(to_append);
             message += to_append;
              
-            if(this.sid=== '1') {message=''; this.name;}
+            if(this.serverID=== '1') {message=''; this.name;}
             if(message==='')return;
             let sname = this.name;
             this.name = '...';
-            invoke('sendMessage', {host_url: 'https://onlinedi.vision/servers', token:this.token, channel: this.textChannel, server: this.sid,  m_content: message, username:this.username }).then((res) => {
+            invoke('sendMessage', {host_url: 'https://onlinedi.vision/servers', token:this.token, channel: this.textChannel, server: this.serverID,  m_content: message, username:this.username }).then((res) => {
               console.log('taaa');
               this.name='';
             }).catch((err) =>{
-            this.divs[this.divs.findIndex(obj => obj.channelTag===this.textChannel)]['messages'].unshift({"username":this.username, "m_content":err});
+            this.storedChannels[this.storedChannels.findIndex(obj => obj.channelTag===this.textChannel)]['messages'].unshift({"username":this.username, "m_content":err});
             });
             this.name='';
           });
@@ -170,15 +170,15 @@ export default {
       }
 
       
-      if(this.sid=== '1') {message=''; this.name;}
+      if(this.serverID=== '1') {message=''; this.name;}
       if(message==='')return;
       let sname = this.name;
       this.name = '...';
-      invoke('sendMessage', {host_url: 'https://onlinedi.vision/servers', token:this.token, channel: this.textChannel, server: this.sid,  m_content: message, username:this.username }).then((res) => {
+      invoke('sendMessage', {host_url: 'https://onlinedi.vision/servers', token:this.token, channel: this.textChannel, server: this.serverID,  m_content: message, username:this.username }).then((res) => {
         console.log('taaa');
         this.name='';
       }).catch((err) =>{
-      this.divs[this.divs.findIndex(obj => obj.channelTag===this.textChannel)]['messages'].unshift({"username":this.username, "m_content":err});
+      this.storedChannels[this.storedChannels.findIndex(obj => obj.channelTag===this.textChannel)]['messages'].unshift({"username":this.username, "m_content":err});
       });
       this.name='';
     },
@@ -193,15 +193,15 @@ export default {
               .catch((err) => console.log(err));
 
             for(let i = 0; i < servers['s_list'].length; i++) {
-              invoke('getServerInfo', {sid: servers['s_list'][i]})
+              invoke('getServerInfo', {serverID: servers['s_list'][i]})
                 .then((si) => {
                   let sinfo = JSON.parse(si);
-                  this.uservers.push({'sid': servers['s_list'][i], 'name': sinfo['name'], 'desc': sinfo['desc'], 'img_url': sinfo['img_url']});
+                  this.userServers.push({'serverID': servers['s_list'][i], 'name': sinfo['name'], 'desc': sinfo['desc'], 'img_url': sinfo['img_url']});
                 })
                 .catch((err) => {
                   console.log(err);
                 })
-              this.info.push({'sid': servers['s_list'][i], 'divs':[]});
+              this.appState.push({'serverID': servers['s_list'][i], 'storedChannels':[]});
               invoke('getChannels', {host_url: 'https://onlinedi.vision/servers', token: this.token, server: servers['s_list'][i], username: this.username})
               .then((res) => {
                 let channels = JSON.parse(res)['c_list'];
@@ -209,8 +209,8 @@ export default {
                   invoke('getMessages', {host_url: 'https://onlinedi.vision/servers', token: this.token, server:servers['s_list'][i], channel:channels[j]['channel_name'], username: this.username})
                     .then((res) => {
                       
-                      this.info[this.info.findIndex(obj => obj.sid == servers['s_list'][i])].divs.push({'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)});
-                      this.divs.push({'sid':servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)})
+                      this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].storedChannels.push({'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)});
+                      this.storedChannels.push({'serverID':servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)})
                       })
                       .catch((err) => {
                         console.log('err');
@@ -218,7 +218,7 @@ export default {
 
                   }
                   this.done=true;
-                  console.log(this.divs);
+                  console.log(this.storedChannels);
                 })
                 .catch((err) => {
                   console.log('err channels');
@@ -312,14 +312,14 @@ export default {
       this.createChannelPopUp=false;
     },
     change_server(sv) {
-      this.sid = sv;
-      this.textChannel = this.info[this.info.findIndex(obj => obj.sid == this.sid)].divs[0].channelTag;
+      this.serverID = sv;
+      this.textChannel = this.appState[this.appState.findIndex(obj => obj.serverID == this.serverID)].storedChannels[0].channelTag;
     },
     createChannel() {
-      invoke('createChannel', {host_url: 'https://onlinedi.vision/servers', "username": this.username, "sid": this.sid, "token": this.token, "channel_name": this.nchn})
+      invoke('createChannel', {host_url: 'https://onlinedi.vision/servers', "username": this.username, "serverID": this.serverID, "token": this.token, "channel_name": this.nchn})
         .then((res) => {
           this.token = JSON.parse(res)['token'];
-          this.info[this.info.findIndex(obj => obj.sid === this.sid)].divs.push({'channelTag': this.nchn, 'messages': []});
+          this.appState[this.appState.findIndex(obj => obj.serverID === this.serverID)].storedChannels.push({'channelTag': this.nchn, 'messages': []});
 
           invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': this.token }) })
               .then((res) => console.log(res))
@@ -347,7 +347,7 @@ export default {
       this.showSIDvar=!this.showSIDvar;
     },
     joinServer() {
-      invoke('joinServer', {host_url: 'https://onlinedi.vision/servers', "username": this.username, "token": this.token, "sid": this.joinsid})
+      invoke('joinServer', {host_url: 'https://onlinedi.vision/servers', "username": this.username, "token": this.token, "serverID": this.joinserverID})
         .then((res) => {
           this.token=JSON.parse(res)['token'];
           invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': this.token }) })
