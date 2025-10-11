@@ -100,29 +100,7 @@
       </div>
   </main>
     <main v-else-if="!loggedin">
-      <main v-if="logInSelected">
-        
-        <div v-if="lError" class="loginError"><h4>{{lErrorText}}</h4></div>
-        <div class="login">
-        <h1 style="margin-top: 100px;">Login</h1>
-        <input class="username" v-model="lusername" placeholder="Username..." />      
-        <input type="password" class="password" v-model="password" placeholder="Password..." /> 
-        <button class="loginb" type="submit" @click="logIn()">Login</button>
-        </div>
-        <button class="change-login" type="submit" @click="changeLogIn()">I don't have an account</button>
-      </main>
-      <main v-else>
-
-        <div v-if="lError" class="loginError"><h4>{{lErrorText}}</h4></div>
-        <div class="login">
-        <h1 style="margin-top: 100px;">Signup</h1>
-        <input class="e-mail" v-model="lemail" placeholder="E-mail Address..." />      
-        <input class="username" style="margin-top: 10px" v-model="lusername" placeholder="Username..." />      
-        <input type="password" class="password" v-model="password" placeholder="Password..." /> 
-        <button class="loginb" type="submit" @click="signUp()">SignUp</button>
-        </div>
-        <button class="change-login" type="submit" @click="changeLogIn()">I have an account</button>
-      </main>
+      <LogInWindow :logInSelected='logInSelected' @changeLogIn='changeLogIn' @login='logIn' @signup='signUp' />
     </main>
     
 </template>

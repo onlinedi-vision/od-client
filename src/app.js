@@ -1,7 +1,11 @@
 import { invoke } from '@tauri-apps/api/core';
 import { shallowRef, ref } from "vue"
-
+import LogInWindow from './components/login.vue'
 export default {
+  name:"App",
+  components: {
+    LogInWindow
+  },
   data() {
     let token="16ec6209e46700a7f29fea7b792b53b8f61d3705092bacf4eb853d9f497161b0";
    
@@ -232,7 +236,11 @@ export default {
 
     }
     ,
-    logIn() {
+    logIn(user, password) {
+		this.lusername = user;
+		this.password = password;
+		console.log(this.lusername);
+		console.log(this.password);
       invoke('logIn', {username: this.lusername, password: this.password})
         .then((res) => {
           console.log(res);
@@ -256,7 +264,10 @@ export default {
         })
         .catch((err) => console.log(err));
     },
-    signUp() {
+    signUp(user, password, email) {
+		this.lusername = user;
+		this.password = password;
+		this.lemail = email;
       if(this.password.length < 8) {
             this.lError = true;
             this.lErrorText = "Password is too short";
