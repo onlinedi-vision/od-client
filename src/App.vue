@@ -100,7 +100,7 @@
       </div>
   </main>
     <main v-else-if="!loggedin">
-      <main v-if="pli">
+      <main v-if="logInSelected">
         
         <div v-if="lError" class="loginError"><h4>{{lErrorText}}</h4></div>
         <div class="login">

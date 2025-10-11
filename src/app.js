@@ -74,7 +74,7 @@ export default {
     
 
         return {
-          pli: true,
+          logInSelected: true,
           loggedin: true,
           lusername: "",
           password: "",
@@ -283,7 +283,7 @@ export default {
         .catch((err) => console.log(err));
     },
     changeLogIn() {
-      this.pli = !this.pli;
+      this.logInSelected = !this.logInSelected;
     },
     get_messages(channel, server, token) {
       invoke('getMessages', {host_url: 'https://onlinedi.vision/servers', token: token, server:server, channel:channel})
