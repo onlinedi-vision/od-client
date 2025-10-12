@@ -61,11 +61,11 @@
 
 
       <div id="chat">
-        <template v-if="done">
+        <template v-if="appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers !== undefined">
           <template v-for="(div, index) in appState[appState.findIndex(obj => obj.serverID == serverID)].storedChannels[appState[appState.findIndex(obj => obj.serverID == serverID)].storedChannels.findIndex(obj => obj.channelTag==textChannel)]['messages']" :key="div">
             <div class="comp-mess">
-              <img v-if="svusers[svusers.findIndex(obj => obj.username==div['username'])] !== undefined" v-bind:src="svusers[svusers.findIndex(obj => obj.username==div['username'])]['img']" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
-              <img v-else src="https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
+              <img v-if="appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers[appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers.findIndex(obj => obj.username==div['username'])] !== undefined" v-bind:src="appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers[appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers.findIndex(obj => obj.username==div['username'])]['img_url']" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
+              <img v-else v-bind:src="'a'" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
               <div class="message">
             
                 <div class="user" style="padding-top:6px;">
@@ -94,8 +94,9 @@
       </div>
 
       <div class = "server-users">
-        <template v-for="(svuser,index) in svusers" :key="index">
-            <img v-bind:src="svuser['img']" width='50px' class="user-icon"/>
+        <template v-for="(svuser,index) in appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers" :key="index">
+            <img v-if="svuser['img_url'] != ''" v-bind:src="svuser['img_url']" width='50px' class="user-icon"/>
+            <img v-else v-bind:src="'a'" width='50px' class="user-icon"/>
         </template>
       </div>
   </main>
@@ -114,12 +115,11 @@
   filter: drop-shadow(0 0 2em #249b73);
 }
 
-
-
 #app {
   height: 100%;
 
 }
 </style>
+
 <style src="./style.css"/>
 

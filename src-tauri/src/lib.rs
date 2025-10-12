@@ -47,11 +47,41 @@ async fn getMessages(
     let mut map = std::collections::HashMap::new();
     map.insert("token", token.clone());
     map.insert("username", username.clone());
+    map.insert("limit", "100".to_string());
+    map.insert("offset", "0".to_string());
     let client = reqwest::Client::new();
     let res = client
         .post(format!(
-            "{}/{}/api/{}/get_messages",
+            "{}/{}/api/{}/get_messages_migration",
             host_url, server, channel
+        ))
+        .json(&map)
+        .send()
+        .await
+        .expect("err")
+        .text()
+        .await
+        .expect("err");
+    println!("{:?}", res);
+    res
+}
+
+
+#[tauri::command(rename_all = "snake_case")]
+async fn getServerUsers(
+    host_url: String,
+    token: String,
+    server: String,
+    username: String
+) -> String {
+    let mut map = std::collections::HashMap::new();
+    map.insert("token", token.clone());
+    map.insert("username", username.clone());
+    let client = reqwest::Client::new();
+    let res = client
+        .post(format!(
+            "{}/{}/api/get_server_users",
+            host_url, server
         ))
         .json(&map)
         .send()
@@ -235,7 +265,11 @@ async fn createChannel(
     map.insert("token", token.clone());
     let client = reqwest::Client::new();
     let res = client
-        .post(format!("{}/{}/api/create_channel", host_url, server_id.clone()))
+        .post(format!(
+            "{}/{}/api/create_channel",
+            host_url,
+            server_id.clone()
+        ))
         .json(&map)
         .send()
         .await
@@ -277,7 +311,12 @@ async fn createServer(
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn joinServer(host_url: String, username: String, token: String, server_id: String) -> String {
+async fn joinServer(
+    host_url: String,
+    username: String,
+    token: String,
+    server_id: String,
+) -> String {
     let mut map = std::collections::HashMap::new();
     map.insert("username", username.clone());
     map.insert("token", token.clone());
@@ -299,6 +338,7 @@ async fn joinServer(host_url: String, username: String, token: String, server_id
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             test,
@@ -314,7 +354,8 @@ pub fn run() {
             sendFile,
             createChannel,
             createServer,
-            joinServer
+            joinServer,
+            getServerUsers,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
