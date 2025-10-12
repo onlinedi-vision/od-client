@@ -33,7 +33,7 @@ export default {
             invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': this.token }) });
 
             for(let i = 0; i < servers['s_list'].length; i++) {
-              invoke('getServerInfo', {serverID: servers['s_list'][i]})
+              invoke('getServerInfo', {server_id: servers['s_list'][i]})
                 .then((si) => {
                   let serverInfo = JSON.parse(si);
                   this.userServers.push({'serverID': servers['s_list'][i], 'name': serverInfo['name'], 'desc': serverInfo['desc'], 'img_url': serverInfo['img_url']});
@@ -197,7 +197,7 @@ export default {
               .catch((err) => console.log(err));
 
             for(let i = 0; i < servers['s_list'].length; i++) {
-              invoke('getServerInfo', {serverID: servers['s_list'][i]})
+              invoke('getServerInfo', {server_id: servers['s_list'][i]})
                 .then((si) => {
                   let sinfo = JSON.parse(si);
                   this.userServers.push({'serverID': servers['s_list'][i], 'name': sinfo['name'], 'desc': sinfo['desc'], 'img_url': sinfo['img_url']});
@@ -327,7 +327,7 @@ export default {
       this.textChannel = this.appState[this.appState.findIndex(obj => obj.serverID == this.serverID)].storedChannels[0].channelTag;
     },
     createChannel() {
-      invoke('createChannel', {host_url: 'https://onlinedi.vision/servers', "username": this.username, "serverID": this.serverID, "token": this.token, "channel_name": this.nchn})
+      invoke('createChannel', {host_url: 'https://onlinedi.vision/servers', "username": this.username, "server_id": this.serverID, "token": this.token, "channel_name": this.nchn})
         .then((res) => {
           this.token = JSON.parse(res)['token'];
           this.appState[this.appState.findIndex(obj => obj.serverID === this.serverID)].storedChannels.push({'channelTag': this.nchn, 'messages': []});
@@ -358,7 +358,7 @@ export default {
       this.showSIDvar=!this.showSIDvar;
     },
     joinServer() {
-      invoke('joinServer', {host_url: 'https://onlinedi.vision/servers', "username": this.username, "token": this.token, "serverID": this.joinserverID})
+      invoke('joinServer', {host_url: 'https://onlinedi.vision/servers', "username": this.username, "token": this.token, "server_id": this.joinserverID})
         .then((res) => {
           this.token=JSON.parse(res)['token'];
           invoke('writeCredentials', {creds: JSON.stringify({'username': this.username, 'token': this.token }) })

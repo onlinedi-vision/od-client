@@ -85,12 +85,12 @@ async fn getServers(token: String, username: String) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn getServerInfo(sid: String) -> String {
+async fn getServerInfo(server_id: String) -> String {
     let client = reqwest::Client::new();
     let res = client
         .get(format!(
             "https://onlinedi.vision/servers/{}/api/get_server_info",
-            sid
+            server_id
         ))
         .send()
         .await
@@ -226,7 +226,7 @@ async fn createChannel(
     host_url: String,
     username: String,
     token: String,
-    sid: String,
+    server_id: String,
     channel_name: String,
 ) -> String {
     let mut map = std::collections::HashMap::new();
@@ -235,7 +235,7 @@ async fn createChannel(
     map.insert("token", token.clone());
     let client = reqwest::Client::new();
     let res = client
-        .post(format!("{}/{}/api/create_channel", host_url, sid.clone()))
+        .post(format!("{}/{}/api/create_channel", host_url, server_id.clone()))
         .json(&map)
         .send()
         .await
@@ -277,14 +277,14 @@ async fn createServer(
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn joinServer(host_url: String, username: String, token: String, sid: String) -> String {
+async fn joinServer(host_url: String, username: String, token: String, server_id: String) -> String {
     let mut map = std::collections::HashMap::new();
     map.insert("username", username.clone());
     map.insert("token", token.clone());
     println!("{:?}", map);
     let client = reqwest::Client::new();
     let res = client
-        .post(format!("{}/{}/api/join", host_url, sid.clone()))
+        .post(format!("{}/{}/api/join", host_url, server_id.clone()))
         .json(&map)
         .send()
         .await
