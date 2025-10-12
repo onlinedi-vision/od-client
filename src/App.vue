@@ -13,7 +13,7 @@
     <img src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' width='60px' height='60px' class='cui' style='margin-bottom:0px;'/>
     <button class="createSButton" @click="createServer()"><h2 style="margin-top: 12px">+</h2></button>
     <div  class = "column">  
-      <template v-for="(sv, idx) in uservers">
+      <template v-for="(sv, idx) in userServers">
         <img @click="change_server(sv['serverID'])" v-bind:src="sv['img_url']" width='50px' height='50px' class='user-icon' style='margin-top: 0px;margin-top:10px;'/>
       </template>
     </div>
@@ -22,7 +22,7 @@
       <i style="font-size: 12px"> {{serverID}} </i>
     </div>
        <div class = "chanels">
-         <div class ="server-header" @click="showSID()" style="border-bottom: 2px solid #141414; height: 60px;"> <h3 style="margin-bottom: 0px;margin-top:5px"> {{uservers[uservers.findIndex(obj => obj.serverID == serverID)].name}} </h3> 
+         <div class ="server-header" @click="showSID()" style="border-bottom: 2px solid #141414; height: 60px;"> <h3 style="margin-bottom: 0px;margin-top:5px"> {{userServers[userServers.findIndex(obj => obj.serverID == serverID)].name}} </h3> 
          </div>
            <template v-if="done">
              <template v-if="appState[appState.findIndex(obj => obj.serverID == serverID)].storedChannels !== undefined">
