@@ -1,4 +1,10 @@
 import { invoke } from '@tauri-apps/api/core';
+import {
+  isPermissionGranted,
+  requestPermission,
+  sendNotification,
+} from '@tauri-apps/plugin-notification';
+
 import { shallowRef, ref } from "vue"
 import LogInWindow from './components/login.vue'
 export default {
@@ -8,18 +14,18 @@ export default {
   },
   data() {
     let token="16ec6209e46700a7f29fea7b792b53b8f61d3705092bacf4eb853d9f497161b0";
-   
-    function compareDate(a, b) {
-      if(Number(a.datetime) < Number(b.datetime)) {
-        return 1;
-      }
-      if(Number(a.datetime) > Number(b.datetime)) {
-        return -1;
-      }
-      return 0;
 
-    }
-   
+     sendNotification({
+       title: 'Welcome to Division Online!',
+       body: "We're glad to have you!",
+       attachments: [
+        {
+          id: 'image-1',
+          url: 'asset:///app-icon.png',
+        },
+      ]
+     });
+    
      invoke('getLocalToken')
       .then((res) => {
         token = JSON.parse(res)['token'];
@@ -41,23 +47,32 @@ export default {
                 .catch((err) => {
                   console.log(err);
                 })
-              this.appState.push({'serverID': servers['s_list'][i], 'storedChannels':[]});
+              this.appState.push({'serverID': servers['s_list'][i], 'storedChannels':[], 'serverUsers': []});
               invoke('getChannels', {host_url: 'https://onlinedi.vision/servers', token: token, server: servers['s_list'][i], username: this.username})
               .then((res) => {
                 let channels = JSON.parse(res)['c_list'];
                 for(let j = 0; j<channels.length; j++) {
                   invoke('getMessages', {host_url: 'https://onlinedi.vision/servers', token: token, server:servers['s_list'][i], channel:channels[j]['channel_name'], username: this.username})
                     .then((res) => {
-                      
-                      this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].storedChannels.push({'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)});
-                      this.storedChannels.push({'serverID':servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)})
+                        this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].storedChannels.push({'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list']});
+                        this.storedChannels.push({'serverID':servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list']})
                       })
                       .catch((err) => {
-                        console.log('err');
+                        this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].storedChannels.push({'channelTag': channels[j]['channel_name'], 'messages': []});
+                        this.storedChannels.push({'serverID':servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages':[]})
                       });
 
                   }
-                  this.done=true;
+                  invoke('getServerUsers', {host_url: 'https://onlinedi.vision/servers', token: token, server: servers['s_list'][i], username: this.username})
+                  .then((res) => {
+                    let users = JSON.parse(res)['u_list'];
+                    for(let user_iter = 0; user_iter < users.length; user_iter++) {
+                      this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].serverUsers.push(users[user_iter]);
+                    }
+                    this.done=true;
+                  }).catch((err) => {
+                    console.log(err);
+                  });
                 })
                 .catch((err) => {
                   console.log('err channels');
@@ -119,7 +134,9 @@ export default {
             }
           ],
 
-          svusers: [{'img':'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif', 'username':'ana'}, {'img':'https://cdn.discordapp.com/attachments/1314144119010103319/1316541431518724096/IMG_4470.webp?ex=679f5181&is=679e0001&hm=b712b31c07433ade4cda2adb16863993be1c6421b16b24606b57e8267d3a239d&', 'username':'System'}, {'img': 'https://cdn.discordapp.com/attachments/556118918217859083/1335293396688048320/iu.png?ex=679fa462&is=679e52e2&hm=eb4e496a43cf6e52aad8833e027115767b84d9ec96b3eb9b755e7f3597e3f601&', 'username':'alesx'}],
+          svusers: [
+            {'img':'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif', 'username':'ana'}
+          ],
           name: '',
           textChannel: 'welcome',
           username: 'ana',
@@ -151,8 +168,8 @@ export default {
         }).then(response => {
           response.text().then(mess => {
             const to_append =  "https://onlinedi.vision:7377" + mess.split(/\r?\n/).pop();
-             console.log(to_append);
             message += to_append;
+            console.log(message);
              
             if(this.serverID=== '1') {message=''; this.name;}
             if(message==='')return;
@@ -165,6 +182,7 @@ export default {
             this.storedChannels[this.storedChannels.findIndex(obj => obj.channelTag===this.textChannel)]['messages'].unshift({"username":this.username, "m_content":err});
             });
             this.name='';
+           
           });
         })
         .catch(error => {
@@ -181,6 +199,16 @@ export default {
       invoke('sendMessage', {host_url: 'https://onlinedi.vision/servers', token:this.token, channel: this.textChannel, server: this.serverID,  m_content: message, username:this.username }).then((res) => {
         console.log('taaa');
         this.name='';
+        sendNotification({
+           title:this.username +" #"+this.textChannel ,
+           body: message,
+           attachments: [
+            {
+              id: 'image-1',
+              url: 'asset:///app-icon.png',
+            },
+          ]
+         });        
       }).catch((err) =>{
       this.storedChannels[this.storedChannels.findIndex(obj => obj.channelTag===this.textChannel)]['messages'].unshift({"username":this.username, "m_content":err});
       });
@@ -213,8 +241,8 @@ export default {
                   invoke('getMessages', {host_url: 'https://onlinedi.vision/servers', token: this.token, server:servers['s_list'][i], channel:channels[j]['channel_name'], username: this.username})
                     .then((res) => {
                       
-                      this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].storedChannels.push({'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)});
-                      this.storedChannels.push({'serverID':servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'].sort(compareDate)})
+                      this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].storedChannels.push({'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list']});
+                      this.storedChannels.push({'serverID':servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list']})
                       })
                       .catch((err) => {
                         console.log('err');
