@@ -214,6 +214,31 @@ transition: 0.2s;
   overflow-y: scroll;
 }
 
+#chat .message img{
+  max-width:480px;
+  border-radius: 8px;
+  width: auto;
+  height: auto;
+}
+
+#chat .message video{
+  max-width:480px;
+  border-radius: 8px;
+  width: auto;
+  height: auto;
+}
+
+.file-preview{
+  position:absolute; 
+  z-index:10000; 
+  left: 12px; 
+  bottom: 56px; 
+  max-width: 320px; 
+  background:#1a1717; 
+  padding:8px; 
+  border-radius:8px;
+}
+
 #channel-header {
   justify-content: center;
   text-align: left;
