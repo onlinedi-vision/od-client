@@ -1,4 +1,3 @@
-<script src="./app.js"/>
 <template >
   <main class="container" v-if="done && loggedin">
 
@@ -59,35 +58,12 @@
         <button class="csvb" @click="joinServer()">Join Server</button>
       </div>
 
-
-      <div id="chat">
-        <template v-if="appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers !== undefined">
-          <template v-for="(div, index) in appState[appState.findIndex(obj => obj.serverID == serverID)].storedChannels[appState[appState.findIndex(obj => obj.serverID == serverID)].storedChannels.findIndex(obj => obj.channelTag==textChannel)]['messages']" :key="div">
-            <div class="comp-mess">
-              <img v-if="appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers[appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers.findIndex(obj => obj.username==div['username'])] !== undefined" v-bind:src="appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers[appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers.findIndex(obj => obj.username==div['username'])]['img_url']" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
-              <img v-else v-bind:src="'a'" width='40px' height='40px' class='user-icon' style='margin-top: 10px;margin-bottom:10px;'/>
-              <div class="message">
-            
-                <div class="user" style="padding-top:6px;">
-                  <div ><i>{{div['username']}}</i></div>
-                  <div class="mdate" style="font-size:12px;padding-left:5px;padding-top:1px;"><i>{{get_date(Number(div['datetime']))}}</i></div>
-                </div>
-                <div v-if="div['m_content'].startsWith('https:') && ['.jpg','.png','.jpeg','.gif'].some(char => div['m_content'].endsWith(char))">
-                  <img v-bind:src="div['m_content']">
-                </div>
-                <div v-else-if="div['m_content'].startsWith('https:') && ['.ogg','.mp4'].some(char => div['m_content'].endsWith(char))">
-                  <video v-bind:src="div['m_content']" type="video/ogg" controls>
-                  </video>
-                </div>
-                <div style="font-size: 17px;" v-else>
-                  {{div['m_content']}}
-                </div>
-              </div>
-            </div>
-          </template>
-        </template
-      </div>
-    </div>
+      <ChatWindow
+        :appState="appState"
+        :serverID="serverID"
+        :textChannel="textChannel"
+        :get_date="get_date"
+      />
 
       <div id="channel-header">
         <h3>{{this.textChannel}}</h3>
@@ -106,6 +82,21 @@
     
 </template>
 
+<script>
+import app from "./app.js"
+import ChatWindow from "./components/ChatWindow.vue"
+import LogInWindow from "./components/login.vue"
+
+export default {
+  ...app,
+  name: "App",
+  components: {
+    LogInWindow,
+    ChatWindow
+  }
+}
+</script>
+
 <style scoped>
 .logo.vite:hover {
   filter: drop-shadow(0 0 2em #747bff);
@@ -122,4 +113,3 @@
 </style>
 
 <style src="./style.css"/>
-
