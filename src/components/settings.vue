@@ -15,7 +15,7 @@
 <h2>{{userName}}</h2><button class="menu-button">Change</button>
 </div>
 </div>
-<div style="flex:2; background-color: #282424; border: solid 2px #141414s;">
+<div style="flex:2; background-color: #282424; border: solid 2px #141414;">
 </div>
 </div>
 <button @click="$emit('logOut')" class="logout">Log out</button>
