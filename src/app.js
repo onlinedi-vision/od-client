@@ -414,11 +414,12 @@ export default {
         })
     },
 	logOut() {
-		console.log("placeholder")
-		token='';
-		username='';
-		loggedin=false;
-		//location.reload();
+		this.loggedin=false;
+		this.token='';
+		this.username='';
+		invoke('writeCredentials', {creds: ''}).catch((err) => {
+			console.log(err);
+		});
 	},
     onFileChange(e) {
       const files = e?.target?.files || [];
