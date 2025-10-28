@@ -444,6 +444,64 @@ button {
   text-align: center;
 }
 
+.settings-background {
+  background-color: rgba( 0, 0, 0, 0.6 );
+  position: absolute;
+  top:0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10001;
+  backdrop-filter: blur(4px) saturate(120%);
+}
+
+.settings {
+	background-color: #312424;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 10%;
+    left: 10%;
+    height: 80%;
+    width: 80%;
+    z-index: 10010;
+    text-align: left;
+	color: #a87678;
+	padding: 5px 8px 8px 15px;
+	border-radius:10px;
+}
+
+.settings-titlebar {
+	justify-content: space-between;
+    align-items: center;
+	display: flex;
+	width: 77%;
+	position: fixed;  
+}
+
+.closebutton {
+    transition: 0.2s; 
+    background-color: #141414;
+    height: 30px;
+    width: 30px;
+	padding-left: 5px;
+    border-radius: 30px 30px 30px 30px;
+    border: 2px solid transparent;
+    text-align: center;
+}
+.logout {
+	transition: 0.2s; 
+    background-color: #141414;
+    height: 30px;
+    width: 70px;
+	padding-left: 5px;
+    border-radius: 30px 30px 30px 30px;
+    border: 2px solid transparent;
+    text-align: center;
+	position:absolute;
+	bottom: 5%;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;

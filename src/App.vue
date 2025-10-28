@@ -27,7 +27,7 @@
       <input id="greet-input" v-model="name" placeholder="Type a message..." />
       <button id="send" type="submit" @click="send_message(name)">Send</button>
     </form>
-    <img src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' width='60px' height='60px' class='cui'
+    <img @click="openSettings()" src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' width='60px' height='60px' class='cui'
       style='margin-bottom:0px;' />
     <button class="createSButton" @click="createServer()">
       <h2 style="margin-top: 12px">+</h2>
@@ -138,6 +138,8 @@
         <img v-else v-bind:src="'a'" width='50px' class="user-icon" />
       </template>
     </div>
+	<div @click="closeSettings()" class="settings-background" v-if="settingsOpen" />
+	<SettingsWindow :userName="username" v-if="settingsOpen" @closeSettings="closeSettings" @logOut="logOut"/>
   </main>
   <main v-else-if="!loggedin">
     <LogInWindow :logInSelected='logInSelected' :lError='lError' :lErrorText='lErrorText' @changeLogIn='changeLogIn'

@@ -7,10 +7,12 @@ import {
 
 import { shallowRef, ref } from "vue"
 import LogInWindow from './components/login.vue'
+import SettingsWindow from './components/settings.vue'
 export default {
   name: "App",
   components: {
-    LogInWindow
+    LogInWindow,
+	SettingsWindow
   },
   data() {
     let token = "16ec6209e46700a7f29fea7b792b53b8f61d3705092bacf4eb853d9f497161b0";
@@ -149,7 +151,8 @@ export default {
       joinserverID: '',
       showSIDvar: false,
       selectedFile: null,
-      selectedFileUrl: ''
+      selectedFileUrl: '',
+	  settingsOpen: false
     };
   },
   methods: {
@@ -329,6 +332,12 @@ export default {
     changeLogIn() {
       this.logInSelected = !this.logInSelected;
     },
+	openSettings() {
+	  this.settingsOpen = true;
+	},
+	closeSettings() {
+	  this.settingsOpen = false;
+	},
     get_messages(channel, server, token) {
       invoke('getMessages', { host_url: 'https://onlinedi.vision/servers', token: token, server: server, channel: channel })
         .then((res) => {
@@ -404,6 +413,13 @@ export default {
           console.log(err);
         })
     },
+	logOut() {
+		console.log("placeholder")
+		token='';
+		username='';
+		loggedin=false;
+		//location.reload();
+	},
     onFileChange(e) {
       const files = e?.target?.files || [];
       if (this.selectedFileUrl) {
