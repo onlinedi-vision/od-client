@@ -10,10 +10,6 @@ import LogInWindow from './components/login.vue'
 import SettingsWindow from './components/settings.vue'
 export default {
   name: "App",
-  components: {
-    LogInWindow,
-	SettingsWindow
-  },
   data() {
     let token = "16ec6209e46700a7f29fea7b792b53b8f61d3705092bacf4eb853d9f497161b0";
 
@@ -420,6 +416,7 @@ export default {
 		invoke('writeCredentials', {creds: ''}).catch((err) => {
 			console.log(err);
 		});
+		this.closeSettings();
 	},
     onFileChange(e) {
       const files = e?.target?.files || [];

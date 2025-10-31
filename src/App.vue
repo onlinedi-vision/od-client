@@ -82,20 +82,22 @@
     <main v-else-if="!loggedin">
       <LogInWindow :logInSelected='logInSelected' :lError='lError' :lErrorText='lErrorText' @changeLogIn='changeLogIn' @login='logIn' @signup='signUp' />
     </main>
-    
+	<div @click="closeSettings()" class="settings-background" v-if="settingsOpen" />
+	<SettingsWindow :userName="username" v-if="settingsOpen" @closeSettings="closeSettings" @logOut="logOut"/>
 </template>
 
 <script>
 import app from "./app.js"
 import ChatWindow from "./components/ChatWindow.vue"
 import LogInWindow from "./components/login.vue"
-
+import SettingsWindow from './components/settings.vue'
 export default {
   ...app,
   name: "App",
   components: {
     LogInWindow,
-    ChatWindow
+    ChatWindow,
+	SettingsWindow
   }
 }
 </script>
