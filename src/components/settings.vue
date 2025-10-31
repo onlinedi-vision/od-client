@@ -7,8 +7,13 @@
 <div class="settings-container">
 <div style="flex:1">
 <div class="image-wrapper">
-<div class="image-container"><img src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' class='large-icon' />
-<button class="edit-pfp">Edit</button>
+<div class="image-container"><img v-bind:src='profilePic' class='large-icon' />
+<button @click="openChangePfp()" class="edit-pfp">Edit</button>
+<div v-if="pfpDialog" class="login" style="display:flex;flex-direction:row; left:200px; top:100px; height:50px; width:280px">
+        <input id="greet-input" v-model="newUrl" style="width:200px" placeholder="profile pic URL"/>
+        <button id="send" type="submit" style="width:80px" @click="setPfp()">Set</button>
+		<button id="send" style="width:80px" @click="closeChangePfp()">Cancel</button>
+</div>
 </div>
 </div>
 <div class="name-change">
@@ -29,10 +34,30 @@ export default {
 		userName: {
 			type: String,
 			required: true
+		},
+		profilePic: {
+			type: String,
+			required: true
 		}
 	},
 	data(){
-		return {};
+		return {
+			pfpDialog: false,
+			newUrl: "",
+		};
+	},
+	methods: {
+		openChangePfp() {
+			this.pfpDialog = true;
+		},
+		closeChangePfp() {
+			this.pfpDialog = false;
+			this.newUrl = "";
+		},
+		setPfp() {
+			this.$emit('setOwnPfp', this.newUrl);
+			this.pfpDialog = false;
+		}
 	}
 }
 </script>

@@ -76,6 +76,7 @@ export default {
                   console.log('err channels');
                 });
             }
+			this.getOwnPfp();
           })
           .catch((err) => {
             console.log(err);
@@ -148,7 +149,8 @@ export default {
       showSIDvar: false,
       selectedFile: null,
       selectedFileUrl: '',
-	  settingsOpen: false
+	  settingsOpen: false,
+	  myPfp: 'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif'
     };
   },
   methods: {
@@ -440,7 +442,33 @@ export default {
       const input = document.getElementById('file-upload');
       if (input) input.value = '';
     },
-
+	refreshToken(token) {
+		this.token = token;
+          invoke('writeCredentials', { creds: JSON.stringify({ 'username': this.username, 'token': this.token }) })
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
+	},
+	getOwnPfp() {
+		invoke('getProfilePic', { 'username': this.username, 'token': this.token})
+			.then((res) => {
+				this.refreshToken(JSON.parse(res)['token']);
+				let url = JSON.parse(res)['img_url'];
+				this.myPfp = url ? url : this.myPfp;
+		}).catch((err) => {
+          console.log(err);
+        })
+	},
+	setOwnPfp(url) {
+		invoke('setProfilePic', { 'username': this.username, 'token': this.token, 'img_url': url})
+			.then((res) => {
+				this.refreshToken(JSON.parse(res)['token']);
+				let url = JSON.parse(res)['img_url'];
+				if(!url) console.log("WARN: problem encountered while setting pfp");
+				this.myPfp = url ? url : this.myPfp;
+		}).catch((err) => {
+          console.log(err);
+        })
+	}
   },
 
 };

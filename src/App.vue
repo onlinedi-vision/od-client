@@ -9,7 +9,7 @@
       <input  id="greet-input" v-model="name" placeholder="Type a message..." />
       <button id="send" type="submit" @click="send_message(name)">Send</button>
     </form>
-    <img @click="openSettings()" src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' width='60px' height='60px' class='cui'
+    <img @click="openSettings()" v-bind:src='myPfp' width='60px' height='60px' class='cui'
       style='margin-bottom:0px;' />
     <button class="createSButton" @click="createServer()">
       <h2 style="margin-top: 12px">+</h2>
@@ -83,7 +83,7 @@
       <LogInWindow :logInSelected='logInSelected' :lError='lError' :lErrorText='lErrorText' @changeLogIn='changeLogIn' @login='logIn' @signup='signUp' />
     </main>
 	<div @click="closeSettings()" class="settings-background" v-if="settingsOpen" />
-	<SettingsWindow :userName="username" v-if="settingsOpen" @closeSettings="closeSettings" @logOut="logOut"/>
+	<SettingsWindow :userName="username" :profilePic="myPfp" v-if="settingsOpen" @closeSettings="closeSettings" @logOut="logOut" @setOwnPfp="setOwnPfp" />
 </template>
 
 <script>
