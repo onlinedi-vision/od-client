@@ -8,7 +8,7 @@
 <div style="flex:1">
 <div class="image-wrapper">
 <div class="image-container"><img v-bind:src='profilePic' class='large-icon' />
-<button @click="openChangePfp()" class="edit-pfp">Edit</button>
+<button @click="openChangePfp()" class="edit-pfp"><h4>Edit</h4></button>
 <div v-if="pfpDialog" class="login" style="display:flex;flex-direction:row; left:200px; top:100px; height:50px; width:280px">
         <input id="greet-input" v-model="newUrl" style="width:200px" placeholder="profile pic URL"/>
         <button id="send" type="submit" style="width:80px" @click="setPfp()">Set</button>
@@ -17,13 +17,15 @@
 </div>
 </div>
 <div class="name-change">
-<h2>{{userName}}</h2><button class="menu-button">Change</button>
+<h2 style="margin: 2px 0 2px 0">{{userName}}</h2><button class="menu-button"><h4 style="margin: 2px 2px 2px 2px">Change name</h4></button>
 </div>
 </div>
-<div style="flex:2; background-color: #282424; border: solid 2px #141414;">
+<div class="settings-right">
+<div>
+<button @click="$emit('logOut')" class="logout"><h4 style="margin: 0 0 0 0">Log out</h4></button>
 </div>
 </div>
-<button @click="$emit('logOut')" class="logout">Log out</button>
+</div>
 </div>
 </template>
 
