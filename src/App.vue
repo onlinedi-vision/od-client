@@ -2,7 +2,23 @@
   <main class="container" v-if="done && loggedin">
 
     <form enctype='multipart/form-data' id="file-form" class="row" @submit.prevent="greet">
-      <input id="file-upload" type="file"/>
+      <input id="file-upload" type="file" @change="onFileChange" />
+	  <!--   codul pentru preview la incarcare document -->
+      <div v-if="selectedFileUrl" class="file-preview">
+        <div style="font-size:12px;color:#aaa;">
+          {{ selectedFile?.name }} ({{ Math.round(selectedFile.size / 1024) }} KB)
+        </div>
+        <div v-if="selectedFile && selectedFile.type.startsWith('image/')">
+          <img :src="selectedFileUrl" alt="preview" style="max-width:150px; border-radius:6px;" />
+        </div>
+        <div v-else-if="selectedFile && selectedFile.type.startsWith('video/')">
+          <video :src="selectedFileUrl" controls style="max-width:150px; border-radius:6px;"></video>
+        </div>
+        <div v-else style="max-width:150px; align-items: center;">
+          <i>¯\_(ツ)_/¯</i>
+        </div>
+        <button type="button" @click="clearSelectedFile()" style=" margin-top:6px;">Remove</button>
+      </div>
       <label for="file-upload" class="custom-file-upload">
         <h3 style="margin-top: 10px;"class="fa fa-cloud-upload fa-plus"><b>+</b></h3>
       </label>
