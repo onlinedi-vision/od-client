@@ -11,7 +11,7 @@
         v-for="(msg, index) in currentChannel.messages"
         :key="index"
       >
-        <div class="comp-mess">
+        <div class="comp-mess" height="100px">
           <img
             v-if="getUser(msg.username)?.img_url"
             :src="getUser(msg.username).img_url"
@@ -55,9 +55,9 @@
             </div>
 
             <!-- Text messages -->
-            <div v-else style="font-size: 17px;">
-              {{ msg.m_content }}
-            </div>
+            <div v-else-if='mounted' style="font-size: 17px;"><client-side><MarkdownRender :content="msg.m_content" :render-code-blocks-as-pre="true"/></client-side></div>
+
+            <div v-else style="font-size: 17px;"><pre style='margin:0px'>{{ msg.m_content }}</pre></div>
           </div>
         </div>
       </template>
@@ -67,6 +67,18 @@
 
 <script setup>
 import { computed } from "vue"
+import { onMounted, ref } from 'vue'
+import MarkdownRender from 'vue-renderer-markdown'
+import { MarkdownCodeBlockNode, setCustomComponents } from 'vue-renderer-markdown'
+
+setCustomComponents({
+  code_block:MarkdownCodeBlockNode
+})
+
+const mounted = ref(false)
+onMounted(() => {
+  mounted.value = true
+})
 
 const props = defineProps({
   appState: Array,
@@ -117,6 +129,7 @@ function getDate(ms) {
     : new Date(ms).toLocaleString()
 }
 </script>
+
 
 <style scoped>
 .comp-mess {

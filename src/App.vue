@@ -6,7 +6,7 @@
       <label for="file-upload" class="custom-file-upload">
         <h3 style="margin-top: 10px;"class="fa fa-cloud-upload fa-plus"><b>+</b></h3>
       </label>
-      <input  id="greet-input" v-model="name" placeholder="Type a message..." />
+      <textarea rows="1" style="font-size:16px; field-sizing: content" id="greet-input" v-model="name" placeholder="Type a message..." />
       <button id="send" type="submit" @click="send_message(name)">Send</button>
     </form>
     <img src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' width='60px' height='60px' class='cui' style='margin-bottom:0px;'/>
@@ -92,7 +92,7 @@ export default {
   name: "App",
   components: {
     LogInWindow,
-    ChatWindow
+    ChatWindow,
   }
 }
 </script>

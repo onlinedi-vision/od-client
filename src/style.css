@@ -185,6 +185,8 @@ transition: 0.2s;
   .message {
     text-align: left;
     padding-left: 10px;
+    /* display:flex; */
+    /* flex-direction: column; */
   }
 
   .comp-mess {
@@ -381,6 +383,7 @@ button {
 
 #greet-input {
   margin-right: 0px;
+  padding-top: 7px;
   background-color: #1a1717;/*#230d0e;*/ 
   color: #a87678;
   position: -webkit-sticky;
