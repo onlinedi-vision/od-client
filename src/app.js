@@ -13,7 +13,10 @@ export default {
     LogInWindow
   },
   data() {
-    let token = "16ec6209e46700a7f29fea7b792b53b8f61d3705092bacf4eb853d9f497161b0";
+    let token = "16ec6209e46700a7f29fea7b792b53b8f61d3705092bacf4eb853d9f497161b0"; //TODO: remove this? it is a random token
+
+    let message_ws = null; 
+    let ms_counter = 0;
 
     sendNotification({
       title: 'Welcome to Division Online!',
@@ -36,6 +39,75 @@ export default {
             this.token = servers.token;
             token = servers.token;
 
+            if(message_ws === null) {
+              let message_ws = new WebSocket("wss://onlinedi.vision/wss?username="+this.username);
+
+              message_ws.addEventListener("message", (event) => {
+                if(ms_counter === 0 ) {
+                  ms_counter += 1;
+                  console.log("[WEBSOCKET] Message from server (" + ms_counter + ")", event.data);
+
+                  invoke('spellCheck', { token: token, username: this.username, key: event.data })
+                  .then((res) => {
+                    console.log('SPELL:' + res);
+                    message_ws.send(res);
+                  }).catch((err) => {
+                    console.log('test' + err);
+                  });
+                } else if(ms_counter === 1) {
+                  ms_counter += 1;
+                  if(event.data === 'CONNECTED') {
+                    console.log('[WEBSOCKET CONNECTED]');
+                    message_ws.send('TOKEN:'+this.token);
+                  }
+                } else if (ms_counter == 2) {
+                  console.log("[NEW TOKEN]: " + event.data);
+                  ms_counter += 1;
+                  this.token = event.data;
+                }else if(ms_counter > 2) {
+                  console.log("[WEBSOCKET MESSAGE]: " + event.data);
+                  let sid = event.data.split(':')[0];
+                  let channel = event.data.split(':')[1];
+                  let username = event.data.split(':')[2];
+                  let message = event.data.split(':')[3];
+
+                  console.log(this.appState);
+                  this.appState[
+                    this.appState.findIndex(obj => obj.serverID == sid)
+                  ]['storedChannels'][
+                      this.appState[
+                        this.appState.findIndex(obj => obj.serverID == sid)
+                      ]['storedChannels'].findIndex(obj => obj.channelTag === channel)
+                    ]['messages'].unshift({
+                        'username': username,
+                        'm_content': message
+                      });
+                    // [this.appState[thics.appState.findIndex(obj => obj.serverID == sid)].divs.findIndex(obj => obj.channelTag==channel)]['messages'].unshift({"username":username, "m_content":message});
+                  
+                                  
+                  // let appStateSID = this.appState[this.appState.findIndex(obj => obj.serverID === sid)]['storedChannels'];x
+                  // console.log(appStateSID);
+                  // appStateSID[appStateSID.findIndex(obj => obj.channelTag === channel)]['messages'].push(
+                  //   {
+                  //     'm_content': message,
+                  //     'username': username,
+                  //  }
+                  // );
+                  // // .push({ 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] });
+                  // let rightChannel = this.storedChannels[this.storedChannels.findIndex(obj => obj.serverID === sid && obj.channelTag === channel)];
+                  // rightChannel['messages'].push(
+                  //   {
+                  //     'm_content': message,
+                  //     'username': username,
+                  //  }
+                  // );
+
+                  console.log(this.appState);
+                  // this.storedChannels.push({ 'serverID': servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] })
+                }
+              });
+              this.ws = message_ws;
+            }
             invoke('writeCredentials', { creds: JSON.stringify({ 'username': this.username, 'token': this.token }) });
 
             for (let i = 0; i < servers['s_list'].length; i++) {
@@ -93,6 +165,7 @@ export default {
 
 
     return {
+      ws: null,
       logInSelected: true,
       loggedin: true,
       lusername: "",
@@ -154,6 +227,11 @@ export default {
   },
   methods: {
     send_message(message) {
+      if(this.ws !== null ) {
+        console.log('SENDING MESSAGE THROUGH WS');
+        this.ws.send(this.serverID + ':' + this.textChannel + ':' + this.username +':' + message);
+      }
+      
       const fileElement = document.querySelector("#file-form");
       const fileData = new FormData();
       const fileInput = document.getElementById("file-upload");
@@ -224,6 +302,12 @@ export default {
         .then((res) => {
           let servers = JSON.parse(res);
           this.token = servers['token'];
+
+          let message_ws = new WebSocket("wss://onlinedi.vision/wss?username="+this.username);
+
+          message_ws.addEventListener("message", (event) => {
+            console.log("[WEBSOCKET] Message from server ", event.data);
+          });
 
           invoke('writeCredentials', { creds: JSON.stringify({ 'username': this.username, 'token': this.token }) })
             .then((res) => console.log(res))

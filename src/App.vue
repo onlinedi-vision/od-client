@@ -84,7 +84,7 @@
 
 <script>
 import app from "./app.js"
-import ChatWindow from "./components/ChatWindow.vue"
+import ChatWindow from "./components/chatWindow.vue"
 import LogInWindow from "./components/login.vue"
 
 export default {
