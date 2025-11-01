@@ -66,10 +66,14 @@ export default {
                   this.token = event.data;
                 }else if(ms_counter > 2) {
                   console.log("[WEBSOCKET MESSAGE]: " + event.data);
-                  let sid = event.data.split(':')[0];
-                  let channel = event.data.split(':')[1];
-                  let username = event.data.split(':')[2];
-                  let message = event.data.split(':')[3];
+                  // let sid = event.data.split(':')[0];
+                  // let channel = event.data.split(':')[1];
+                  // let username = event.data.split(':')[2];
+                  // let message = event.data.split(':')[3];
+
+                  let splitm = event.data.split(':');
+                  let [sid, channel, username, ...message] = splitm;
+                  message = message.join(':');
 
                   console.log(this.appState);
                   this.appState[
@@ -227,10 +231,6 @@ export default {
   },
   methods: {
     send_message(message) {
-      if(this.ws !== null ) {
-        console.log('SENDING MESSAGE THROUGH WS');
-        this.ws.send(this.serverID + ':' + this.textChannel + ':' + this.username +':' + message);
-      }
       
       const fileElement = document.querySelector("#file-form");
       const fileData = new FormData();
@@ -257,6 +257,11 @@ export default {
             if (message === '') return;
             let sname = this.name;
             this.name = '...';
+
+            if(this.ws !== null ) {
+              console.log('SENDING MESSAGE THROUGH WS ' + message);
+              this.ws.send(this.serverID + ':' + this.textChannel + ':' + this.username +':' + message);
+            }
             invoke('sendMessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username }).then((res) => {
               console.log('taaa');
               this.name = '';
@@ -279,6 +284,11 @@ export default {
       if (message === '') return;
       let sname = this.name;
       this.name = '...';
+
+      if(this.ws !== null ) {
+        console.log('SENDING MESSAGE THROUGH WS');
+        this.ws.send(this.serverID + ':' + this.textChannel + ':' + this.username +':' + message);
+      }
       invoke('sendMessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username }).then((res) => {
         console.log('taaa');
         this.name = '';
