@@ -74,7 +74,7 @@
 
       <div class = "server-users">
         <template v-for="(svuser,index) in appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers" :key="index">
-            <img v-if="svuser['img_url'] != ''" v-bind:src="svuser['img_url']" width='50px' class="user-icon"/>
+            <img v-if="svuser['img_url'] != ''" v-bind:src="svuser['img_url']" width='50px' height='50px' class="user-icon"/>
             <img v-else v-bind:src="'a'" width='50px' class="user-icon"/>
         </template>
       </div>
@@ -88,7 +88,7 @@
 
 <script>
 import app from "./app.js"
-import ChatWindow from "./components/ChatWindow.vue"
+import ChatWindow from "./components/chatWindow.vue"
 import LogInWindow from "./components/login.vue"
 import SettingsWindow from './components/settings.vue'
 export default {

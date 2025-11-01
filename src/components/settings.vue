@@ -2,7 +2,7 @@
 <div class="settings">
 <div class="settings-titlebar">
 <div><h1>Settings</h1></div>
-<button @click="$emit('closeSettings')" class="closebutton">X</button>
+<!-- <button @click="$emit('closeSettings')" class="closebutton">X</button> -->
 </div>
 <div class="settings-container">
 <div style="flex:1">
