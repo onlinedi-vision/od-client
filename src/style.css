@@ -71,6 +71,14 @@ height: 40px; text-align:center; background-color:#141414;
   margin-top: 10px;
 }
 
+.user-list-icon {
+  margin-left: 5px;
+  width: 50px;
+  height: 50px;
+  border-radius: 40px 40px 40px 40px;
+  margin-top: 10px;
+}
+
 .cui {
   position: absolute;
   top: 5px;
@@ -155,6 +163,7 @@ transition: 0.2s;
   }
 
   .server-users {
+    overflow-y: hidden;
     transition: 0.2s;
     background-color: #141414;
     position: absolute;
@@ -317,10 +326,10 @@ input {
 }
 
 .server-users:hover {
+  width: 160px;
   border-color: #141414;
   border-radius: 20px 20px 20px 20px;
-
-  transition: border-radius 0.2s;
+  transition: 0.2s;
 }
 
 .user-icon:hover {
