@@ -47,6 +47,27 @@ input[type="file"] {
   transition: 0.75s;
 }
 
+a:link {
+  color:#9bafc2;
+}
+
+a:hove {
+  color:#c1d4e6;
+}
+
+p {
+  margin: 0;
+}
+
+h1, h2 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.heading-node {
+  text-align: start;
+}
+
 .csv {  
   background-color:#141414;
   color: #a87678;
