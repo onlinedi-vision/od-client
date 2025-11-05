@@ -89,8 +89,13 @@
 
       <div class = "server-users">
         <template v-for="(svuser,index) in appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers" :key="index">
-            <img v-if="svuser['img_url'] != ''" v-bind:src="svuser['img_url']" width='50px' class="user-icon"/>
-            <img v-else v-bind:src="'a'" width='50px' class="user-icon"/>
+            <template style='display:flex'>
+              <div width='50px' height='50px'>
+                <img v-if="svuser['img_url'] != ''" v-bind:src="svuser['img_url']" width='50px' height='50px' class="user-list-icon"/>
+                <img v-else v-bind:src="'a'" width='50px' height='50px' class="user-list-icon"/>
+              </div>
+              <div style='padding-left:10px;margin:auto;margin-left:0px;text-align:center'>{{svuser['username']}}</div>
+            </template>
         </template>
       </div>
   </main>
