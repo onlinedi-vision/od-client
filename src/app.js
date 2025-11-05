@@ -351,9 +351,20 @@ export default {
       this.createChannelPopUp = !this.createChannelPopUp;
       this.createServerPopUp = false;
     },
+    create_channel_cancel() {
+      this.createChannelPopUp = false;
+      this.nchn = '';
+    },
     createServer() {
       this.createServerPopUp = !this.createServerPopUp;
       this.createChannelPopUp = false;
+    },
+    createServerCancel() {
+      this.createServerPopUp = false;
+      this.newSvName = '';
+      this.newImgUrl = '';
+      this.newShDesc = '';
+      this.joinserverID = '';
     },
     change_server(sv) {
       this.serverID = sv;
