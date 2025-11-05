@@ -57,6 +57,7 @@
       <div v-if="createChannelPopUp" class="login" style="display:flex;flex-direction:row; left:200px; top:100px; height:50px; width:280px">
         <input id="greet-input" v-model="nchn" style="width:200px" placeholder="new_channel_name..."/>
         <button id="send" type="submit" style="width:80px" @click="createChannel()">Create</button>
+        <button id="send" type="submit"  style="width:80px; background-color:#3b0505" @click="create_channel_cancel()">Cancel</button>
 
       </div>
 
@@ -72,6 +73,7 @@
         <h3 style="padding-top:30px" >Join Server</h3>
         <input class="csv" v-model="joinserverID" placeholder="Server ID..."/>
         <button class="csvb" @click="joinServer()">Join Server</button>
+        <button class="csvb cancelr" @click="createServerCancel()">Cancel</button>
       </div>
 
       <ChatWindow

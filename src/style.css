@@ -65,6 +65,10 @@ height: 40px; text-align:center; background-color:#141414;
   border-color: #a87678;
 }
 
+.cancelr{
+  background-color: #3b0505;
+}
+
 
 .user-icon {
   border-radius: 40px 40px 40px 40px;
