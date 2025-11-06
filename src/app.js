@@ -86,28 +86,6 @@ export default {
                         'username': username,
                         'm_content': message
                       });
-                    // [this.appState[thics.appState.findIndex(obj => obj.serverID == sid)].divs.findIndex(obj => obj.channelTag==channel)]['messages'].unshift({"username":username, "m_content":message});
-                  
-                                  
-                  // let appStateSID = this.appState[this.appState.findIndex(obj => obj.serverID === sid)]['storedChannels'];x
-                  // console.log(appStateSID);
-                  // appStateSID[appStateSID.findIndex(obj => obj.channelTag === channel)]['messages'].push(
-                  //   {
-                  //     'm_content': message,
-                  //     'username': username,
-                  //  }
-                  // );
-                  // // .push({ 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] });
-                  // let rightChannel = this.storedChannels[this.storedChannels.findIndex(obj => obj.serverID === sid && obj.channelTag === channel)];
-                  // rightChannel['messages'].push(
-                  //   {
-                  //     'm_content': message,
-                  //     'username': username,
-                  //  }
-                  // );
-
-                  console.log(this.appState);
-                  // this.storedChannels.push({ 'serverID': servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] })
                 }
               });
               this.ws = message_ws;
