@@ -364,6 +364,52 @@ async fn joinServer(
     res
 }
 
+#[tauri::command(rename_all = "snake_case")]
+async fn getProfilePic(
+	username: String,
+	token: String,
+) -> String {
+	let mut map = std::collections::HashMap::new();
+	map.insert("username", username.clone());
+    map.insert("token", token.clone());
+	let client = reqwest::Client::new();
+	let res = client
+		.post("https://onlinedi.vision/api/get_user_pfp")
+		.json(&map)
+		.send()
+		.await
+		.expect("err")
+		.text()
+		.await
+		.expect("err");
+	println!("{:?}", res);
+    res
+}
+
+#[tauri::command(rename_all = "snake_case")]
+async fn setProfilePic(
+	username: String,
+	token: String,
+	img_url: String,
+) -> String {
+	let mut map = std::collections::HashMap::new();
+	map.insert("username", username.clone());
+    map.insert("token", token.clone());
+	map.insert("img_url", img_url.clone());
+	let client = reqwest::Client::new();
+	let res = client
+		.post("https://onlinedi.vision/api/set_user_pfp")
+		.json(&map)
+		.send()
+		.await
+		.expect("err")
+		.text()
+		.await
+		.expect("err");
+	println!("{:?}", res);
+    res
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -385,7 +431,9 @@ pub fn run() {
             createServer,
             joinServer,
             getServerUsers,
-            spellCheck
+            spellCheck,
+			      getProfilePic,
+			      setProfilePic,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
