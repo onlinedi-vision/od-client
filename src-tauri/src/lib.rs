@@ -37,6 +37,33 @@ async fn sendMessage(
 }
 
 #[tauri::command(rename_all = "snake_case")]
+async fn spellCheck(
+    token: String,
+    username: String,
+    key: String,
+) -> String {
+    let mut map = std::collections::HashMap::new();
+    map.insert("token", token.clone());
+    map.insert("username", username.clone());
+    map.insert("key", key.clone());
+
+    let client = reqwest::Client::new();
+    let res = client
+        .post(
+        "https://onlinedi.vision/api/spell/check"
+        )
+        .json(&map)
+        .send()
+        .await
+        .expect("err")
+        .text()
+        .await
+        .expect("err");
+    println!("{:?}", res);
+    res
+}
+
+#[tauri::command(rename_all = "snake_case")]
 async fn getMessages(
     host_url: String,
     token: String,
@@ -79,7 +106,9 @@ async fn getServerUsers(
     map.insert("username", username.clone());
     let client = reqwest::Client::new();
     let res = client
-        .post(format!(
+        .post(
+
+           format!(
             "{}/{}/api/get_server_users",
             host_url, server
         ))
@@ -402,8 +431,9 @@ pub fn run() {
             createServer,
             joinServer,
             getServerUsers,
-			getProfilePic,
-			setProfilePic,
+            spellCheck,
+			      getProfilePic,
+			      setProfilePic,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
