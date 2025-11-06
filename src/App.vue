@@ -25,9 +25,12 @@
       <input  id="greet-input" v-model="name" placeholder="Type a message..." />
       <button id="send" type="submit" @click="send_message(name)">Send</button>
     </form>
-    <img src='https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif' width='60px' height='60px' class='cui' style='margin-bottom:0px;'/>
-    <button class="createSButton" @click="createServer()"><h2 style="margin-top: 12px">+</h2></button>
-    <div  class = "column">  
+    <img @click="openSettings()" v-bind:src='myPfp' width='60px' height='60px' class='cui'
+      style='margin-bottom:0px;' />
+    <button class="createSButton" @click="createServer()">
+      <h2 style="margin-top: 12px">+</h2>
+    </button>
+    <div class="column">
       <template v-for="(sv, idx) in userServers">
         <img @click="change_server(sv['serverID'])" v-bind:src="sv['img_url']" width='50px' height='50px' class='user-icon' style='margin-top: 0px;margin-top:10px;'/>
       </template>
@@ -102,20 +105,22 @@
     <main v-else-if="!loggedin">
       <LogInWindow :logInSelected='logInSelected' :lError='lError' :lErrorText='lErrorText' @changeLogIn='changeLogIn' @login='logIn' @signup='signUp' />
     </main>
-    
+	<div @click="closeSettings()" class="settings-background" v-if="settingsOpen" />
+	<SettingsWindow :userName="username" :profilePic="myPfp" v-if="settingsOpen" @closeSettings="closeSettings" @logOut="logOut" @setOwnPfp="setOwnPfp" />
 </template>
 
 <script>
 import app from "./app.js"
-import ChatWindow from "./components/ChatWindow.vue"
+import ChatWindow from "./components/chatWindow.vue"
 import LogInWindow from "./components/login.vue"
-
+import SettingsWindow from './components/settings.vue'
 export default {
   ...app,
   name: "App",
   components: {
     LogInWindow,
-    ChatWindow
+    ChatWindow,
+	SettingsWindow
   }
 }
 </script>
