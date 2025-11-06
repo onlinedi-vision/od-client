@@ -2,7 +2,23 @@
   <main class="container" v-if="done && loggedin">
 
     <form enctype='multipart/form-data' id="file-form" class="row" @submit.prevent="greet">
-      <input id="file-upload" type="file"/>
+      <input id="file-upload" type="file" @change="onFileChange" />
+	  <!--   codul pentru preview la incarcare document -->
+      <div v-if="selectedFileUrl" class="file-preview">
+        <div style="font-size:12px;color:#aaa;">
+          {{ selectedFile?.name }} ({{ Math.round(selectedFile.size / 1024) }} KB)
+        </div>
+        <div v-if="selectedFile && selectedFile.type.startsWith('image/')">
+          <img :src="selectedFileUrl" alt="preview" style="max-width:150px; border-radius:6px;" />
+        </div>
+        <div v-else-if="selectedFile && selectedFile.type.startsWith('video/')">
+          <video :src="selectedFileUrl" controls style="max-width:150px; border-radius:6px;"></video>
+        </div>
+        <div v-else style="max-width:150px; align-items: center;">
+          <i>¯\_(ツ)_/¯</i>
+        </div>
+        <button type="button" @click="clearSelectedFile()" style=" margin-top:6px;">Remove</button>
+      </div>
       <label for="file-upload" class="custom-file-upload">
         <h3 style="margin-top: 10px;"class="fa fa-cloud-upload fa-plus"><b>+</b></h3>
       </label>
@@ -44,6 +60,7 @@
       <div v-if="createChannelPopUp" class="login" style="display:flex;flex-direction:row; left:200px; top:100px; height:50px; width:280px">
         <input id="greet-input" v-model="nchn" style="width:200px" placeholder="new_channel_name..."/>
         <button id="send" type="submit" style="width:80px" @click="createChannel()">Create</button>
+        <button id="send" type="submit"  style="width:80px;" @click="create_channel_cancel()">Cancel</button>
 
       </div>
 
@@ -59,6 +76,7 @@
         <h3 style="padding-top:30px" >Join Server</h3>
         <input class="csv" v-model="joinserverID" placeholder="Server ID..."/>
         <button class="csvb" @click="joinServer()">Join Server</button>
+        <button class="csvb" @click="createServerCancel()">Cancel</button>
       </div>
 
       <ChatWindow
@@ -74,8 +92,13 @@
 
       <div class = "server-users">
         <template v-for="(svuser,index) in appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers" :key="index">
-            <img v-if="svuser['img_url'] != ''" v-bind:src="svuser['img_url']" width='50px' height='50px' class="user-icon"/>
-            <img v-else v-bind:src="'a'" width='50px' class="user-icon"/>
+            <template style='display:flex'>
+              <div width='50px' height='50px'>
+                <img v-if="svuser['img_url'] != ''" v-bind:src="svuser['img_url']" width='50px' height='50px' class="user-list-icon"/>
+                <img v-else v-bind:src="'a'" width='50px' height='50px' class="user-list-icon"/>
+              </div>
+              <div style='padding-left:10px;margin:auto;margin-left:0px;text-align:center'>{{svuser['username']}}</div>
+            </template>
         </template>
       </div>
   </main>
