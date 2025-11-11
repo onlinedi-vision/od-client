@@ -7,11 +7,9 @@ import {
 
 import { shallowRef, ref } from "vue"
 import LogInWindow from './components/login.vue'
+import SettingsWindow from './components/settings.vue'
 export default {
   name: "App",
-  components: {
-    LogInWindow
-  },
   data() {
     let token = "16ec6209e46700a7f29fea7b792b53b8f61d3705092bacf4eb853d9f497161b0"; //TODO: remove this? it is a random token
 
@@ -86,28 +84,6 @@ export default {
                         'username': username,
                         'm_content': message
                       });
-                    // [this.appState[thics.appState.findIndex(obj => obj.serverID == sid)].divs.findIndex(obj => obj.channelTag==channel)]['messages'].unshift({"username":username, "m_content":message});
-                  
-                                  
-                  // let appStateSID = this.appState[this.appState.findIndex(obj => obj.serverID === sid)]['storedChannels'];x
-                  // console.log(appStateSID);
-                  // appStateSID[appStateSID.findIndex(obj => obj.channelTag === channel)]['messages'].push(
-                  //   {
-                  //     'm_content': message,
-                  //     'username': username,
-                  //  }
-                  // );
-                  // // .push({ 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] });
-                  // let rightChannel = this.storedChannels[this.storedChannels.findIndex(obj => obj.serverID === sid && obj.channelTag === channel)];
-                  // rightChannel['messages'].push(
-                  //   {
-                  //     'm_content': message,
-                  //     'username': username,
-                  //  }
-                  // );
-
-                  console.log(this.appState);
-                  // this.storedChannels.push({ 'serverID': servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] })
                 }
               });
               this.ws = message_ws;
@@ -154,6 +130,7 @@ export default {
                   console.log('err channels');
                 });
             }
+			this.getOwnPfp();
           })
           .catch((err) => {
             console.log(err);
@@ -226,7 +203,9 @@ export default {
       joinserverID: '',
       showSIDvar: false,
       selectedFile: null,
-      selectedFileUrl: ''
+      selectedFileUrl: '',
+	  settingsOpen: false,
+	  myPfp: 'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif'
     };
   },
   methods: {
@@ -423,6 +402,12 @@ export default {
     changeLogIn() {
       this.logInSelected = !this.logInSelected;
     },
+	openSettings() {
+	  this.settingsOpen = true;
+	},
+	closeSettings() {
+	  this.settingsOpen = false;
+	},
     get_messages(channel, server, token) {
       invoke('getMessages', { host_url: 'https://onlinedi.vision/servers', token: token, server: server, channel: channel })
         .then((res) => {
@@ -445,9 +430,20 @@ export default {
       this.createChannelPopUp = !this.createChannelPopUp;
       this.createServerPopUp = false;
     },
+    create_channel_cancel() {
+      this.createChannelPopUp = false;
+      this.nchn = '';
+    },
     createServer() {
       this.createServerPopUp = !this.createServerPopUp;
       this.createChannelPopUp = false;
+    },
+    createServerCancel() {
+      this.createServerPopUp = false;
+      this.newSvName = '';
+      this.newImgUrl = '';
+      this.newShDesc = '';
+      this.joinserverID = '';
     },
     change_server(sv) {
       this.serverID = sv;
@@ -498,6 +494,15 @@ export default {
           console.log(err);
         })
     },
+	logOut() {
+		this.loggedin=false;
+		this.token='';
+		this.username='';
+		invoke('writeCredentials', {creds: ''}).catch((err) => {
+			console.log(err);
+		});
+		this.closeSettings();
+	},
     onFileChange(e) {
       const files = e?.target?.files || [];
       if (this.selectedFileUrl) {
@@ -520,7 +525,33 @@ export default {
       const input = document.getElementById('file-upload');
       if (input) input.value = '';
     },
-
+	refreshToken(token) {
+		this.token = token;
+          invoke('writeCredentials', { creds: JSON.stringify({ 'username': this.username, 'token': this.token }) })
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
+	},
+	getOwnPfp() {
+		invoke('getProfilePic', { 'username': this.username, 'token': this.token})
+			.then((res) => {
+				this.refreshToken(JSON.parse(res)['token']);
+				let url = JSON.parse(res)['img_url'];
+				this.myPfp = url ? url : this.myPfp;
+		}).catch((err) => {
+          console.log(err);
+        })
+	},
+	setOwnPfp(url) {
+		invoke('setProfilePic', { 'username': this.username, 'token': this.token, 'img_url': url})
+			.then((res) => {
+				this.refreshToken(JSON.parse(res)['token']);
+				let url = JSON.parse(res)['img_url'];
+				if(!url) console.log("WARN: problem encountered while setting pfp");
+				this.myPfp = url ? url : this.myPfp;
+		}).catch((err) => {
+          console.log(err);
+        })
+	}
   },
 
 };
