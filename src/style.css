@@ -47,6 +47,27 @@ input[type="file"] {
   transition: 0.75s;
 }
 
+a:link {
+  color:#9bafc2;
+}
+
+a:hove {
+  color:#c1d4e6;
+}
+
+p {
+  margin: 0;
+}
+
+h1, h2 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.heading-node {
+  text-align: start;
+}
+
 .csv {  
   background-color:#141414;
   color: #a87678;
@@ -193,6 +214,8 @@ transition: 0.2s;
   .message {
     text-align: left;
     padding-left: 10px;
+    /* display:flex; */
+    /* flex-direction: column; */
   }
 
   .comp-mess {
@@ -389,6 +412,7 @@ button {
 
 #greet-input {
   margin-right: 0px;
+  padding-top: 7px;
   background-color: #1a1717;/*#230d0e;*/ 
   color: #a87678;
   position: -webkit-sticky;
