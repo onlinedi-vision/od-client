@@ -54,7 +54,7 @@ export default {
   height: 60px;
 }
 .server-header h3 {
-  margin: 4px 0 0 0;
+  margin: 5px 0 0 0;
 }
 .channel_button {
   padding: 6px 10px;
