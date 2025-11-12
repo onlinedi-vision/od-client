@@ -39,24 +39,18 @@
     <div v-if="showSIDvar" class="login" style="display:flex;flex-direction:row; left:100px; top:50px; height:30px; width:660px; z-index:999999;">
       <i style="font-size: 12px"> {{serverID}} </i>
     </div>
-       <div class = "chanels">
-         <div class ="server-header" @click="showSID()" style="border-bottom: 2px solid #141414; height: 60px;"> <h3 style="margin-bottom: 0px;margin-top:5px"> {{userServers[userServers.findIndex(obj => obj.serverID == serverID)].name}} </h3> 
-         </div>
-           <template v-if="done">
-             <template v-if="appState[appState.findIndex(obj => obj.serverID == serverID)].storedChannels !== undefined">
-              <template v-for="(div, index) in appState[appState.findIndex(obj => obj.serverID == serverID)].storedChannels" :key="index">
-                <template v-if="div['channelTag'] === textChannel">     
-                  <button @click="change_channel(div['channelTag'])" class="channel_button" style="background-color: #a87678; color: white"># {{div['channelTag']}}</button>
-                </template>
-                <template v-else>
-                  <button @click="change_channel(div['channelTag'])" class="channel_button"># {{div['channelTag']}}</button>
-                </template>
-              </template>
-            </template>
-           </template>
-        <button @click="create_channel(serverID)" class="channel_button" style=" position: relative; text-align: center; padding-left: 0px; padding-right: 0px;"><b>+</b></button>
 
-      </div>
+      <ChannelList
+      :appState="appState"
+      :serverID="serverID"
+      :textChannel="textChannel"
+      :done="done"
+      :userServers="userServers"
+      @showSID="showSID"
+      @changeChannel="change_channel"
+      @createChannel="create_channel"
+      />
+
       <div v-if="createChannelPopUp" class="login" style="display:flex;flex-direction:row; left:200px; top:100px; height:50px; width:280px">
         <input id="greet-input" v-model="nchn" style="width:200px" placeholder="new_channel_name..."/>
         <button id="send" type="submit" style="width:80px" @click="createChannel()">Create</button>
@@ -114,13 +108,16 @@ import app from "./app.js"
 import ChatWindow from "./components/chatWindow.vue"
 import LogInWindow from "./components/login.vue"
 import SettingsWindow from './components/settings.vue'
+import ChannelList from "./components/channelList.vue";
+
 export default {
   ...app,
   name: "App",
   components: {
     LogInWindow,
     ChatWindow,
-	SettingsWindow
+	SettingsWindow,
+  ChannelList
   }
 }
 </script>
