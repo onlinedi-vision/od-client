@@ -1,39 +1,27 @@
 <template>
   <div class="chanels">
-    <div 
-      class="server-header" 
-      @click="$emit('showSID')" 
-      style="border-bottom: 2px solid #141414; height: 60px;"
-    >
-      <h3 style="margin-bottom: 0px; margin-top: 5px;">
-        {{ serverName }}
-      </h3>
+    <div class="server-header" @click="$emit('showSID')">
+      <h3>{{ serverName }}</h3>
     </div>
-    <template v-if="done && currentServer?.storedChannels">
-      <template 
-        v-for="(div, index) in currentServer.storedChannels" 
+
+    <template v-if="done && currentServer?.storedChannels?.length">
+      <button
+        v-for="(div, index) in currentServer.storedChannels"
         :key="index"
+        @click="$emit('changeChannel', div.channelTag)"
+        class="channel_button"
+        :class="{ active: div.channelTag === textChannel }"
       >
-        <button
-          @click="$emit('changeChannel', div.channelTag)"
-          class="channel_button"
-          :style="div.channelTag === textChannel 
-            ? 'background-color: #a87678; color: white' 
-            : ''"
-        >
-          # {{ div.channelTag }}
-        </button>
-      </template>
+        # {{ div.channelTag }}
+      </button>
     </template>
-    <button 
-      @click="$emit('createChannel', serverID)" 
-      class="channel_button" 
-      style="position: relative; text-align: center; padding-left: 0px; padding-right: 0px;"
-    >
+
+    <button @click="$emit('createChannel', serverID)" class="channel_button add-channel">
       <b>+</b>
     </button>
   </div>
 </template>
+
 <script>
 export default {
   name: "ChannelList",
@@ -42,7 +30,7 @@ export default {
     serverID: String,
     textChannel: String,
     done: Boolean,
-    userServers: Array
+    userServers: Array,
   },
   computed: {
     currentServer() {
@@ -51,14 +39,22 @@ export default {
     serverName() {
       const sv = this.userServers.find(obj => obj.serverID === this.serverID);
       return sv ? sv.name : "Unknown Server";
-    }
-  }
+    },
+  },
 };
 </script>
-<style scoped>
+
+<style>
 .chanels {
   display: flex;
   flex-direction: column;
+}
+.server-header {
+  border-bottom: 2px solid #141414;
+  height: 60px;
+}
+.server-header h3 {
+  margin: 5px 0 0 0;
 }
 .channel_button {
   padding: 6px 10px;
@@ -67,9 +63,19 @@ export default {
   color: #ccc;
   cursor: pointer;
   text-align: left;
+  transition: all 0.2s ease;
 }
 .channel_button:hover {
   background-color: #333;
   color: white;
+}
+.channel_button.active {
+  background-color: #a87678;
+  color: white;
+}
+.channel_button.add-channel {
+  position: relative;
+  text-align: center;
+  padding: 6px 0;
 }
 </style>
