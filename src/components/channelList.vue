@@ -66,7 +66,7 @@ export default {
   transition: all 0.2s ease;
 }
 .channel_button:hover {
-  background-color: #333;
+  background-color: #a87678;
   color: white;
 }
 .channel_button.active {
