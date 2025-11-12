@@ -23,6 +23,7 @@
         <h3 style="margin-top: 10px;"class="fa fa-cloud-upload fa-plus"><b>+</b></h3>
       </label>
       <textarea rows="1" style="font-size:16px; field-sizing: content" id="greet-input" v-model="name" placeholder="Type a message..." />
+      <button class="gif-button" @click="toggleGifPicker">GIF</button>
       <button id="send" type="submit" @click="send_message(name)">Send</button>
     </form>
     <img @click="openSettings()" v-bind:src='myPfp' width='60px' height='60px' class='cui'
@@ -101,6 +102,12 @@
     </main>
 	<div @click="closeSettings()" class="settings-background" v-if="settingsOpen" />
 	<SettingsWindow :userName="username" :profilePic="myPfp" v-if="settingsOpen" @closeSettings="closeSettings" @logOut="logOut" @setOwnPfp="setOwnPfp" />
+
+  <GifPicker
+    v-if="showGifPicker"
+    @close="toggleGifPicker"
+    @select="onGifSelect"
+  />
 </template>
 
 <script>
@@ -109,6 +116,8 @@ import ChatWindow from "./components/chatWindow.vue"
 import LogInWindow from "./components/login.vue"
 import SettingsWindow from './components/settings.vue'
 import ChannelList from "./components/channelList.vue";
+import gifPicker from "./components/gifPicker.vue";
+import GifPicker from "./components/gifPicker.vue";
 
 export default {
   ...app,
@@ -116,8 +125,9 @@ export default {
   components: {
     LogInWindow,
     ChatWindow,
-	SettingsWindow,
-  ChannelList
+	  SettingsWindow,
+    ChannelList,
+    GifPicker
   }
 }
 </script>

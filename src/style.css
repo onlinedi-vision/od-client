@@ -626,3 +626,16 @@ button {
 input::placeholder {
   color: #a87678;
 }
+
+.gif-button {
+  margin-left: 8px;
+  padding: 0 14px;
+  border-radius: 6px;
+  background-color: #1a1717;
+  color: #a87678;
+  cursor: pointer;
+}
+.gif-button:hover {
+  background-color: #a87678;
+  color: #111;
+}

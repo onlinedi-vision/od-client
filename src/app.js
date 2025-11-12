@@ -204,19 +204,31 @@ export default {
       showSIDvar: false,
       selectedFile: null,
       selectedFileUrl: '',
+      showGifPicker: false,
+      pendingGifUrl: '',
 	  settingsOpen: false,
 	  myPfp: 'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif'
     };
   },
   methods: {
-    send_message(message) {
+    toggleGifPicker() {
+      this.showGifPicker = !this.showGifPicker;
+      if (!this.showGifPicker) this.pendingGifUrl = '';
+    },
+    onGifSelect(url) {
+      if (!url) return;
+      this.pendingGifUrl = url;
+      this.send_message(url, true);
+      this.showGifPicker = false;
+    },
+    send_message(message, isGif = false) {
       
       const fileElement = document.querySelector("#file-form");
       const fileData = new FormData();
       const fileInput = document.getElementById("file-upload");
       const file = this.selectedFile || (fileInput?.files?.[0] ?? null);
 
-      if (file) {
+      if (!isGif && file) {
 
         fileData.append("file", file);
 
