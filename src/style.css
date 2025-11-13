@@ -222,6 +222,9 @@ transition: 0.2s;
     text-align: left;
     padding-left: 10px;
     display: flex;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;  
   }
 
 
