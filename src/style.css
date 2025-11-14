@@ -16,6 +16,30 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
+
+textarea {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 3px;
+}
+
+textarea::placeholder {
+  color:#a87678; 
+}
+
+code,pre {
+  width: calc(100vw - 450px);
+  overflow-y: scroll;
+  background-color:#141414;
+  color: grey ;  
+}
+
+code {
+  padding: none;
+  font-size: 15px;
+  line-height: 14px;
+}
+
 input[type="file"] {
     display: none;
 }
@@ -23,6 +47,7 @@ input[type="file"] {
     display: inline-block;
     width: 100px;
     cursor: pointer;
+    border: none;
     background-color: #1a1717;
     height:43px;
 }
@@ -93,10 +118,10 @@ height: 40px; text-align:center; background-color:#141414;
 
 .user-list-icon {
   margin-left: 5px;
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
   border-radius: 40px 40px 40px 40px;
-  margin-top: 10px;
+  margin-top: 2px;
 }
 
 .cui {
@@ -119,7 +144,7 @@ transition: 0.2s;
   bottom: 5px;
   right: 0.5vw;
   left: 260px;
-  width: calc(100vw - 267px);
+  width: calc(100vw - 337px);
   z-index: 9999;
 }
 
@@ -184,15 +209,17 @@ transition: 0.2s;
 
   .server-users {
     overflow-y: hidden;
+    overflow-x: scroll;
     transition: 0.2s;
     background-color: #141414;
     position: absolute;
     top: 5px;
     right: 5px;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 11px);
     width: 60px;
     border-radius: 40px 40px 40px 40px;
     border: 2px solid transparent;
+    z-index: 9999;
   }
 
   .chanels {
@@ -363,10 +390,6 @@ input {
   color: #a87678;
 }
 
-#greet-input:hover {
-  border-color: #a87678;
-  background-color:#141414; 
-}
 
 .column:hover {
   border-color: #141414;
@@ -410,7 +433,6 @@ button {
 
 #app {
   height: 100%;
-
 }
 
 #greet-input {
@@ -422,6 +444,14 @@ button {
   position: sticky;
   bottom: 0;
   width: 100vw;
+  border: none;
+  /* resize: none; */
+  /* min-height: 10px; */
+  max-height: 100px
+}
+
+#greet-input:focus {
+  outline: none;  
 }
 
 .e-mail {

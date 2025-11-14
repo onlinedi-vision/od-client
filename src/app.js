@@ -210,6 +210,7 @@ export default {
   },
   methods: {
     send_message(message) {
+      if(message.length > 1200)return;
       
       const fileElement = document.querySelector("#file-form");
       const fileData = new FormData();
@@ -262,11 +263,12 @@ export default {
       if (this.serverID === '1') { message = ''; this.name; }
       if (message === '') return;
       let sname = this.name;
-      this.name = '...';
+      this.name = '';
 
       if(this.ws !== null ) {
         console.log('SENDING MESSAGE THROUGH WS');
         this.ws.send(this.serverID + ':' + this.textChannel + ':' + this.username +':' + message);
+        this.ws.send()
       }
       invoke('sendMessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username }).then((res) => {
         console.log('taaa');
@@ -450,6 +452,7 @@ export default {
       this.textChannel = this.appState[this.appState.findIndex(obj => obj.serverID == this.serverID)].storedChannels[0].channelTag;
     },
     createChannel() {
+      if(this.nchn.length > 15) return;
       invoke('createChannel', { host_url: 'https://onlinedi.vision/servers', "username": this.username, "server_id": this.serverID, "token": this.token, "channel_name": this.nchn })
         .then((res) => {
           this.token = JSON.parse(res)['token'];
