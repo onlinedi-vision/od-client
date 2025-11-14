@@ -22,7 +22,7 @@
       <label for="file-upload" class="custom-file-upload">
         <h3 style="margin-top: 10px;"class="fa fa-cloud-upload fa-plus"><b>+</b></h3>
       </label>
-      <textarea rows="1" style="font-size:16px; field-sizing: content" id="greet-input" v-model="name" placeholder="Type a message..."
+      <textarea maxlength="2000" rows="1" style="font-size:16px; field-sizing: content" id="greet-input" v-model="name" placeholder="Type a message..."
         oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight - 10) + 'px';"
       />
       <button id="send" type="submit" @click="send_message(name)">Send</button>
