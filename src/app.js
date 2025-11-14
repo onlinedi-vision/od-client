@@ -1,13 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
-import {
-  isPermissionGranted,
-  requestPermission,
-  sendNotification,
-} from '@tauri-apps/plugin-notification';
 
-import { shallowRef, ref } from "vue"
-import LogInWindow from './components/login.vue'
-import SettingsWindow from './components/settings.vue'
 export default {
   name: "App",
   data() {
@@ -15,17 +7,6 @@ export default {
 
     let message_ws = null; 
     let ms_counter = 0;
-
-    sendNotification({
-      title: 'Welcome to Division Online!',
-      body: "We're glad to have you!",
-      attachments: [
-        {
-          id: 'image-1',
-          url: 'asset:///app-icon.png',
-        },
-      ]
-    });
 
     invoke('getLocalToken')
       .then((res) => {
@@ -109,7 +90,7 @@ export default {
                         this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].storedChannels.push({ 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] });
                         this.storedChannels.push({ 'serverID': servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] })
                       })
-                      .catch((err) => {
+                      .catch(() => {
                         this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].storedChannels.push({ 'channelTag': channels[j]['channel_name'], 'messages': [] });
                         this.storedChannels.push({ 'serverID': servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': [] })
                       });
@@ -126,7 +107,7 @@ export default {
                       console.log(err);
                     });
                 })
-                .catch((err) => {
+                .catch(() => {
                   console.log('err channels');
                 });
             }
@@ -193,7 +174,6 @@ export default {
       ],
       name: '',
       textChannel: 'welcome',
-      username: 'ana',
       filename: '',
       nchn: '',
       createServerPopUp: false,
@@ -212,7 +192,6 @@ export default {
     send_message(message) {
       if(message.length > 1200)return;
       
-      const fileElement = document.querySelector("#file-form");
       const fileData = new FormData();
       const fileInput = document.getElementById("file-upload");
       const file = this.selectedFile || (fileInput?.files?.[0] ?? null);
@@ -235,14 +214,14 @@ export default {
 
             if (this.serverID === '1') { message = ''; this.name; }
             if (message === '') return;
-            let sname = this.name;
-            this.name = '...';
+            this.name = '';
 
             if(this.ws !== null ) {
               console.log('SENDING MESSAGE THROUGH WS ' + message);
               this.ws.send(this.serverID + ':' + this.textChannel + ':' + this.username +':' + message);
             }
-            invoke('sendMessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username }).then((res) => {
+            invoke('sendMessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username })
+            .then(() => {
               console.log('taaa');
               this.name = '';
               this.clearSelectedFile();
@@ -262,26 +241,16 @@ export default {
 
       if (this.serverID === '1') { message = ''; this.name; }
       if (message === '') return;
-      let sname = this.name;
       this.name = '';
 
       if(this.ws !== null ) {
         console.log('SENDING MESSAGE THROUGH WS');
         this.ws.send(this.serverID + ':' + this.textChannel + ':' + this.username +':' + message);
       }
-      invoke('sendMessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username }).then((res) => {
+      invoke('sendMessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username })
+      .then(() => {
         console.log('taaa');
         this.name = '';
-        sendNotification({
-          title: this.username + " #" + this.textChannel,
-          body: message,
-          attachments: [
-            {
-              id: 'image-1',
-              url: 'asset:///app-icon.png',
-            },
-          ]
-        });
       }).catch((err) => {
         this.storedChannels[this.storedChannels.findIndex(obj => obj.channelTag === this.textChannel)]['messages'].unshift({ "username": this.username, "m_content": err });
       });
@@ -323,7 +292,7 @@ export default {
                       this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].storedChannels.push({ 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] });
                       this.storedChannels.push({ 'serverID': servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] })
                     })
-                    .catch((err) => {
+                    .catch(() => {
                       console.log('err');
                     });
 
@@ -331,7 +300,7 @@ export default {
                 this.done = true;
                 console.log(this.storedChannels);
               })
-              .catch((err) => {
+              .catch(() => {
                 console.log('err channels');
               });
           }
@@ -414,7 +383,7 @@ export default {
         .then((res) => {
           console.log(res);
         })
-        .catch((err) => {
+        .catch(() => {
           console.log('err');
         });
     },
@@ -427,7 +396,7 @@ export default {
 
       return month[Number(date.getMonth())] + ' ' + date.getDate() + ' ' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes();
     },
-    create_channel(svid) {
+    create_channel() {
       this.createChannelPopUp = !this.createChannelPopUp;
       this.createServerPopUp = false;
     },
@@ -508,7 +477,8 @@ export default {
     onFileChange(e) {
       const files = e?.target?.files || [];
       if (this.selectedFileUrl) {
-        try { URL.revokeObjectURL(this.selectedFileUrl); } catch (_) { }
+        try { URL.revokeObjectURL(this.selectedFileUrl); }
+        catch (err) { console.log(err); }
       }
       if (files.length) {
         this.selectedFile = files[0];
@@ -520,7 +490,7 @@ export default {
     },
     clearSelectedFile() {
       if (this.selectedFileUrl) {
-        try { URL.revokeObjectURL(this.selectedFileUrl); } catch (_) { }
+        try { URL.revokeObjectURL(this.selectedFileUrl); } catch (err) { console.log(err); }
       }
       this.selectedFile = null;
       this.selectedFileUrl = '';

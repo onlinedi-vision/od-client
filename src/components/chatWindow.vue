@@ -74,12 +74,7 @@
 import { computed } from "vue"
 import { onMounted, ref } from 'vue'
 import MarkdownRender from 'vue-renderer-markdown'
-import { MarkdownCodeBlockNode, setCustomComponents } from 'vue-renderer-markdown'
-/* Currently disabled due to bugs and performance issues
-setCustomComponents({
-  code_block:MarkdownCodeBlockNode
-})
-*/
+
 const mounted = ref(false)
 onMounted(() => {
   mounted.value = true

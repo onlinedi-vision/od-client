@@ -20,7 +20,7 @@
         <button type="button" @click="clearSelectedFile()" style=" margin-top:6px;">Remove</button>
       </div>
       <label for="file-upload" class="custom-file-upload">
-        <h3 style="margin-top: 10px;"class="fa fa-cloud-upload fa-plus"><b>+</b></h3>
+        <h3 style="margin-top: 10px;" class="fa fa-cloud-upload fa-plus"><b>+</b></h3>
       </label>
       <textarea maxlength="2000" rows="1" style="font-size:16px; field-sizing: content" id="greet-input" v-model="name" placeholder="Type a message..."
         oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight - 10) + 'px';"
@@ -33,7 +33,7 @@
       <h2 style="margin-top: 12px">+</h2>
     </button>
     <div class="column">
-      <template v-for="(sv, idx) in userServers">
+      <template v-for="(sv, idx) in userServers" v-bind:key="idx">
         <img @click="change_server(sv['serverID'])" v-bind:src="sv['img_url']" width='50px' height='50px' class='user-icon' style='margin-top: 0px;margin-top:10px;'/>
       </template>
     </div>
