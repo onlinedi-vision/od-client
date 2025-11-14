@@ -24,6 +24,7 @@
       </label>
       <textarea maxlength="2000" rows="1" style="font-size:16px; field-sizing: content" id="greet-input" v-model="name" placeholder="Type a message..."
         oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight - 10) + 'px';"
+        onsubmit="this.style.height = '33px;'"
       />
       <button id="send" type="submit" @click="send_message(name)">Send</button>
     </form>

@@ -445,7 +445,7 @@ button {
   bottom: 0;
   width: 100vw;
   border: none;
-  /* resize: none; */
+  resize: none;
   /* min-height: 10px; */
   max-height: 100px
 }
