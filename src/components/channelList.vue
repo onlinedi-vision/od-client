@@ -6,7 +6,7 @@
 
     <template v-if="done && currentServer?.storedChannels?.length">
       <button
-        v-for="(div, index) in currentServer.storedChannels"
+        v-for="(div, index) in currentServer.storedChannels.sort(compareChannels)"
         :key="index"
         @click="$emit('changeChannel', div.channelTag)"
         class="channel_button"
@@ -40,6 +40,15 @@ export default {
       const sv = this.userServers.find(obj => obj.serverID === this.serverID);
       return sv ? sv.name : "Unknown Server";
     },
+  },
+  methods: {
+	compareChannels(a, b){
+	  if(a.channelTag > b.channelTag)
+	    return 1;
+	  if(b.channelTag > a.channelTag)
+	    return -1;
+	  return 0;
+	}
   },
 };
 </script>
