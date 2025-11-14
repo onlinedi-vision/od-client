@@ -12,23 +12,28 @@
         :key="index"
       >
         <div class="comp-mess" height="100px">
-          <img
-            v-if="getUser(msg.username)?.img_url"
-            :src="getUser(msg.username).img_url"
-            width="40"
-            height="40"
-            class="user-icon"
-            style="margin-top: 10px; margin-bottom: 10px;"
-          />
-          <img
-            v-else
-            src="/placeholder.png"
-            width="40"
-            height="40"
-            class="user-icon"
-            style="margin-top: 10px; margin-bottom: 10px;"
-          />
-
+          <div
+            width="50"
+            height="50"
+          >
+            <img
+              v-if="getUser(msg.username)?.img_url"
+              :src="getUser(msg.username).img_url"
+              width="40"
+              height="40"
+              class="user-icon"
+              style="margin-top: 10px; margin-bottom: 10px;"
+            />
+            <img
+              v-else
+              src="/placeholder.png"
+              width="40"
+              height="40"
+              class="user-icon"
+              style="margin-top: 10px; margin-bottom: 10px;"
+            />
+          </div>
+          
           <div class="message">
             <div class="user" style="padding-top:6px;">
               <div><i>{{ msg.username }}</i></div>
