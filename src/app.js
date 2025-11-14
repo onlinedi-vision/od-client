@@ -268,7 +268,6 @@ export default {
       if(this.ws !== null ) {
         console.log('SENDING MESSAGE THROUGH WS');
         this.ws.send(this.serverID + ':' + this.textChannel + ':' + this.username +':' + message);
-        this.ws.send()
       }
       invoke('sendMessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username }).then((res) => {
         console.log('taaa');
