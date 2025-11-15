@@ -26,6 +26,8 @@
       />
       <button id="send" type="submit" @click="send_message(message)">Send</button>
     </form>
+
+    
     <img @click="openSettings()" v-bind:src='myPfp' width='60px' height='60px' class='cui'
       style='margin-bottom:0px;' />
     <button class="createSButton" @click="createServer()">
@@ -63,8 +65,6 @@
 
       </div>
 
-
-
       <div v-if="createServerPopUp" class="login">
         <h3>Create Server</h3>
         <input class="csv" v-model="newSvName" placeholder="Server Name..." />
@@ -89,17 +89,11 @@
         <h3>{{this.textChannel}}</h3>
       </div>
 
-      <div class = "server-users">
-        <template v-for="(svuser,index) in appState[appState.findIndex(obj => obj.serverID == serverID)].serverUsers" :key="index">
-            <template style='display:flex'>
-              <div width='50px' height='50px'>
-                <img v-if="svuser['img_url'] != ''" v-bind:src="svuser['img_url']" width='50px' height='50px' class="user-list-icon"/>
-                <img v-else v-bind:src="'a'" width='50px' height='50px' class="user-list-icon"/>
-              </div>
-              <div style='padding-left:10px;margin:auto;margin-left:0px;text-align:center'>{{svuser['username']}}</div>
-            </template>
-        </template>
-      </div>
+      <ServerUsersList
+      :appState="appState"
+      :serverID="serverID"
+      />
+
   </main>
     <main v-else-if="!loggedin">
       <LogInWindow :logInSelected='logInSelected' :lError='lError' :lErrorText='lErrorText' @changeLogIn='changeLogIn' @login='logIn' @signup='signUp' />
@@ -115,6 +109,7 @@ import LogInWindow from "./components/login.vue"
 import SettingsWindow from './components/settings.vue'
 import ChannelList from "./components/channelList.vue";
 import ServerList from "./components/serverList.vue";
+import ServerUsersList from "./components/serverUsersList.vue";
 
 export default {
   ...app,
@@ -124,7 +119,8 @@ export default {
     ChatWindow,
   	SettingsWindow,
     ChannelList,
-    ServerList
+    ServerList,
+    ServerUsersList
   }
 }
 </script>
