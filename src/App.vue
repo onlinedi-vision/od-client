@@ -31,12 +31,16 @@
     <button class="createSButton" @click="createServer()">
       <h2 style="margin-top: 12px">+</h2>
     </button>
-    <div class="column">
-      <template v-for="(sv, idx) in userServers" v-bind:key="idx">
-        <img @click="change_server(sv['serverID'])" v-bind:src="sv['img_url']" width='50px' height='50px' class='user-icon' style='margin-top: 0px;margin-top:10px;'/>
-      </template>
-    </div>
-      
+
+
+    <ServerList
+      :userServers="userServers"
+      :appState="appState"
+      :serverID="serverID"
+      :textChannel="textChannel"
+      @changeServer="change_server"
+    />  
+    
     <div v-if="showSIDvar" class="login" style="display:flex;flex-direction:row; left:100px; top:50px; height:30px; width:660px; z-index:999999;">
       <i style="font-size: 12px"> {{serverID}} </i>
     </div>
@@ -110,6 +114,7 @@ import ChatWindow from "./components/chatWindow.vue"
 import LogInWindow from "./components/login.vue"
 import SettingsWindow from './components/settings.vue'
 import ChannelList from "./components/channelList.vue";
+import ServerList from "./components/serverList.vue";
 
 export default {
   ...app,
@@ -118,7 +123,8 @@ export default {
     LogInWindow,
     ChatWindow,
   	SettingsWindow,
-    ChannelList
+    ChannelList,
+    ServerList
   }
 }
 </script>
