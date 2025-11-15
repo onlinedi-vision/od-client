@@ -3,7 +3,6 @@
 
     <form enctype='multipart/form-data' id="file-form" class="row" @submit.prevent="greet">
       <input id="file-upload" type="file" @change="onFileChange" />
-	  <!--   codul pentru preview la incarcare document -->
       <div v-if="selectedFileUrl" class="file-preview">
         <div style="font-size:12px;color:#aaa;">
           {{ selectedFile?.name }} ({{ Math.round(selectedFile.size / 1024) }} KB)

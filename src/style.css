@@ -1,14 +1,16 @@
 :root {
+  --dark-foreground-element-color: #141414;
+  --normal-foreground-element-color:#1a1717; 
+  --main-font-color: #a87678;
+  --background-color:#3d2222;
+  
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
     
-  color: #a87678;
-  background-color: #3d2222;/*#422828;*/
-
-
-
+  color: var(--main-font-color);
+  background-color: var(--background-color);/*#422828;*/
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,13 +26,13 @@ textarea {
 }
 
 textarea::placeholder {
-  color:#a87678; 
+  color:var(--main-font-color); 
 }
 
 code,pre {
   width: calc(100vw - 450px);
   overflow-y: scroll;
-  background-color:#141414;
+  background-color:var(--dark-foreground-element-color);
   color: grey ;  
 }
 
@@ -48,12 +50,12 @@ input[type="file"] {
     width: 100px;
     cursor: pointer;
     border: none;
-    background-color: #1a1717;
+    background-color: var(--normal-foreground-element-color);
     height:43px;
 }
 .custom-file-upload:hover {
   color: white;
-  background-color:#a87678;
+  background-color:var(--main-font-color);
 }
 .container {
   margin: 0;
@@ -76,7 +78,7 @@ a:link {
   color:#9bafc2;
 }
 
-a:hove {
+a:hover {
   color:#c1d4e6;
 }
 
@@ -94,21 +96,21 @@ h1, h2 {
 }
 
 .csv {  
-  background-color:#141414;
-  color: #a87678;
+  background-color:var(--dark-foreground-element-color);
+  color: var(--main-font-color);
 }
 .csv::placeholder {
-  color: #a87678;
+  color: var(--main-font-color);
 }
 .csv:hover {
-  border-color: #a87678;
+  border-color: var(--main-font-color);
 }
 
 .csvb {
-height: 40px; text-align:center; background-color:#141414;
+height: 40px; text-align:center; background-color:var(--dark-foreground-element-color);
 }
 .csvb:hover {
-  border-color: #a87678;
+  border-color: var(--main-font-color);
 }
 
 .user-icon {
@@ -133,10 +135,6 @@ height: 40px; text-align:center; background-color:#141414;
 transition: 0.2s;
 }
 
-.logo.tauri:hover {
-  filter: drop-shadow(0 0 2em #24c8db);
-}
-
 .row {
   display: flex;
   justify-content: center;
@@ -149,12 +147,12 @@ transition: 0.2s;
 }
 
 .channel_button {
-  background-color: #1a1717;
+  background-color: var(--normal-foreground-element-color);
 }
 
 .column {
     transition: 0.2s; 
-    background-color: #141414;
+    background-color: var(--dark-foreground-element-color);
     position: absolute;
     top: 75px;
     left: 5px;
@@ -166,7 +164,7 @@ transition: 0.2s;
 }
 .createSButton {
     transition: 0.2s; 
-    background-color: #141414;
+    background-color: var(--dark-foreground-element-color);
     position: absolute;
     top:calc(100vh - 70px);
     left: 5px;
@@ -179,7 +177,7 @@ transition: 0.2s;
   }
   .login {
     
-    background-color: #141414;
+    background-color: var(--dark-foreground-element-color);
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -194,7 +192,7 @@ transition: 0.2s;
 
   .loginError {
     
-    background-color: #141414;
+    background-color: var(--dark-foreground-element-color);
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -211,7 +209,7 @@ transition: 0.2s;
     overflow-y: hidden;
     overflow-x: scroll;
     transition: 0.2s;
-    background-color: #141414;
+    background-color: var(--dark-foreground-element-color);
     position: absolute;
     top: 5px;
     right: 5px;
@@ -224,7 +222,7 @@ transition: 0.2s;
 
   .chanels {
 
-    background-color: #1a1717;
+    background-color: var(--normal-foreground-element-color);
     position: absolute;
     top: 5px;
     left: 73px;
@@ -262,7 +260,7 @@ transition: 0.2s;
     color: transparent;
 }
 .comp-mess:hover  .mdate  {
-  color: #a87678;
+  color: var(--main-font-color);
 }
 #chat {
   display: flex;
@@ -295,7 +293,7 @@ transition: 0.2s;
   left: 12px; 
   bottom: 56px; 
   max-width: 320px; 
-  background:#1a1717; 
+  background:var(--normal-foreground-element-color); 
   padding:8px; 
   border-radius:8px;
 }
@@ -305,11 +303,11 @@ transition: 0.2s;
   text-align: left;
   position: absolute;
   top: 5px;
-  border-bottom: 2px solid #141414;
+  border-bottom: 2px solid var(--dark-foreground-element-color);
   width: calc(100vw - 332px);
   height: 63px;
   left: 260px;
-  background-color: #1a1717;
+  background-color: var(--normal-foreground-element-color);
   box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -323,8 +321,8 @@ body {
 }
 
 button {
- background-color: #1a1717;
- color: #a87678;
+ background-color: var(--normal-foreground-element-color);
+ color: var(--main-font-color);
  outline: none;
  border: 0px;
   text-align: left;
@@ -332,12 +330,12 @@ button {
 }
 
 button:hover {
-  background-color:#a87678;
+  background-color:var(--main-font-color);
   color: white;
 }
 
 .comp-mess:hover {
-  background-color: #1a1717;
+  background-color: var(--normal-foreground-element-color);
 }
 
 a {
@@ -386,13 +384,13 @@ input {
 
 #send {
   cursor: pointer;
-  background-color: #1a1717;
-  color: #a87678;
+  background-color: var(--normal-foreground-element-color);
+  color: var(--main-font-color);
 }
 
 
 .column:hover {
-  border-color: #141414;
+  border-color: var(--dark-foreground-element-color);
   border-radius: 20px 20px 20px 20px;
 
   transition: border-radius 0.2s;
@@ -400,7 +398,7 @@ input {
 
 .server-users:hover {
   width: 160px;
-  border-color: #141414;
+  border-color: var(--dark-foreground-element-color);
   border-radius: 20px 20px 20px 20px;
   transition: 0.2s;
 }
@@ -416,12 +414,12 @@ input {
 }
 
 .chanels:hover {
-border-color: #a87678;
+border-color: var(--main-font-color);
 }
 
 #send:hover {
-  border-color: #a87678;
-  background-color:#a87678; 
+  border-color: var(--main-font-color);
+  background-color:var(--main-font-color); 
   color: #ffffff;
 }
 
@@ -438,8 +436,8 @@ button {
 #greet-input {
   margin-right: 0px;
   padding-top: 7px;
-  background-color: #1a1717;/*#230d0e;*/ 
-  color: #a87678;
+  background-color: var(--normal-foreground-element-color);/*#230d0e;*/ 
+  color: var(--main-font-color);
   position: -webkit-sticky;
   position: sticky;
   bottom: 0;
@@ -455,8 +453,8 @@ button {
 }
 
 .e-mail {
-  background-color: #1a1717;/*#230d0e;*/ 
-  color: #a87678;
+  background-color: var(--normal-foreground-element-color);/*#230d0e;*/ 
+  color: var(--main-font-color);
   bottom: 0;
   margin-top: 40px;
   margin-left: 30px;
@@ -464,8 +462,8 @@ button {
 }
 
 .username {
-  background-color: #1a1717;/*#230d0e;*/ 
-  color: #a87678;
+  background-color: var(--normal-foreground-element-color);/*#230d0e;*/ 
+  color: var(--main-font-color);
   bottom: 0;
   margin-top: 90px;
   margin-left: 30px;
@@ -473,8 +471,8 @@ button {
 }
 
 .password {
-  background-color: #1a1717;/*#230d0e;*/ 
-  color: #a87678;
+  background-color: var(--normal-foreground-element-color);/*#230d0e;*/ 
+  color: var(--main-font-color);
   bottom: 0;
   margin-top: 10px;
   margin-left: 30px;
@@ -483,8 +481,8 @@ button {
 
 .loginb {
   cursor:pointer;
-  background-color: #1a1717;/*#230d0e;*/ 
-  color: #a87678;
+  background-color: var(--normal-foreground-element-color);/*#230d0e;*/ 
+  color: var(--main-font-color);
   bottom: 0;
   margin-top: 10px;
   margin-left: 30px;
@@ -495,8 +493,8 @@ button {
 }
 .change-login {
   cursor:pointer;
-  background-color: #1a1717;/*#230d0e;*/ 
-  color: #a87678;
+  background-color: var(--normal-foreground-element-color);/*#230d0e;*/ 
+  color: var(--main-font-color);
   bottom: 0;
   position: absolute;
   top: calc(50vh + 190px);
@@ -533,7 +531,7 @@ button {
     width: 80%;
     z-index: 10010;
     text-align: left;
-	color: #a87678;
+	color: var(--main-font-color);
 	padding: 0% 2% 1% 2%;
 }
 
@@ -547,7 +545,7 @@ button {
 
 .closebutton {
     transition: 0.2s; 
-    background-color: #141414;
+    background-color: var(--dark-foreground-element-color);
     height: 30px;
     width: 30px;
 	padding-left: 5px;
@@ -584,26 +582,26 @@ button {
   border-radius: 100%;
   width: 100px;
   height: 100px;
-  background-color: #141414;
+  background-color: var(--dark-foreground-element-color);
   border: 2px solid transparent;
   text-align: center;
   position: absolute;
   bottom: 5%;
   right: 0%;
   z-index: 99;
-  color: #a87678;
+  color: var(--main-font-color);
 }
 
 .menu-button{
 	transition: 0.2s; 
-    background-color: #141414;
+    background-color: var(--dark-foreground-element-color);
     height: 50%;
     width: auto;
 	padding-left: 5px;
     border-radius: 4px 4px 4px 4px;
     border: 2px solid transparent;
     text-align: center;
-	color: #a87678;
+	color: var(--main-font-color);
 }
 .settings-container{
 	display: flex;
@@ -613,13 +611,13 @@ button {
 }
 .logout {
 	transition: 0.2s; 
-    background-color: #141414;
+    background-color: var(--dark-foreground-element-color);
 	padding-left: 5px;
 	width: 100%;
     border-radius: 4px 4px 4px 4px;
     border: 2px solid transparent;
     text-align: center;
-	color: #a87678;
+	color: var(--main-font-color);
 }
 
 .name-change {
@@ -628,7 +626,7 @@ button {
 	margin-left: 2%;
 	flex-direction: column;
 	align-items: center;
-	color: #a87678;
+	color: var(--main-font-color);
 }
 .settings-right {
 	flex:2;
@@ -657,5 +655,5 @@ button {
 }
 
 input::placeholder {
-  color: #a87678;
+  color: var(--main-font-color);
 }

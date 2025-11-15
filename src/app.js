@@ -3,7 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 export default {
   name: "App",
   data() {
-    let token = "16ec6209e46700a7f29fea7b792b53b8f61d3705092bacf4eb853d9f497161b0"; //TODO: remove this? it is a random token
+    let token = null;
 
     let message_ws = null; 
     let ms_counter = 0;
@@ -45,10 +45,6 @@ export default {
                   this.token = event.data;
                 }else if(ms_counter > 2) {
                   console.log("[WEBSOCKET MESSAGE]: " + event.data);
-                  // let sid = event.data.split(':')[0];
-                  // let channel = event.data.split(':')[1];
-                  // let username = event.data.split(':')[2];
-                  // let message = event.data.split(':')[3];
 
                   let splitm = event.data.split(':');
                   let [sid, channel, username, ...message] = splitm;
@@ -123,8 +119,6 @@ export default {
         console.log(err)
         this.loggedin = false;
       });
-
-
 
     return {
       ws: null,
@@ -238,7 +232,6 @@ export default {
         return;
       }
 
-
       if (this.serverID === '1') { message = ''; this.name; }
       if (message === '') return;
       this.name = '';
@@ -320,7 +313,6 @@ export default {
       invoke('logIn', { username: this.lusername, password: this.password })
         .then((res) => {
           console.log(res);
-
 
           let tokenJS = JSON.parse(res);
           this.token = tokenJS['token'];
@@ -525,5 +517,4 @@ export default {
         })
 	}
   },
-
 };
