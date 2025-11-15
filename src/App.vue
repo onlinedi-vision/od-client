@@ -21,10 +21,10 @@
       <label for="file-upload" class="custom-file-upload">
         <h3 style="margin-top: 10px;" class="fa fa-cloud-upload fa-plus"><b>+</b></h3>
       </label>
-      <textarea maxlength="2000" rows="1" style="font-size:16px; field-sizing: content" id="greet-input" v-model="name" placeholder="Type a message..."
+      <textarea maxlength="2000" rows="1" style="font-size:16px; field-sizing: content" id="greet-input" v-model="message" placeholder="Type a message..."
         oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight - 10) + 'px';"
       />
-      <button id="send" type="submit" @click="send_message(name)">Send</button>
+      <button id="send" type="submit" @click="send_message(message)">Send</button>
     </form>
     <img @click="openSettings()" v-bind:src='myPfp' width='60px' height='60px' class='cui'
       style='margin-bottom:0px;' />
@@ -117,8 +117,8 @@ export default {
   components: {
     LogInWindow,
     ChatWindow,
-	SettingsWindow,
-  ChannelList
+  	SettingsWindow,
+    ChannelList
   }
 }
 </script>

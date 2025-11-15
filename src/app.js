@@ -166,7 +166,7 @@ export default {
       svusers: [
         { 'img': 'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif', 'username': 'ana' }
       ],
-      name: '',
+      message: '',
       textChannel: 'welcome',
       filename: '',
       nchn: '',
@@ -206,9 +206,9 @@ export default {
             message += to_append;
             console.log(message);
 
-            if (this.serverID === '1') { message = ''; this.name; }
+            if (this.serverID === '1') { message = ''; this.message; }
             if (message === '') return;
-            this.name = '';
+            this.message = '';
 
             if(this.ws !== null ) {
               console.log('SENDING MESSAGE THROUGH WS ' + message);
@@ -217,12 +217,12 @@ export default {
             invoke('sendMessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username })
             .then(() => {
               console.log('taaa');
-              this.name = '';
+              this.message = '';
               this.clearSelectedFile();
             }).catch((err) => {
               this.storedChannels[this.storedChannels.findIndex(obj => obj.channelTag === this.textChannel)]['messages'].unshift({ "username": this.username, "m_content": err });
             });
-            this.name = this.clearSelectedFile();
+            this.message = this.clearSelectedFile();
 
           });
         })
@@ -232,9 +232,9 @@ export default {
         return;
       }
 
-      if (this.serverID === '1') { message = ''; this.name; }
+      if (this.serverID === '1') { message = ''; this.message; }
       if (message === '') return;
-      this.name = '';
+      this.message = '';
 
       if(this.ws !== null ) {
         console.log('SENDING MESSAGE THROUGH WS');
@@ -243,11 +243,11 @@ export default {
       invoke('sendMessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username })
       .then(() => {
         console.log('taaa');
-        this.name = '';
+        this.message = '';
       }).catch((err) => {
         this.storedChannels[this.storedChannels.findIndex(obj => obj.channelTag === this.textChannel)]['messages'].unshift({ "username": this.username, "m_content": err });
       });
-      this.name = '';
+      this.message = '';
     },
     getUserServers() {
       invoke('getServers', { token: this.token, username: this.username })
