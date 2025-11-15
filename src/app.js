@@ -28,10 +28,9 @@ export default {
 
                   invoke('spellCheck', { token: token, username: this.username, key: event.data })
                   .then((res) => {
-                    console.log('SPELL:' + res);
                     message_ws.send(res);
                   }).catch((err) => {
-                    console.log('test' + err);
+                    console.log(err);
                   });
                 } else if(ms_counter === 1) {
                   ms_counter += 1;
@@ -40,7 +39,6 @@ export default {
                     message_ws.send('TOKEN:'+this.token);
                   }
                 } else if (ms_counter == 2) {
-                  console.log("[NEW TOKEN]: " + event.data);
                   ms_counter += 1;
                   this.token = event.data;
                 }else if(ms_counter > 2) {
@@ -50,7 +48,6 @@ export default {
                   let [sid, channel, username, ...message] = splitm;
                   message = message.join(':');
 
-                  console.log(this.appState);
                   this.appState[
                     this.appState.findIndex(obj => obj.serverID == sid)
                   ]['storedChannels'][
@@ -103,8 +100,8 @@ export default {
                       console.log(err);
                     });
                 })
-                .catch(() => {
-                  console.log('err channels');
+                .catch((err) => {
+                  console.log(err);
                 });
             }
 			this.getOwnPfp();
@@ -194,9 +191,6 @@ export default {
 
         fileData.append("file", file);
 
-        for (var pair of fileData.entries()) {
-          console.log(pair[0] + '!!!!' + pair[1]);
-        }
         fetch("https://onlinedi.vision:7377/upload", {
           method: 'POST',
           body: fileData
@@ -204,19 +198,16 @@ export default {
           response.text().then(mess => {
             const to_append = "https://onlinedi.vision:7377" + mess.split(/\r?\n/).pop();
             message += to_append;
-            console.log(message);
 
             if (this.serverID === '1') { message = ''; this.message; }
             if (message === '') return;
             this.message = '';
 
             if(this.ws !== null ) {
-              console.log('SENDING MESSAGE THROUGH WS ' + message);
               this.ws.send(this.serverID + ':' + this.textChannel + ':' + this.username +':' + message);
             }
             invoke('sendMessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username })
             .then(() => {
-              console.log('taaa');
               this.message = '';
               this.clearSelectedFile();
             }).catch((err) => {
@@ -237,12 +228,10 @@ export default {
       this.message = '';
 
       if(this.ws !== null ) {
-        console.log('SENDING MESSAGE THROUGH WS');
         this.ws.send(this.serverID + ':' + this.textChannel + ':' + this.username +':' + message);
       }
       invoke('sendMessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username })
       .then(() => {
-        console.log('taaa');
         this.message = '';
       }).catch((err) => {
         this.storedChannels[this.storedChannels.findIndex(obj => obj.channelTag === this.textChannel)]['messages'].unshift({ "username": this.username, "m_content": err });
@@ -255,11 +244,6 @@ export default {
           let servers = JSON.parse(res);
           this.token = servers['token'];
 
-          let message_ws = new WebSocket("wss://onlinedi.vision/wss?username="+this.username);
-
-          message_ws.addEventListener("message", (event) => {
-            console.log("[WEBSOCKET] Message from server ", event.data);
-          });
 
           invoke('writeCredentials', { creds: JSON.stringify({ 'username': this.username, 'token': this.token }) })
             .then((res) => console.log(res))
@@ -285,16 +269,15 @@ export default {
                       this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].storedChannels.push({ 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] });
                       this.storedChannels.push({ 'serverID': servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] })
                     })
-                    .catch(() => {
-                      console.log('err');
+                    .catch((err) => {
+                      console.log(err);
                     });
 
                 }
                 this.done = true;
-                console.log(this.storedChannels);
               })
-              .catch(() => {
-                console.log('err channels');
+              .catch((err) => {
+                console.log(err);
               });
           }
         })
@@ -308,11 +291,8 @@ export default {
     logIn(user, password) {
       this.lusername = user;
       this.password = password;
-      console.log(this.lusername);
-      console.log(this.password);
       invoke('logIn', { username: this.lusername, password: this.password })
         .then((res) => {
-          console.log(res);
 
           let tokenJS = JSON.parse(res);
           this.token = tokenJS['token'];
@@ -375,8 +355,8 @@ export default {
         .then((res) => {
           console.log(res);
         })
-        .catch(() => {
-          console.log('err');
+        .catch((err) => {
+          console.log(err);
         });
     },
     change_channel(newChan) {
