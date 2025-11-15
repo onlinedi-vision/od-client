@@ -10,7 +10,7 @@
   font-weight: 400;
     
   color: var(--main-font-color);
-  background-color: var(--background-color);/*#422828;*/
+  background-color: var(--background-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -239,8 +239,6 @@ transition: 0.2s;
   .message {
     text-align: left;
     padding-left: 10px;
-    /* display:flex; */
-    /* flex-direction: column; */
   }
 
   .comp-mess {
@@ -352,8 +350,6 @@ h1 {
   text-align: center;
 }
 
-
-
 input {
   margin-right: 0px;
   border: 2px solid transparent;
@@ -364,8 +360,6 @@ input {
   color: #0f0f0f;
   background-color: #ffffff;
   transition: border-color 0.25s;
-  /*box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);*/
-
 }
 #send {
   padding-left: 0px;
@@ -436,7 +430,7 @@ button {
 #greet-input {
   margin-right: 0px;
   padding-top: 7px;
-  background-color: var(--normal-foreground-element-color);/*#230d0e;*/ 
+  background-color: var(--normal-foreground-element-color);
   color: var(--main-font-color);
   position: -webkit-sticky;
   position: sticky;
@@ -453,7 +447,7 @@ button {
 }
 
 .e-mail {
-  background-color: var(--normal-foreground-element-color);/*#230d0e;*/ 
+  background-color: var(--normal-foreground-element-color);
   color: var(--main-font-color);
   bottom: 0;
   margin-top: 40px;
@@ -462,7 +456,7 @@ button {
 }
 
 .username {
-  background-color: var(--normal-foreground-element-color);/*#230d0e;*/ 
+  background-color: var(--normal-foreground-element-color);
   color: var(--main-font-color);
   bottom: 0;
   margin-top: 90px;
@@ -471,7 +465,7 @@ button {
 }
 
 .password {
-  background-color: var(--normal-foreground-element-color);/*#230d0e;*/ 
+  background-color: var(--normal-foreground-element-color);
   color: var(--main-font-color);
   bottom: 0;
   margin-top: 10px;
@@ -481,7 +475,7 @@ button {
 
 .loginb {
   cursor:pointer;
-  background-color: var(--normal-foreground-element-color);/*#230d0e;*/ 
+  background-color: var(--normal-foreground-element-color);
   color: var(--main-font-color);
   bottom: 0;
   margin-top: 10px;
@@ -493,7 +487,7 @@ button {
 }
 .change-login {
   cursor:pointer;
-  background-color: var(--normal-foreground-element-color);/*#230d0e;*/ 
+  background-color: var(--normal-foreground-element-color);
   color: var(--main-font-color);
   bottom: 0;
   position: absolute;

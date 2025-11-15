@@ -1,5 +1,5 @@
 <template>
-  <img  v-bind:src="sv['img_url']" width='50px' height='50px' class='server-icon' style='margin-top: 0px;margin-top:10px;'/>
+  <img  v-bind:src="sv['img_url']" class='server-icon'/>
 </template>
 
 <script>
@@ -20,6 +20,10 @@ export default {
 <style scoped>
 
 .server-icon {
+  margin-top: 0px;
+  margin-top:10px;
+  width:  50px;
+  height: 50px;
   border-radius: 40px 40px 40px 40px;
   margin-top: 10px;
 }

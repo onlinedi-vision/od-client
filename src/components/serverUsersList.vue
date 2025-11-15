@@ -44,7 +44,7 @@ export default {
   z-index: 9999;
 }
 .server-users:hover {
-  width: 160px;
+  width: 200px;
   border-color: var(--dark-foreground-element-color);
   border-radius: 20px 20px 20px 20px;
   transition: 0.2s;

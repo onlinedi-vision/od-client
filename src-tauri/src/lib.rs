@@ -1,12 +1,5 @@
 use base64::prelude::*;
 
-#[allow(non_snake_case)]
-
-#[tauri::command]
-fn test() {
-    println!("Hello!");
-}
-
 #[tauri::command(rename_all = "snake_case")]
 async fn sendmessage(
     host_url: String,
@@ -417,7 +410,6 @@ pub fn run() {
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
-            test,
             sendmessage,
             getmessages,
             getchannels,
