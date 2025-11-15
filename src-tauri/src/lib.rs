@@ -1,13 +1,14 @@
-mod structures;
 use base64::prelude::*;
 
+#[allow(non_snake_case)]
+
 #[tauri::command]
-fn test() -> () {
+fn test() {
     println!("Hello!");
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn sendMessage(
+async fn sendmessage(
     host_url: String,
     token: String,
     channel: String,
@@ -31,13 +32,13 @@ async fn sendMessage(
         .await;
     println!("{:?}", res);
     match res {
-        Ok(res) => m_content,
+        Ok(_) => m_content,
         Err(_) => "err".to_string(),
     }
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn spellCheck(
+async fn spellcheck(
     token: String,
     username: String,
     key: String,
@@ -64,7 +65,7 @@ async fn spellCheck(
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn getMessages(
+async fn getmessages(
     host_url: String,
     token: String,
     channel: String,
@@ -95,7 +96,7 @@ async fn getMessages(
 
 
 #[tauri::command(rename_all = "snake_case")]
-async fn getServerUsers(
+async fn get_server_users(
     host_url: String,
     token: String,
     server: String,
@@ -124,7 +125,7 @@ async fn getServerUsers(
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn getServers(token: String, username: String) -> String {
+async fn getservers(token: String, username: String) -> String {
     let mut map = std::collections::HashMap::new();
     map.insert("token", token.clone());
     map.insert("username", username.clone());
@@ -144,7 +145,7 @@ async fn getServers(token: String, username: String) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn getServerInfo(server_id: String) -> String {
+async fn get_server_info(server_id: String) -> String {
     let client = reqwest::Client::new();
     let res = client
         .get(format!(
@@ -162,7 +163,7 @@ async fn getServerInfo(server_id: String) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn getChannels(host_url: String, token: String, server: String, username: String) -> String {
+async fn getchannels(host_url: String, token: String, server: String, username: String) -> String {
     let mut map = std::collections::HashMap::new();
     map.insert("token", token.clone());
     map.insert("username", username.clone());
@@ -181,22 +182,22 @@ async fn getChannels(host_url: String, token: String, server: String, username: 
     res
 }
 
-fn getCredentialFile() -> String {
+fn get_credential_file() -> String {
     if cfg!(windows) {
-        return "\\AppData\\Roaming\\OnlineDivision\\credentials.json".to_string();
+        "\\AppData\\Roaming\\OnlineDivision\\credentials.json".to_string()
     } else if cfg!(unix) {
-        return "/.division-online/credentials.json".to_string();
+        "/.division-online/credentials.json".to_string()
     } else {
         panic!("FATAL ERROR: unidentified OS type");
     }
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn getLocalToken() -> String {
+async fn get_local_token() -> String {
     println!("here");
     match std::env::home_dir() {
         Some(home_dih) => {
-            std::fs::read_to_string(format!("{}{}", home_dih.display(), getCredentialFile()))
+            std::fs::read_to_string(format!("{}{}", home_dih.display(), get_credential_file()))
                 .expect("Should have been able to read the file")
         }
         _ => "Failed".to_string(),
@@ -204,12 +205,12 @@ async fn getLocalToken() -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn writeCredentials(creds: String) -> () {
+async fn write_credentials(creds: String) -> () {
     println!("write");
     match std::env::home_dir() {
         Some(home_dih) => {
             std::fs::write(
-                format!("{}{}", home_dih.display(), getCredentialFile()),
+                format!("{}{}", home_dih.display(), get_credential_file()),
                 creds,
             )
             .expect("Should have been able to write the file");
@@ -221,7 +222,7 @@ async fn writeCredentials(creds: String) -> () {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn logIn(password: String, username: String) -> String {
+async fn login(password: String, username: String) -> String {
     let mut map = std::collections::HashMap::new();
     map.insert("password", password.clone());
     map.insert("username", username.clone());
@@ -241,7 +242,7 @@ async fn logIn(password: String, username: String) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn signUp(password: String, username: String, email: String) -> String {
+async fn signup(password: String, username: String, email: String) -> String {
     let mut map = std::collections::HashMap::new();
     map.insert("password", password.clone());
     map.insert("username", username.clone());
@@ -262,7 +263,7 @@ async fn signUp(password: String, username: String, email: String) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn sendFile(cont: String) -> String {
+async fn sendfile(cont: String) -> String {
     let mut map = std::collections::HashMap::new();
     map.insert("cont", BASE64_STANDARD.encode(cont.clone()));
     println!("signUp  {}", cont);
@@ -281,7 +282,7 @@ async fn sendFile(cont: String) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn createChannel(
+async fn create_channel(
     host_url: String,
     username: String,
     token: String,
@@ -311,7 +312,7 @@ async fn createChannel(
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn createServer(
+async fn create_server(
     username: String,
     token: String,
     name: String,
@@ -340,7 +341,7 @@ async fn createServer(
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn joinServer(
+async fn join_server(
     host_url: String,
     username: String,
     token: String,
@@ -365,7 +366,7 @@ async fn joinServer(
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn getProfilePic(
+async fn get_profile_pic(
 	username: String,
 	token: String,
 ) -> String {
@@ -387,7 +388,7 @@ async fn getProfilePic(
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn setProfilePic(
+async fn set_profile_pic(
 	username: String,
 	token: String,
 	img_url: String,
@@ -417,23 +418,23 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             test,
-            sendMessage,
-            getMessages,
-            getChannels,
-            getServers,
-            getServerInfo,
-            getLocalToken,
-            writeCredentials,
-            logIn,
-            signUp,
-            sendFile,
-            createChannel,
-            createServer,
-            joinServer,
-            getServerUsers,
-            spellCheck,
-			      getProfilePic,
-			      setProfilePic,
+            sendmessage,
+            getmessages,
+            getchannels,
+            getservers,
+            get_server_info,
+            get_local_token,
+            write_credentials,
+            login,
+            signup,
+            sendfile,
+            create_channel,
+            create_server,
+            join_server,
+            get_server_users,
+            spellcheck,
+            get_profile_pic,
+            set_profile_pic,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
