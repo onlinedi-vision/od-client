@@ -33,7 +33,7 @@ async function search() {
         const endpoint = query.value.trim() ? 'search' : 'featured';
         const params = new URLSearchParams({
             key: API_KEY,
-            limit: '15',
+            limit: '20',
             media_filter: 'gif,tinygif'
         });
 
@@ -79,6 +79,10 @@ function select(url) {
     z-index: 2000;
 }
 
+.gif-overlay button{
+    border-radius: 4px;
+}
+
 .gif-modal {
     width: 640px;
     max-width: 95vw;
@@ -97,6 +101,10 @@ function select(url) {
     margin-bottom: 10px;
 }
 
+.gif-header input{
+    border-radius: 4px;
+}
+
 .gif-footer {
     margin-top: 10px;
     display: flex;
@@ -106,7 +114,7 @@ function select(url) {
 .gif-grid {
     overflow: auto;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 8px;
 }
 
