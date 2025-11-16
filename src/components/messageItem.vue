@@ -24,7 +24,7 @@
     
     <div class="message">
       <div class="user" style="padding-top:6px;">
-        <div><i>{{ msg.username }}</i></div>
+        <div><b style="font-size:18px;">{{ msg.username }}</b></div>
         <div
           class="mdate"
           style="font-size:12px; padding-left:5px; padding-top:1px;"

@@ -69,17 +69,17 @@ export default {
   padding: 6px 10px;
   border: none;
   background: none;
-  color: #ccc;
+  color: var(--main-font-color);
   cursor: pointer;
   text-align: left;
   transition: all 0.2s ease;
 }
 .channel_button:hover {
-  background-color: #a87678;
+  background-color: --main-font-color;
   color: white;
 }
 .channel_button.active {
-  background-color: #a87678;
+  background-color: --main-font-color;
   color: white;
 }
 .channel_button.add-channel {
