@@ -1,8 +1,8 @@
 :root {
-  --dark-foreground-element-color: #141414;
-  --normal-foreground-element-color:#1a1717; 
-  --main-font-color: #a87678;
-  --background-color:#3d2222;
+  --dark-foreground-element-color:#050505;
+  --normal-foreground-element-color:#050505; 
+  --main-font-color:#7C7171;
+  --background-color:#141215;
   
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;

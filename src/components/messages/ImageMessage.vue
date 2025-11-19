@@ -1,6 +1,6 @@
 <template>
-  <div >
-    <img :src="source" />
+  <div>
+    <img :src="source" class="image" style="border-radius:0px"/>
   </div>
 </template>
 
@@ -14,3 +14,10 @@ export default {
 }
 
 </script>
+
+<style scoped>
+.image {
+  border-radius: 0px;
+  border: 0px;
+}
+</style>
