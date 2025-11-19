@@ -40,6 +40,7 @@ export default {
 .user-list-icon-container {
   width: 50px;
   height: 50px;
+  padding-left: 3px;
 }
 </style>
 
