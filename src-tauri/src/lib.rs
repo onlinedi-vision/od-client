@@ -1,4 +1,4 @@
-use base64::prelude::*;
+pub(crate) mod prelude;
 
 #[tauri::command(rename_all = "snake_case")]
 async fn sendmessage(
@@ -13,7 +13,7 @@ async fn sendmessage(
     map.insert("token", token.clone());
     map.insert("m_content", m_content.clone());
     map.insert("username", username.clone());
-    println!("{}", m_content.clone());
+    prelude::debug_only_print(&m_content.clone());
     let client = reqwest::Client::new();
     let res = client
         .post(format!(
@@ -23,7 +23,7 @@ async fn sendmessage(
         .json(&map)
         .send()
         .await;
-    println!("{:?}", res);
+    prelude::debug_only_print(&res);
     match res {
         Ok(_) => m_content,
         Err(_) => "err".to_string(),
@@ -53,7 +53,7 @@ async fn spellcheck(
         .text()
         .await
         .expect("err");
-    println!("{:?}", res);
+    prelude::debug_only_print(&res);
     res
 }
 
@@ -83,7 +83,7 @@ async fn getmessages(
         .text()
         .await
         .expect("err");
-    println!("{:?}", res);
+    prelude::debug_only_print(&res);
     res
 }
 
@@ -113,7 +113,7 @@ async fn get_server_users(
         .text()
         .await
         .expect("err");
-    println!("{:?}", res);
+    prelude::debug_only_print(&res);
     res
 }
 
@@ -122,7 +122,7 @@ async fn getservers(token: String, username: String) -> String {
     let mut map = std::collections::HashMap::new();
     map.insert("token", token.clone());
     map.insert("username", username.clone());
-    println!(">>>>> {}", token);
+    prelude::debug_only_print(&format!("getservers {}", token));
     let client = reqwest::Client::new();
     let res = client
         .post("https://onlinedi.vision/api/get_user_servers")
@@ -133,7 +133,7 @@ async fn getservers(token: String, username: String) -> String {
         .text()
         .await
         .expect("err");
-    println!("{:?}", res);
+    prelude::debug_only_print(&res);
     res
 }
 
@@ -151,7 +151,7 @@ async fn get_server_info(server_id: String) -> String {
         .text()
         .await
         .expect("err");
-    println!("{:?}", res);
+    prelude::debug_only_print(&res);
     res
 }
 
@@ -160,7 +160,7 @@ async fn getchannels(host_url: String, token: String, server: String, username: 
     let mut map = std::collections::HashMap::new();
     map.insert("token", token.clone());
     map.insert("username", username.clone());
-    println!("getChannels  {}", token);
+    prelude::debug_only_print(&token);
     let client = reqwest::Client::new();
     let res = client
         .post(format!("{}/{}/api/get_channels", host_url, server))
@@ -171,7 +171,7 @@ async fn getchannels(host_url: String, token: String, server: String, username: 
         .text()
         .await
         .expect("err");
-    println!("{:?}", res);
+    prelude::debug_only_print(&res);
     res
 }
 
@@ -187,7 +187,6 @@ fn get_credential_file() -> String {
 
 #[tauri::command(rename_all = "snake_case")]
 async fn get_local_token() -> String {
-    println!("here");
     match std::env::home_dir() {
         Some(home_dih) => {
             std::fs::read_to_string(format!("{}{}", home_dih.display(), get_credential_file()))
@@ -199,7 +198,7 @@ async fn get_local_token() -> String {
 
 #[tauri::command(rename_all = "snake_case")]
 async fn write_credentials(creds: String) -> () {
-    println!("write");
+    prelude::debug_only_print(&"write");
     match std::env::home_dir() {
         Some(home_dih) => {
             std::fs::write(
@@ -209,7 +208,7 @@ async fn write_credentials(creds: String) -> () {
             .expect("Should have been able to write the file");
         }
         _ => {
-            println!("Failed Write");
+            prelude::debug_only_print(&"Failed Write");
         }
     }
 }
@@ -219,7 +218,7 @@ async fn login(password: String, username: String) -> String {
     let mut map = std::collections::HashMap::new();
     map.insert("password", password.clone());
     map.insert("username", username.clone());
-    println!("logIn  {}", username);
+    prelude::debug_only_print(&username);
     let client = reqwest::Client::new();
     let res = client
         .post("https://onlinedi.vision/api/try_login")
@@ -230,7 +229,7 @@ async fn login(password: String, username: String) -> String {
         .text()
         .await
         .expect("err");
-    println!("{:?}", res);
+    prelude::debug_only_print(&res);
     res
 }
 
@@ -240,7 +239,7 @@ async fn signup(password: String, username: String, email: String) -> String {
     map.insert("password", password.clone());
     map.insert("username", username.clone());
     map.insert("email", email.clone());
-    println!("signUp  {}", username);
+    prelude::debug_only_print(&username);
     let client = reqwest::Client::new();
     let res = client
         .post("https://onlinedi.vision/api/new_user")
@@ -251,26 +250,7 @@ async fn signup(password: String, username: String, email: String) -> String {
         .text()
         .await
         .expect("err");
-    println!("{:?}", res);
-    res
-}
-
-#[tauri::command(rename_all = "snake_case")]
-async fn sendfile(cont: String) -> String {
-    let mut map = std::collections::HashMap::new();
-    map.insert("cont", BASE64_STANDARD.encode(cont.clone()));
-    println!("signUp  {}", cont);
-    let client = reqwest::Client::new();
-    let res = client
-        .post("https://onlinedi.vision/api/cdn")
-        .json(&map)
-        .send()
-        .await
-        .expect("err")
-        .text()
-        .await
-        .expect("err");
-    println!("{:?}", res);
+    prelude::debug_only_print(&res);
     res
 }
 
@@ -300,7 +280,7 @@ async fn create_channel(
         .text()
         .await
         .expect("err");
-    println!("{:?}", res);
+    prelude::debug_only_print(&res);
     res
 }
 
@@ -318,7 +298,7 @@ async fn create_server(
     map.insert("desc", desc.clone());
     map.insert("img_url", img_url.clone());
     map.insert("token", token.clone());
-    println!("{:?}", map);
+    prelude::debug_only_print(&map);
     let client = reqwest::Client::new();
     let res = client
         .post("https://onlinedi.vision/api/create_server")
@@ -329,7 +309,7 @@ async fn create_server(
         .text()
         .await
         .expect("err");
-    println!("{:?}", res);
+    prelude::debug_only_print(&res);
     res
 }
 
@@ -343,7 +323,7 @@ async fn join_server(
     let mut map = std::collections::HashMap::new();
     map.insert("username", username.clone());
     map.insert("token", token.clone());
-    println!("{:?}", map);
+    prelude::debug_only_print(&map);
     let client = reqwest::Client::new();
     let res = client
         .post(format!("{}/{}/api/join", host_url, server_id.clone()))
@@ -354,7 +334,7 @@ async fn join_server(
         .text()
         .await
         .expect("err");
-    println!("{:?}", res);
+    prelude::debug_only_print(&res);
     res
 }
 
@@ -376,7 +356,7 @@ async fn get_profile_pic(
 		.text()
 		.await
 		.expect("err");
-	println!("{:?}", res);
+    prelude::debug_only_print(&res);
     res
 }
 
@@ -400,7 +380,7 @@ async fn set_profile_pic(
 		.text()
 		.await
 		.expect("err");
-	println!("{:?}", res);
+    prelude::debug_only_print(&res);
     res
 }
 
@@ -419,7 +399,6 @@ pub fn run() {
             write_credentials,
             login,
             signup,
-            sendfile,
             create_channel,
             create_server,
             join_server,
