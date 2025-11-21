@@ -1,4 +1,8 @@
 pub(crate) mod prelude;
+pub(crate) mod statics;
+pub(crate) mod net;
+                    
+use net::{post,post_to_text, get_to_text};
 
 #[tauri::command(rename_all = "snake_case")]
 async fn sendmessage(
@@ -14,15 +18,7 @@ async fn sendmessage(
     map.insert("m_content", m_content.clone());
     map.insert("username", username.clone());
     prelude::debug_only_print(&m_content.clone());
-    let client = reqwest::Client::new();
-    let res = client
-        .post(format!(
-            "{}/{}/api/{}/send_message",
-            host_url, server, channel
-        ))
-        .json(&map)
-        .send()
-        .await;
+    let res = post(&format!("{}/{}/api/{}/send_message",host_url, server, channel), map).await;
     prelude::debug_only_print(&res);
     match res {
         Ok(_) => m_content,
@@ -41,17 +37,7 @@ async fn spellcheck(
     map.insert("username", username.clone());
     map.insert("key", key.clone());
 
-    let client = reqwest::Client::new();
-    let res = client
-        .post(
-        "https://onlinedi.vision/api/spell/check"
-        )
-        .json(&map)
-        .send()
-        .await
-        .expect("err")
-        .text()
-        .await
+    let res = post_to_text("https://onlinedi.vision/api/spell/check", map, "Spell Check Failed").await
         .expect("err");
     prelude::debug_only_print(&res);
     res
@@ -70,17 +56,7 @@ async fn getmessages(
     map.insert("username", username.clone());
     map.insert("limit", "100".to_string());
     map.insert("offset", "0".to_string());
-    let client = reqwest::Client::new();
-    let res = client
-        .post(format!(
-            "{}/{}/api/{}/get_messages_migration",
-            host_url, server, channel
-        ))
-        .json(&map)
-        .send()
-        .await
-        .expect("err")
-        .text()
+    let res = post_to_text(&format!("{}/{}/api/{}/get_messages_migration",host_url, server, channel), map, "Failed to retrieve messages")
         .await
         .expect("err");
     prelude::debug_only_print(&res);
@@ -98,19 +74,7 @@ async fn get_server_users(
     let mut map = std::collections::HashMap::new();
     map.insert("token", token.clone());
     map.insert("username", username.clone());
-    let client = reqwest::Client::new();
-    let res = client
-        .post(
-
-           format!(
-            "{}/{}/api/get_server_users",
-            host_url, server
-        ))
-        .json(&map)
-        .send()
-        .await
-        .expect("err")
-        .text()
+    let res = post_to_text(&format!("{}/{}/api/get_server_users",host_url, server), map, "Failed to get server users.")
         .await
         .expect("err");
     prelude::debug_only_print(&res);
@@ -123,14 +87,7 @@ async fn getservers(token: String, username: String) -> String {
     map.insert("token", token.clone());
     map.insert("username", username.clone());
     prelude::debug_only_print(&format!("getservers {}", token));
-    let client = reqwest::Client::new();
-    let res = client
-        .post("https://onlinedi.vision/api/get_user_servers")
-        .json(&map)
-        .send()
-        .await
-        .expect("err")
-        .text()
+    let res = post_to_text("https://onlinedi.vision/api/get_user_servers", map, "Failed to get use servers.")
         .await
         .expect("err");
     prelude::debug_only_print(&res);
@@ -139,16 +96,7 @@ async fn getservers(token: String, username: String) -> String {
 
 #[tauri::command(rename_all = "snake_case")]
 async fn get_server_info(server_id: String) -> String {
-    let client = reqwest::Client::new();
-    let res = client
-        .get(format!(
-            "https://onlinedi.vision/servers/{}/api/get_server_info",
-            server_id
-        ))
-        .send()
-        .await
-        .expect("err")
-        .text()
+    let res = get_to_text(&format!("https://onlinedi.vision/servers/{}/api/get_server_info",server_id), "Failed to get server info.")
         .await
         .expect("err");
     prelude::debug_only_print(&res);
@@ -161,14 +109,7 @@ async fn getchannels(host_url: String, token: String, server: String, username: 
     map.insert("token", token.clone());
     map.insert("username", username.clone());
     prelude::debug_only_print(&token);
-    let client = reqwest::Client::new();
-    let res = client
-        .post(format!("{}/{}/api/get_channels", host_url, server))
-        .json(&map)
-        .send()
-        .await
-        .expect("err")
-        .text()
+    let res = post_to_text(&format!("{}/{}/api/get_channels", host_url, server), map, "Failed to get channels.")
         .await
         .expect("err");
     prelude::debug_only_print(&res);
@@ -219,14 +160,7 @@ async fn login(password: String, username: String) -> String {
     map.insert("password", password.clone());
     map.insert("username", username.clone());
     prelude::debug_only_print(&username);
-    let client = reqwest::Client::new();
-    let res = client
-        .post("https://onlinedi.vision/api/try_login")
-        .json(&map)
-        .send()
-        .await
-        .expect("err")
-        .text()
+    let res = post_to_text("https://onlinedi.vision/api/try_login", map, "Failed to Log in.")
         .await
         .expect("err");
     prelude::debug_only_print(&res);
@@ -240,14 +174,7 @@ async fn signup(password: String, username: String, email: String) -> String {
     map.insert("username", username.clone());
     map.insert("email", email.clone());
     prelude::debug_only_print(&username);
-    let client = reqwest::Client::new();
-    let res = client
-        .post("https://onlinedi.vision/api/new_user")
-        .json(&map)
-        .send()
-        .await
-        .expect("err")
-        .text()
+    let res = post_to_text("https://onlinedi.vision/api/new_user", map, "Failed to create new user.")
         .await
         .expect("err");
     prelude::debug_only_print(&res);
@@ -266,18 +193,7 @@ async fn create_channel(
     map.insert("username", username.clone());
     map.insert("channel_name", channel_name.clone());
     map.insert("token", token.clone());
-    let client = reqwest::Client::new();
-    let res = client
-        .post(format!(
-            "{}/{}/api/create_channel",
-            host_url,
-            server_id.clone()
-        ))
-        .json(&map)
-        .send()
-        .await
-        .expect("err")
-        .text()
+    let res = post_to_text(&format!("{}/{}/api/create_channel",host_url,server_id.clone()), map, "Failed to create channel.")
         .await
         .expect("err");
     prelude::debug_only_print(&res);
@@ -299,14 +215,7 @@ async fn create_server(
     map.insert("img_url", img_url.clone());
     map.insert("token", token.clone());
     prelude::debug_only_print(&map);
-    let client = reqwest::Client::new();
-    let res = client
-        .post("https://onlinedi.vision/api/create_server")
-        .json(&map)
-        .send()
-        .await
-        .expect("err")
-        .text()
+    let res = post_to_text("https://onlinedi.vision/api/create_server", map, "Failed to create server.")
         .await
         .expect("err");
     prelude::debug_only_print(&res);
@@ -324,14 +233,7 @@ async fn join_server(
     map.insert("username", username.clone());
     map.insert("token", token.clone());
     prelude::debug_only_print(&map);
-    let client = reqwest::Client::new();
-    let res = client
-        .post(format!("{}/{}/api/join", host_url, server_id.clone()))
-        .json(&map)
-        .send()
-        .await
-        .expect("err")
-        .text()
+    let res = post_to_text(&format!("{}/{}/api/join", host_url, server_id.clone()), map, "Failed to join server.")
         .await
         .expect("err");
     prelude::debug_only_print(&res);
@@ -346,14 +248,7 @@ async fn get_profile_pic(
 	let mut map = std::collections::HashMap::new();
 	map.insert("username", username.clone());
     map.insert("token", token.clone());
-	let client = reqwest::Client::new();
-	let res = client
-		.post("https://onlinedi.vision/api/get_user_pfp")
-		.json(&map)
-		.send()
-		.await
-		.expect("err")
-		.text()
+	let res = post_to_text("https://onlinedi.vision/api/get_user_pfp", map, "Failed to get PFP.")
 		.await
 		.expect("err");
     prelude::debug_only_print(&res);
@@ -370,14 +265,7 @@ async fn set_profile_pic(
 	map.insert("username", username.clone());
     map.insert("token", token.clone());
 	map.insert("img_url", img_url.clone());
-	let client = reqwest::Client::new();
-	let res = client
-		.post("https://onlinedi.vision/api/set_user_pfp")
-		.json(&map)
-		.send()
-		.await
-		.expect("err")
-		.text()
+	let res = post_to_text("https://onlinedi.vision/api/set_user_pfp", map, "Failed to set profile pic.")
 		.await
 		.expect("err");
     prelude::debug_only_print(&res);
