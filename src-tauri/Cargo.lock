@@ -817,6 +817,7 @@ version = "0.0.5"
 dependencies = [
  "base64 0.22.1",
  "crossbeam-channel",
+ "once_cell",
  "reqwest",
  "rustls",
  "serde",
