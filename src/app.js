@@ -1,5 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 
+const HEARTBEAT_INTERVAL = 40000;
+
 export default {
   name: "App",
   data() {
@@ -44,6 +46,8 @@ export default {
                 }else if(ms_counter > 2) {
                   console.log("[WEBSOCKET MESSAGE]: " + event.data);
 
+                  if(event.data == "PONG") return;
+                  
                   let splitm = event.data.split(':');
                   let [sid, channel, username, ...message] = splitm;
                   message = message.join(':');
@@ -59,6 +63,13 @@ export default {
                         'm_content': message
                       });
                 }
+              });
+              message_ws.addEventListener("open", (event) => {
+                setInterval(() => {
+                  if(message_ws.readyState === WebSocket.OPEN) {
+                    message_ws.send('PING');
+                  }
+                }, HEARTBEAT_INTERVAL);
               });
               this.ws = message_ws;
             }
