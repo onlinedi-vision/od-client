@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 
-const HEARTBEAT_INTERVAL = 40000;
+const HEARTBEAT_INTERVAL = 25000;
 
 export default {
   name: "App",
@@ -64,7 +64,7 @@ export default {
                       });
                 }
               });
-              message_ws.addEventListener("open", (event) => {
+              message_ws.addEventListener("open", () => {
                 setInterval(() => {
                   if(message_ws.readyState === WebSocket.OPEN) {
                     message_ws.send('PING');
