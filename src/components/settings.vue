@@ -23,6 +23,7 @@
 <div class="settings-right">
 <div>
 <button @click="$emit('logOut')" class="logout"><h4 style="margin: 0 0 0 0">Log out</h4></button>
+<button @click="$emit('closeSettings')" class="logout"><h4 style="margin: 0 0 0 0">Return</h4></button>
 </div>
 </div>
 </div>

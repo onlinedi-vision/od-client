@@ -628,6 +628,8 @@ button {
 	background-color:var(--dark-foreground-element-color);
 	display: flex;
 	flex-direction: column;
+  border-radius:4px;
+  border:#ffffff 1px solid;
 }
 @media (prefers-color-scheme: dark) {
   :root {
