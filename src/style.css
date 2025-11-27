@@ -1,3 +1,4 @@
+@import 'primeicons/primeicons.css';
 :root {
   --dark-foreground-element-color:#050505;
   --normal-foreground-element-color:#050505; 
@@ -162,6 +163,7 @@ transition: 0.2s;
     border-radius: 40px 40px 40px 40px;
     border: 2px solid transparent;
 }
+
 .createSButton {
     transition: 0.2s; 
     background-color: var(--dark-foreground-element-color);

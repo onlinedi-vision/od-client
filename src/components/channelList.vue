@@ -16,7 +16,10 @@
         # {{ div.channelTag }}
       </button>
 	  <button class="channel_options">
-		  ...
+		  <i class="pi pi-phone" />
+	  </button>
+	  <button class="channel_options">
+		  <i class="pi pi-ellipsis-h" />
 	  </button>
 	  </div>
 	  </template>
@@ -72,7 +75,7 @@ export default {
   margin: 5px 0 0 0;
 }
 .channel_button {
-  padding: 6px 10px;
+  padding: 6px 5px;
   border: none;
   background: none;
   color: var(--main-font-color);
@@ -80,13 +83,20 @@ export default {
   text-align: left;
   transition: all 0.2s ease;
 }
-.channel_button:hover + .channel_options {
+.channel_button:hover ~ .channel_options {
   background-color: var(--main-font-color);
   color: white;
+  opacity: 1;
+  pointer-events: auto;
 }
 .channel_button.active {
   background-color: --main-font-color;
   color: white;
+}
+.channel_button.active ~ .channel_options {
+  background-color: --main-font-color;
+  opacity: 1;
+  pointer-events: auto;
 }
 .channel_button.main {
   flex-grow: 1;
@@ -104,13 +114,23 @@ export default {
   flex-direction: row;
   justify-content: space-between;
 }
+.channel_container:hover .channel_options {
+  opacity: 1;
+  pointer-events: auto;
+}
 .channel_options{
-  padding: 6px 10px;
+  padding: 6px 3px;
   border: none;
   background: none;
   color: var(--main-font-color);
   cursor: pointer;
   text-align: left;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+.channel_options:hover {
+  opacity: 1;
+  pointer-events: auto;
 }
 </style>
