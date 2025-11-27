@@ -5,15 +5,21 @@
     </div>
 
     <template v-if="done && currentServer?.storedChannels?.length">
+	  <template v-for="(div, index) in currentServer.storedChannels.sort(compareChannels)"
+        :key="index">
+	  <div class="channel_container">	
       <button
-        v-for="(div, index) in currentServer.storedChannels.sort(compareChannels)"
-        :key="index"
         @click="$emit('changeChannel', div.channelTag)"
-        class="channel_button"
+        class="channel_button main"
         :class="{ active: div.channelTag === textChannel }"
       >
         # {{ div.channelTag }}
       </button>
+	  <button class="channel_options">
+		  ...
+	  </button>
+	  </div>
+	  </template>
     </template>
 
     <button @click="$emit('createChannel', serverID)" class="channel_button add-channel">
@@ -74,17 +80,37 @@ export default {
   text-align: left;
   transition: all 0.2s ease;
 }
-.channel_button:hover {
-  background-color: --main-font-color;
+.channel_button:hover + .channel_options {
+  background-color: var(--main-font-color);
   color: white;
 }
 .channel_button.active {
   background-color: --main-font-color;
   color: white;
 }
+.channel_button.main {
+  flex-grow: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
 .channel_button.add-channel {
   position: relative;
   text-align: center;
   padding: 6px 0;
+}
+.channel_container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.channel_options{
+  padding: 6px 10px;
+  border: none;
+  background: none;
+  color: var(--main-font-color);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
 }
 </style>
