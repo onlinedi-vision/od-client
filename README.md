@@ -4,8 +4,7 @@
 ## division.client
 
 The official client for the division online app - a cross-platform GPL-free and open-source VoIP and Instant Messaging desktop app.
-<img width="1920" height="1079" alt="image" src="https://github.com/user-attachments/assets/ae292001-b391-4e06-942b-99153c882a30" />
-
+<img width="1914" height="1080" alt="image" src="https://github.com/user-attachments/assets/867c5bdc-366f-4a35-85c5-3189e928870c" />
 ### Installing 
 
 Installing the current version of the division.client app can be done in just a few steps!
