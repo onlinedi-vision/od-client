@@ -421,7 +421,42 @@ export default {
     createSeverForReal() {
       invoke("create_server", { "img_url": this.newImgUrl, "desc": this.newShDesc, "name": this.newSvName, "username": this.username, "token": this.token })
         .then((res) => {
-          this.token = JSON.parse(res)['token'];
+          this.token  = JSON.parse(res)['token'];
+          let new_sid = JSON.parse(res)['sid'];
+
+          if(this.ws !== null ) {
+            this.ws.send("UPDATE:"+this.token+":"+new_sid);
+          }
+          invoke('get_server_info', { server_id: new_sid })
+            .then((si) => {
+              let sinfo = JSON.parse(si);
+              this.userServers.push({ 'serverID': new_sid, 'name': sinfo['name'], 'desc': sinfo['desc'], 'img_url': sinfo['img_url'] });
+            })
+            .catch((err) => {
+              console.log(err);
+            })
+
+          this.appState.push({ 'serverID': new_sid, 'storedChannels': [], 'serverUsers': [] });
+          invoke('getchannels', { host_url: 'https://onlinedi.vision/servers', token: this.token, server: new_sid, username: this.username })
+            .then((res) => {
+              let channels = JSON.parse(res)['c_list'];
+              for (let j = 0; j < channels.length; j++) {
+                this.appState[this.appState.findIndex(obj => obj.serverID == new_sid)].storedChannels.push({ 'channelTag': channels[j]['channel_name'], 'messages': []});
+                this.storedChannels.push({ 'serverID': new_sid, 'channelTag': channels[j]['channel_name'], 'messages': []})
+              }
+              
+              invoke('get_server_users', { host_url: 'https://onlinedi.vision/servers', token: this.token, server: new_sid, username: this.username })
+                .then((res) => {
+                  let users = JSON.parse(res)['u_list'];
+                  for (let user_iter = 0; user_iter < users.length; user_iter++) {
+                    this.appState[this.appState.findIndex(obj => obj.serverID == new_sid)].serverUsers.push(users[user_iter]);
+                  }
+                }).catch((err) => {
+                  console.log(err);
+                });              
+            })
+            .catch((err) => console.log(err));
+                      
           invoke('write_credentials', { creds: JSON.stringify({ 'username': this.username, 'token': this.token }) })
             .then((res) => console.log(res))
             .catch((err) => console.log(err));

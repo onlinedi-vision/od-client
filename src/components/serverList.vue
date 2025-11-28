@@ -45,6 +45,7 @@ export default {
   z-index: 9999;
   border-radius: 40px 40px 40px 40px;
   border: 2px solid transparent;
+  overflow-x: scroll;
 }
 
 .server_list:hover {
