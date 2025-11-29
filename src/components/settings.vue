@@ -21,10 +21,12 @@
 </div>
 </div>
 <div class="settings-right">
-<div>
-<button @click="$emit('logOut')" class="logout"><h4 style="margin: 0 0 0 0">Log out</h4></button>
-<button @click="$emit('closeSettings')" class="logout"><h4 style="margin: 0 0 0 0">Return</h4></button>
-</div>
+	<div class="settings-grid">
+		<button @click="$emit('logOut')" class="settings-card"><h4 style="margin: 0 0 0 0">Change Name</h4></button>
+		<button @click="$emit('closeSettings')" class="settings-card"><h4 style="margin: 0 0 0 0">Change Picture</h4></button>
+		<button @click="$emit('logOut')" class="settings-card"><h4 style="margin: 0 0 0 0">Log Out</h4></button>
+		<button @click="$emit('closeSettings')" class="settings-card"><h4 style="margin: 0 0 0 0">Return</h4></button>
+	</div>
 </div>
 </div>
 </div>

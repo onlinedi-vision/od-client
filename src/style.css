@@ -604,16 +604,7 @@ button {
 	width:100%;
 	height: 100%;
 }
-.logout {
-	transition: 0.2s; 
-    background-color: rgba(var(--background-color)0.7);
-	padding-left: 5px;
-	width: 100%;
-    border-radius: 4px 4px 4px 4px;
-    border: 2px solid transparent;
-    text-align: center;
-	color: var(--main-font-color);
-}
+
 
 .name-change {
 	display: flex;
@@ -627,9 +618,8 @@ button {
 	flex:2;
 	background-color:var(--dark-foreground-element-color);
 	display: flex;
-	flex-direction: column;
-  border-radius:4px;
-  border:#ffffff 1px solid;
+	padding:12px;
+  border-radius:10px;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -653,4 +643,30 @@ button {
 
 input::placeholder {
   color: var(--main-font-color);
+}
+
+.settings-card {
+  background-color: var(--background-color);
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+  box-sizing: border-box;
+  color: var(--main-font-color);
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(160px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.settings-card:hover {
+  border-color: var(--main-font-color);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+  color: white;
 }
