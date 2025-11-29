@@ -418,6 +418,18 @@ export default {
           console.log(err);
         });
     },
+	deleteChannel(sid, channelName) {
+		invoke("delete_channel", { host_url: 'https://onlinedi.vision/servers', "username": this.username, "server_id": sid, "token": this.token, "channel_name": channelName })
+		  .then((res) => {
+			  if(res == "Channel deleted successfully") {
+				this.appState[this.appState.findIndex(obj => obj.serverID === sid)].storedChannels =
+				this.appState[this.appState.findIndex(obj => obj.serverID === sid)].storedChannels.filter(function(ch) {return ch.channelTag !== channelName;});
+			  }
+		  })
+		.catch((err) => {
+          console.log(err);
+        });
+	},
     createSeverForReal() {
       invoke("create_server", { "img_url": this.newImgUrl, "desc": this.newShDesc, "name": this.newSvName, "username": this.username, "token": this.token })
         .then((res) => {

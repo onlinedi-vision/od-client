@@ -15,12 +15,22 @@
       >
         # {{ div.channelTag }}
       </button>
+	  <template v-if="this.optionsOpenIndex==index">
+	  <button class="channel_options always_on" @click="$emit('deleteChannel', currentServer.serverID, div.channelTag)">
+		  <i class="pi pi-trash"/>
+	  </button>
+	  <button class="channel_options always_on" @click="closeOptions()">
+		  <i class="pi pi-undo" />
+	  </button>
+      </template>
+	  <template v-else>
 	  <button class="channel_options">
 		  <i class="pi pi-phone" />
 	  </button>
-	  <button class="channel_options">
+	  <button class="channel_options" @click="openOptions(index)">
 		  <i class="pi pi-ellipsis-h" />
 	  </button>
+	  </template>
 	  </div>
 	  </template>
     </template>
@@ -41,6 +51,11 @@ export default {
     done: Boolean,
     userServers: Array,
   },
+  data(){
+    return {
+      optionsOpenIndex: -1,
+    };
+  },
   computed: {
     currentServer() {
       return this.appState.find(obj => obj.serverID === this.serverID);
@@ -57,7 +72,13 @@ export default {
 	  if(b.channelTag > a.channelTag)
 	    return -1;
 	  return 0;
-	}
+	},
+	openOptions(idx){
+	  this.optionsOpenIndex = idx;
+	},
+	closeOptions(){
+	  this.optionsOpenIndex = -1;
+	},
   },
 };
 </script>
@@ -130,6 +151,10 @@ export default {
   pointer-events: none;
 }
 .channel_options:hover {
+  opacity: 1;
+  pointer-events: auto;
+}
+.always_on{
   opacity: 1;
   pointer-events: auto;
 }
