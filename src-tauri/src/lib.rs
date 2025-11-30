@@ -21,6 +21,7 @@ pub fn run() {
 
             api::channels::getchannels,
             api::channels::create_channel,
+			api::channels::delete_channel,
             
             api::users::get_profile_pic,
             api::users::set_profile_pic,
