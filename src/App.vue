@@ -56,6 +56,7 @@
       @showSID="showSID"
       @changeChannel="change_channel"
       @createChannel="create_channel"
+	  @deleteChannel="deleteChannel"
       />
 
       <div v-if="createChannelPopUp" class="login" style="display:flex;flex-direction:row; left:200px; top:100px; height:50px; width:280px">

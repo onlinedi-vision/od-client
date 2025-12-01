@@ -35,3 +35,20 @@ pub(crate) async fn create_channel(
     res
 }
 
+#[tauri::command(rename_all = "snake_case")]
+pub(crate) async fn delete_channel(
+	host_url: String,
+	username: String,
+	token: String,
+	server_id: String,
+	channel_name: String,
+) -> String {
+	let mut map = std::collections::HashMap::new();
+	map.insert("username", username.clone());
+    map.insert("token", token.clone());
+    let res = post_to_text(&format!("{}/{}/api/{}/delete_channel",host_url,server_id.clone(),channel_name.clone()), map, "Failed to delete channel.")
+        .await
+        .expect("err");
+    prelude::debug_only_print(&res);
+    res
+}

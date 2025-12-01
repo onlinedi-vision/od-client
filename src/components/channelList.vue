@@ -5,15 +5,47 @@
     </div>
 
     <template v-if="done && currentServer?.storedChannels?.length">
+	  <template v-for="(div, index) in currentServer.storedChannels.sort(compareChannels)"
+        :key="index">
+	  <div class="channel_container">	
       <button
-        v-for="(div, index) in currentServer.storedChannels.sort(compareChannels)"
-        :key="index"
         @click="$emit('changeChannel', div.channelTag)"
-        class="channel_button"
+        class="channel_button main"
         :class="{ active: div.channelTag === textChannel }"
       >
+	  <template v-if="this.confirmDelete==index">
+		Confirm delete?
+	  </template>
+	  <template v-else>
         # {{ div.channelTag }}
+	  </template>
       </button>
+	  <template v-if="this.confirmDelete==index">
+	    <button class="channel_options always_on" @click="deleteChannel(currentServer.serverID, div.channelTag)">
+		<i class="pi pi-check"/>
+	  </button>
+	  <button class="channel_options always_on" @click="cancelDelete()">
+		  <i class="pi pi-times" />
+	  </button>
+	  </template>
+	  <template v-else-if="this.optionsOpenIndex==index">
+	  <button class="channel_options always_on" @click="askDelete(index)">
+		  <i class="pi pi-trash"/>
+	  </button>
+	  <button class="channel_options always_on" @click="closeOptions()">
+		  <i class="pi pi-undo" />
+	  </button>
+      </template>
+	  <template v-else>
+	  <button class="channel_options">
+		  <i class="pi pi-phone" />
+	  </button>
+	  <button class="channel_options" @click="openOptions(index)">
+		  <i class="pi pi-ellipsis-h" />
+	  </button>
+	  </template>
+	  </div>
+	  </template>
     </template>
 
     <button @click="$emit('createChannel', serverID)" class="channel_button add-channel">
@@ -32,6 +64,12 @@ export default {
     done: Boolean,
     userServers: Array,
   },
+  data(){
+    return {
+      optionsOpenIndex: -1,
+	  confirmDelete: -1,
+    };
+  },
   computed: {
     currentServer() {
       return this.appState.find(obj => obj.serverID === this.serverID);
@@ -48,7 +86,24 @@ export default {
 	  if(b.channelTag > a.channelTag)
 	    return -1;
 	  return 0;
-	}
+	},
+	openOptions(idx){
+	  this.optionsOpenIndex = idx;
+	},
+	closeOptions(){
+	  this.optionsOpenIndex = -1;
+	},
+	askDelete(idx){
+	  this.confirmDelete = idx;
+	},
+	cancelDelete(){
+	  this.confirmDelete = -1;
+	},
+	deleteChannel(sid, channelTag){
+	  this.$emit('deleteChannel', sid, channelTag);
+	  this.confirmDelete = -1;
+	  this.optionsOpenIndex = -1;
+	},
   },
 };
 </script>
@@ -66,7 +121,7 @@ export default {
   margin: 5px 0 0 0;
 }
 .channel_button {
-  padding: 6px 10px;
+  padding: 6px 5px;
   border: none;
   background: none;
   color: var(--main-font-color);
@@ -74,17 +129,58 @@ export default {
   text-align: left;
   transition: all 0.2s ease;
 }
-.channel_button:hover {
-  background-color: --main-font-color;
+.channel_button:hover ~ .channel_options {
+  background-color: var(--main-font-color);
   color: white;
+  opacity: 1;
+  pointer-events: auto;
 }
 .channel_button.active {
   background-color: --main-font-color;
   color: white;
 }
+.channel_button.active ~ .channel_options {
+  background-color: --main-font-color;
+  opacity: 1;
+  pointer-events: auto;
+}
+.channel_button.main {
+  flex-grow: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
 .channel_button.add-channel {
   position: relative;
   text-align: center;
   padding: 6px 0;
+}
+.channel_container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.channel_container:hover .channel_options {
+  opacity: 1;
+  pointer-events: auto;
+}
+.channel_options{
+  padding: 6px 3px;
+  border: none;
+  background: none;
+  color: var(--main-font-color);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+.channel_options:hover {
+  opacity: 1;
+  pointer-events: auto;
+}
+.always_on{
+  opacity: 1;
+  pointer-events: auto;
 }
 </style>
