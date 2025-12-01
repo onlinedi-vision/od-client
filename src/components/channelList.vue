@@ -13,10 +13,23 @@
         class="channel_button main"
         :class="{ active: div.channelTag === textChannel }"
       >
+	  <template v-if="this.confirmDelete==index">
+		Confirm delete?
+	  </template>
+	  <template v-else>
         # {{ div.channelTag }}
+	  </template>
       </button>
-	  <template v-if="this.optionsOpenIndex==index">
-	  <button class="channel_options always_on" @click="$emit('deleteChannel', currentServer.serverID, div.channelTag)">
+	  <template v-if="this.confirmDelete==index">
+	    <button class="channel_options always_on" @click="deleteChannel(currentServer.serverID, div.channelTag)">
+		<i class="pi pi-check"/>
+	  </button>
+	  <button class="channel_options always_on" @click="cancelDelete()">
+		  <i class="pi pi-times" />
+	  </button>
+	  </template>
+	  <template v-else-if="this.optionsOpenIndex==index">
+	  <button class="channel_options always_on" @click="askDelete(index)">
 		  <i class="pi pi-trash"/>
 	  </button>
 	  <button class="channel_options always_on" @click="closeOptions()">
@@ -54,6 +67,7 @@ export default {
   data(){
     return {
       optionsOpenIndex: -1,
+	  confirmDelete: -1,
     };
   },
   computed: {
@@ -77,6 +91,17 @@ export default {
 	  this.optionsOpenIndex = idx;
 	},
 	closeOptions(){
+	  this.optionsOpenIndex = -1;
+	},
+	askDelete(idx){
+	  this.confirmDelete = idx;
+	},
+	cancelDelete(){
+	  this.confirmDelete = -1;
+	},
+	deleteChannel(sid, channelTag){
+	  this.$emit('deleteChannel', sid, channelTag);
+	  this.confirmDelete = -1;
 	  this.optionsOpenIndex = -1;
 	},
   },
