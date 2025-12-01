@@ -14,7 +14,8 @@
       {
         "title": "division.client",
         "width": 1200,
-        "height": 675
+        "height": 675,
+		"maximized": true
       }
     ],
     "security": {
