@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
-
+import { reloadApp } from './AppWrapper.vue'
 const HEARTBEAT_INTERVAL = 25000;
 
 export default {
@@ -319,7 +319,7 @@ export default {
           this.loggedin = true;
 
           invoke('write_credentials', { creds: JSON.stringify({ 'username': this.username, 'token': this.token }) });
-          this.getUserServers();
+          reloadApp();
         })
         .catch((err) => console.log(err));
     },
