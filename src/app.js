@@ -500,7 +500,7 @@ export default {
           console.log(err);
         })
 	},
-	initWebsocket(token){
+	initWebsocket(){
     this.ws = new wsConnection(this.username);
     this.ws.addEventListener("reqHandshake", () => {
       this.ws.handshake(this.token).then( (res) => { console.log(this); this.token = res; this.ws.startReceive(); } );
