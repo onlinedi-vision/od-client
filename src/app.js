@@ -1,14 +1,12 @@
 import { invoke } from '@tauri-apps/api/core';
 
 const HEARTBEAT_INTERVAL = 25000;
+const RECONNECT_INTERVAL = 5000;
 
 export default {
   name: "App",
   data() {
     let token = null;
-
-    let message_ws = null; 
-    let ms_counter = 0;
 
     invoke('get_local_token')
       .then((res) => {
@@ -19,60 +17,8 @@ export default {
             let servers = JSON.parse(res);
             this.token = servers.token;
             token = servers.token;
-
-            if(message_ws === null) {
-              let message_ws = new WebSocket("wss://onlinedi.vision/wss?username="+this.username);
-
-              message_ws.addEventListener("message", (event) => {
-                if(ms_counter === 0 ) {
-                  ms_counter += 1;
-                  console.log("[WEBSOCKET] Message from server (" + ms_counter + ")", event.data);
-
-                  invoke('spellcheck', { token: token, username: this.username, key: event.data })
-                  .then((res) => {
-                    message_ws.send(res);
-                  }).catch((err) => {
-                    console.log(err);
-                  });
-                } else if(ms_counter === 1) {
-                  ms_counter += 1;
-                  if(event.data === 'CONNECTED') {
-                    console.log('[WEBSOCKET CONNECTED]');
-                    message_ws.send('TOKEN:'+this.token);
-                  }
-                } else if (ms_counter == 2) {
-                  ms_counter += 1;
-                  this.token = event.data;
-                }else if(ms_counter > 2) {
-                  console.log("[WEBSOCKET MESSAGE]: " + event.data);
-
-                  if(event.data == "PONG") return;
-                  
-                  let splitm = event.data.split(':');
-                  let [sid, channel, username, ...message] = splitm;
-                  message = message.join(':');
-
-                  this.appState[
-                    this.appState.findIndex(obj => obj.serverID == sid)
-                  ]['storedChannels'][
-                      this.appState[
-                        this.appState.findIndex(obj => obj.serverID == sid)
-                      ]['storedChannels'].findIndex(obj => obj.channelTag === channel)
-                    ]['messages'].unshift({
-                        'username': username,
-                        'm_content': message
-                      });
-                }
-              });
-              message_ws.addEventListener("open", () => {
-                setInterval(() => {
-                  if(message_ws.readyState === WebSocket.OPEN) {
-                    message_ws.send('PING');
-                  }
-                }, HEARTBEAT_INTERVAL);
-              });
-              this.ws = message_ws;
-            }
+            this.initWebsocket(token);
+            
             invoke('write_credentials', { creds: JSON.stringify({ 'username': this.username, 'token': this.token }) });
 
             for (let i = 0; i < servers['s_list'].length; i++) {
@@ -130,6 +76,7 @@ export default {
 
     return {
       ws: null,
+      heartbeat: null,
       logInSelected: true,
       loggedin: true,
       lusername: "",
@@ -553,6 +500,72 @@ export default {
 		}).catch((err) => {
           console.log(err);
         })
+	},
+	initWebsocket(token){
+    let message_ws = null;
+    let ms_counter = 0;
+    if(message_ws === null) {
+      let message_ws = new WebSocket("wss://onlinedi.vision/wss?username="+this.username);
+      message_ws.addEventListener("message", (event) => {
+        if(ms_counter === 0 ) {
+          ms_counter += 1;
+          console.log("[WEBSOCKET] Message from server (" + ms_counter + ")", event.data);
+
+          invoke('spellcheck', { token: token, username: this.username, key: event.data })
+          .then((res) => {
+            message_ws.send(res);
+          }).catch((err) => {
+            console.log(err);
+          });
+        } else if(ms_counter === 1) {
+          ms_counter += 1;
+          if(event.data === 'CONNECTED') {
+            console.log('[WEBSOCKET CONNECTED]');
+            message_ws.send('TOKEN:'+this.token);
+          }
+        } else if (ms_counter == 2) {
+          ms_counter += 1;
+          this.token = event.data;
+        }else if(ms_counter > 2) {
+          console.log("[WEBSOCKET MESSAGE]: " + event.data);
+
+          if(event.data == "PONG") return;
+          
+          let splitm = event.data.split(':');
+          let [sid, channel, username, ...message] = splitm;
+          message = message.join(':');
+
+          this.appState[
+            this.appState.findIndex(obj => obj.serverID == sid)
+          ]['storedChannels'][
+              this.appState[
+                this.appState.findIndex(obj => obj.serverID == sid)
+              ]['storedChannels'].findIndex(obj => obj.channelTag === channel)
+            ]['messages'].unshift({
+                'username': username,
+                'm_content': message,
+                'datetime': Date.now()
+              });
+        }
+      });
+      message_ws.addEventListener("open", () => {
+        if(this.reconnect != null) {
+          clearInterval(this.reconnect);
+        }
+        this.heartbeat = setInterval(() => {
+          if(message_ws.readyState === WebSocket.OPEN) {
+            message_ws.send('PING');
+          }
+        }, HEARTBEAT_INTERVAL);
+      });
+      
+      message_ws.addEventListener("close", () => {
+        console.log('[WEBSOCKET CONNECTION LOST. ATTEMPTING TO RECONNECT]');
+        clearInterval(this.heartbeat);
+        setTimeout(() => { this.initWebsocket(this.token); }, RECONNECT_INTERVAL);
+      });
+      this.ws = message_ws;
+    }
 	}
   },
 };
