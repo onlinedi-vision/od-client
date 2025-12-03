@@ -2,6 +2,8 @@ import { invoke } from '@tauri-apps/api/core';
 const HEARTBEAT_INTERVAL = 25000;
 const RECONNECT_INTERVAL = 3000;
 const HANDSHAKE_LENGTH = 2;
+const WEBSOCKET_URL = "wss://onlinedi.vision/wss";
+
 export class wsConnection extends EventTarget{
   message_ws = null;
   heartbeat = null;
@@ -12,7 +14,7 @@ export class wsConnection extends EventTarget{
     this.username = username;
   }
   connectWebsocket() {
-    this.message_ws = new WebSocket("wss://onlinedi.vision/wss?username="+this.username);
+    this.message_ws = new WebSocket(WEBSOCKET_URL+"?username="+this.username);
     this.message_ws.addEventListener("open", () => {
       this.dispatchEvent(new CustomEvent("reqHandshake"));
       this.heartbeat = setInterval(() => {
@@ -46,7 +48,7 @@ export class wsConnection extends EventTarget{
             console.log('[WEBSOCKET CONNECTED]');
             this.send('TOKEN:'+token);
           }
-        } else if (ms_counter == 2) {
+        } else if (ms_counter == HANDSHAKE_LENGTH) {
           ms_counter += 1;
           this.removeEventListener("message", handler);
           resolve(event.data);

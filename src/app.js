@@ -503,7 +503,7 @@ export default {
 	initWebsocket(){
     this.ws = new wsConnection(this.username);
     this.ws.addEventListener("reqHandshake", () => {
-      this.ws.handshake(this.token).then( (res) => { console.log(this); this.token = res; this.ws.startReceive(); } );
+      this.ws.handshake(this.token).then( (res) => { this.token = res; this.ws.startReceive(); } );
     });
     this.ws.connectWebsocket();
     this.ws.addEventListener("message", this.receiveMessage);
