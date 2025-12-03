@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 import { wsConnection } from './websocket.jsx';
+import { reloadApp } from './AppWrapper.vue'
 
 export default {
   name: "App",
@@ -264,7 +265,7 @@ export default {
           this.loggedin = true;
 
           invoke('write_credentials', { creds: JSON.stringify({ 'username': this.username, 'token': this.token }) });
-          this.getUserServers();
+          reloadApp();
         })
         .catch((err) => console.log(err));
     },
