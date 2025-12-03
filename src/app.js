@@ -1,9 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 import { wsConnection } from './websocket.jsx';
 
-const HEARTBEAT_INTERVAL = 25000;
-const RECONNECT_INTERVAL = 5000;
-
 export default {
   name: "App",
   data() {
@@ -505,7 +502,7 @@ export default {
 	initWebsocket(token){
     this.ws = new wsConnection(this.username);
     this.ws.addEventListener("reqHandshake", () => {
-      this.ws.handshake(this.token).then( (res) => { this.token = res; this.ws.startReceive(); } );
+      this.ws.handshake(this.token).then( (res) => { console.log(this); this.token = res; this.ws.startReceive(); } );
     });
     this.ws.connectWebsocket();
     this.ws.addEventListener("message", this.receiveMessage);
