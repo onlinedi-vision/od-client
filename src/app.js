@@ -324,7 +324,7 @@ export default {
       let date = new Date(Number(timestamp));
       let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-      return month[Number(date.getMonth())] + ' ' + date.getDate() + ' ' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes();
+      return month[Number(date.getMonth())] + ' ' + date.getDate() + ' ' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes().toString().padStart(2, '0');
     },
     create_channel() {
       this.createChannelPopUp = !this.createChannelPopUp;
