@@ -504,15 +504,15 @@ export default {
 	},
 	initWebsocket(token){
     this.ws = new wsConnection(this.username);
-    this.ws.handshake(this.token).then( (res) => { this.token = res; 
-                                                   this.ws.message_ws.addEventListener("message", this.receiveMessage); } );
+    this.ws.addEventListener("reqHandshake", () => {
+      this.ws.handshake(this.token).then( (res) => { this.token = res; this.ws.startReceive(); } );
+    });
+    this.ws.connectWebsocket();
+    this.ws.addEventListener("message", this.receiveMessage);
     
 	},
   receiveMessage(event){
-  console.log("[WEBSOCKET MESSAGE]: " + event.data);
-  if(event.data == "PONG") return;
-  
-  let splitm = event.data.split(':');
+  let splitm = event.detail.split(':');
   let [sid, channel, username, ...message] = splitm;
   message = message.join(':');
 

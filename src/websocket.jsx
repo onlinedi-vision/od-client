@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 const HEARTBEAT_INTERVAL = 25000;
-const RECONNECT_INTERVAL = 5000;
+const RECONNECT_INTERVAL = 3000;
 const HANDSHAKE_LENGTH = 2;
 export class wsConnection extends EventTarget{
   message_ws = null;
@@ -10,16 +10,21 @@ export class wsConnection extends EventTarget{
   constructor(username) {
     super();
     this.username = username;
-    this.connectWebsocket();
   }
   connectWebsocket() {
     this.message_ws = new WebSocket("wss://onlinedi.vision/wss?username="+this.username);
     this.message_ws.addEventListener("open", () => {
+      this.dispatchEvent(new CustomEvent("reqHandshake"));
       this.heartbeat = setInterval(() => {
         if(this.message_ws.readyState === WebSocket.OPEN) {
           this.message_ws.send('PING');
         }
       }, HEARTBEAT_INTERVAL);
+    });
+    this.message_ws.addEventListener("close", () => {
+      console.log('[WEBSOCKET CONNECTION LOST. ATTEMPTING TO RECONNECT]');
+      clearInterval(this.heartbeat);
+      setTimeout(() => { this.connectWebsocket(); }, RECONNECT_INTERVAL);
     });
   }
   handshake(token, username = this.username) {
@@ -53,5 +58,14 @@ export class wsConnection extends EventTarget{
   }
   send(msg) {
     this.message_ws.send(msg);
+  }
+  startReceive() {
+    this.message_ws.addEventListener("message", (event) => {
+      console.log("[WEBSOCKET MESSAGE]: " + event.data);
+      if(event.data == "PONG") return;
+      this.dispatchEvent(new CustomEvent("message", {
+        detail: event.data
+      }));
+    });
   }
 }
