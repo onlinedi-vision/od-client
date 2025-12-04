@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
-import { wsConnection } from './websocket.jsx';
+import { wsConnection } from './websocket.js';
 import { reloadApp } from './AppWrapper.vue'
 
 export default {

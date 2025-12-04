@@ -25,7 +25,9 @@ export class wsConnection extends EventTarget{
     });
     this.message_ws.addEventListener("close", () => {
       console.log('[WEBSOCKET CONNECTION LOST. ATTEMPTING TO RECONNECT]');
-      clearInterval(this.heartbeat);
+      if(this.heartbeat != null) {
+        clearInterval(this.heartbeat);
+      }
       setTimeout(() => { this.connectWebsocket(); }, RECONNECT_INTERVAL);
     });
   }
