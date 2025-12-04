@@ -75,7 +75,6 @@ export default {
 
     return {
       ws: null,
-      heartbeat: null,
       logInSelected: true,
       loggedin: true,
       lusername: "",
