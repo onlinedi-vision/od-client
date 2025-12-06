@@ -132,7 +132,7 @@ export default {
 .channel_button:hover ~ .channel_options {
   background-color: var(--main-font-color);
   color: white;
-  opacity: 1;
+  animation: fadeIn 0.2s forwards;
   pointer-events: auto;
 }
 .channel_button.active {
@@ -161,7 +161,7 @@ export default {
   justify-content: space-between;
 }
 .channel_container:hover .channel_options {
-  opacity: 1;
+  animation: fadeIn 0.2s forwards;
   pointer-events: auto;
 }
 .channel_options{
@@ -175,6 +175,13 @@ export default {
   opacity: 0;
   pointer-events: none;
 }
+
+@keyframes fadeIn {
+	to {
+		opacity: 1;
+	}
+}
+
 .channel_options:hover {
   opacity: 1;
   pointer-events: auto;
