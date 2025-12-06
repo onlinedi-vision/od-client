@@ -1,0 +1,75 @@
+import { invoke } from '@tauri-apps/api/core';
+const HEARTBEAT_INTERVAL = 25000;
+const RECONNECT_INTERVAL = 3000;
+const HANDSHAKE_LENGTH = 2;
+const WEBSOCKET_URL = "wss://onlinedi.vision/wss";
+
+export class wsConnection extends EventTarget{
+  message_ws = null;
+  heartbeat = null;
+  username = null;
+  
+  constructor(username) {
+    super();
+    this.username = username;
+  }
+  connectWebsocket() {
+    this.message_ws = new WebSocket(WEBSOCKET_URL+"?username="+this.username);
+    this.message_ws.addEventListener("open", () => {
+      this.dispatchEvent(new CustomEvent("reqHandshake"));
+      this.heartbeat = setInterval(() => {
+        if(this.message_ws.readyState === WebSocket.OPEN) {
+          this.message_ws.send('PING');
+        }
+      }, HEARTBEAT_INTERVAL);
+    });
+    this.message_ws.addEventListener("close", () => {
+      console.log('[WEBSOCKET CONNECTION LOST. ATTEMPTING TO RECONNECT]');
+      if(this.heartbeat != null) {
+        clearInterval(this.heartbeat);
+      }
+      setTimeout(() => { this.connectWebsocket(); }, RECONNECT_INTERVAL);
+    });
+  }
+  handshake(token, username = this.username) {
+    return new Promise(resolve => {
+      let ms_counter = 0;
+      function handler(event) {
+        if(ms_counter === 0 ) {
+          ms_counter += 1;
+          console.log("[WEBSOCKET] Message from server (" + ms_counter + ")", event.data);
+          invoke('spellcheck', { token: token, username: username, key: event.data })
+          .then((res) => {
+            this.send(res);
+          }).catch((err) => {
+            console.log(err);
+          });
+        } else if(ms_counter === 1) {
+          ms_counter += 1;
+          if(event.data === 'CONNECTED') {
+            console.log('[WEBSOCKET CONNECTED]');
+            this.send('TOKEN:'+token);
+          }
+        } else if (ms_counter == HANDSHAKE_LENGTH) {
+          ms_counter += 1;
+          this.removeEventListener("message", handler);
+          resolve(event.data);
+        }
+      }
+      this.message_ws.addEventListener("message", handler);
+    }
+  );
+  }
+  send(msg) {
+    this.message_ws.send(msg);
+  }
+  startReceive() {
+    this.message_ws.addEventListener("message", (event) => {
+      console.log("[WEBSOCKET MESSAGE]: " + event.data);
+      if(event.data == "PONG") return;
+      this.dispatchEvent(new CustomEvent("message", {
+        detail: event.data
+      }));
+    });
+  }
+}
