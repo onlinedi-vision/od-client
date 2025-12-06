@@ -38,7 +38,7 @@
 <div class="settings-right">
 	<div class="settings-grid">
 		<button @click="$emit('logOut')" class="settings-card"><h4 style="margin: 0 0 0 0">Change Name</h4></button>
-		<button @click="$emit('closeSettings')" class="settings-card"><h4 style="margin: 0 0 0 0">Change Picture</h4></button>
+		<button @click="openChangePfpFromCard" :class="['settings-card', { 'pfp-card-active': pfpDialog }]"><h4 style="margin: 0 0 0 0">Change Picture</h4></button>
 		<button @click="$emit('logOut')" class="settings-card"><h4 style="margin: 0 0 0 0">Log Out</h4></button>
 		<button @click="$emit('closeSettings')" class="settings-card"><h4 style="margin: 0 0 0 0">Return</h4></button>
 	</div>
@@ -70,6 +70,7 @@ export default {
 		},
 		methods: {
 		openChangePfp() { this.pfpDialog = true; },
+    openChangePfpFromCard() { this.pfpDialog = true; },
 		closeChangePfp() {
 			this.pfpDialog = false;
 			this.newUrl = "";
@@ -134,4 +135,11 @@ export default {
 	.pfp-remove:hover, .pfp-btn:hover { background: var(--main-font-color) !important; color: #fff !important; }
 	.pfp-actions { display: flex; gap: 8px; }
 	.pfp-actions .pfp-btn { flex: 1; }
+.settings-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.pfp-card-active {
+  transform: scale(1.05);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+}
 </style>
