@@ -1,6 +1,3 @@
-> [!WARNING]  
-> This app is still in it's infancy and it is NOT production ready!
-
 ## division.client
 
 The official client for the division online app - a cross-platform GPL-free and open-source VoIP and Instant Messaging desktop app.
@@ -65,7 +62,7 @@ On wayland you may need to set the following env vars:
 
 ### Troubleshooting
 1. "Failed to create GBM buffer of size 945x1044: Invalid argument".
-If you have and nVidia graphics card and use prime offloading you should be able to fix this by setting the __NV_PRIME_RENDER_OFFLOAD environment variable to 1 every time you run the app:
+If you have an nVidia graphics card and use prime offloading you should be able to fix this by setting the __NV_PRIME_RENDER_OFFLOAD environment variable to 1 every time you run the app:
 ```sh 
 $ __NV_PRIME_RENDER_OFFLOAD=1 division-client 
 ```
