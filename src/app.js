@@ -264,7 +264,7 @@ export default {
           this.loggedin = true;
 
           invoke('write_credentials', { creds: JSON.stringify({ 'username': this.username, 'token': this.token }) });
-          reloadApp();
+		  setTimeout(reloadApp, 500);
         })
         .catch((err) => console.log(err));
     },
