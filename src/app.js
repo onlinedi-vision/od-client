@@ -30,11 +30,11 @@ export default {
                   console.log(err);
                 })
               this.appState.push({ 'serverID': servers['s_list'][i], 'storedChannels': [], 'serverUsers': [] });
-              invoke('getchannels', { host_url: 'https://onlinedi.vision/servers', token: token, server: servers['s_list'][i], username: this.username })
+              invoke('getchannels', { host_url: 'https://api.onlinedi.vision/servers', token: token, server: servers['s_list'][i], username: this.username })
                 .then((res) => {
                   let channels = JSON.parse(res)['c_list'];
                   for (let j = 0; j < channels.length; j++) {
-                    invoke('getmessages', { host_url: 'https://onlinedi.vision/servers', token: token, server: servers['s_list'][i], channel: channels[j]['channel_name'], username: this.username })
+                    invoke('getmessages', { host_url: 'https://api.onlinedi.vision/servers', token: token, server: servers['s_list'][i], channel: channels[j]['channel_name'], username: this.username })
                       .then((res) => {
                         this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].storedChannels.push({ 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] });
                         this.storedChannels.push({ 'serverID': servers['s_list'][i], 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] })
@@ -45,7 +45,7 @@ export default {
                       });
 
                   }
-                  invoke('get_server_users', { host_url: 'https://onlinedi.vision/servers', token: token, server: servers['s_list'][i], username: this.username })
+                  invoke('get_server_users', { host_url: 'https://api.onlinedi.vision/servers', token: token, server: servers['s_list'][i], username: this.username })
                     .then((res) => {
                       let users = JSON.parse(res)['u_list'];
                       for (let user_iter = 0; user_iter < users.length; user_iter++) {
@@ -90,7 +90,7 @@ export default {
       userServers: [{
         'serverID': '1',
         'name': 'Welcome',
-        'img_url': 'https://onlinedi.vision/cdn/test/stest.jpeg',
+        'img_url': '',
         'desc': 'Welcome!'
       }],
       appState: [{
@@ -162,7 +162,7 @@ export default {
             if(this.ws !== null ) {
               this.ws.send(this.serverID + ':' + this.textChannel + ':' + this.username +':' + message);
             }
-            invoke('sendmessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username })
+            invoke('sendmessage', { host_url: 'https://api.onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username })
             .then(() => {
               this.message = '';
               this.clearSelectedFile();
@@ -186,7 +186,7 @@ export default {
       if(this.ws !== null ) {
         this.ws.send(this.serverID + ':' + this.textChannel + ':' + this.username +':' + message);
       }
-      invoke('sendmessage', { host_url: 'https://onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username })
+      invoke('sendmessage', { host_url: 'https://api.onlinedi.vision/servers', token: this.token, channel: this.textChannel, server: this.serverID, m_content: message, username: this.username })
       .then(() => {
         this.message = '';
       }).catch((err) => {
@@ -215,11 +215,11 @@ export default {
                 console.log(err);
               })
             this.appState.push({ 'serverID': servers['s_list'][i], 'storedChannels': [] });
-            invoke('getchannels', { host_url: 'https://onlinedi.vision/servers', token: this.token, server: servers['s_list'][i], username: this.username })
+            invoke('getchannels', { host_url: 'https://api.onlinedi.vision/servers', token: this.token, server: servers['s_list'][i], username: this.username })
               .then((res) => {
                 let channels = JSON.parse(res)['c_list'];
                 for (let j = 0; j < channels.length; j++) {
-                  invoke('getmessages', { host_url: 'https://onlinedi.vision/servers', token: this.token, server: servers['s_list'][i], channel: channels[j]['channel_name'], username: this.username })
+                  invoke('getmessages', { host_url: 'https://api.onlinedi.vision/servers', token: this.token, server: servers['s_list'][i], channel: channels[j]['channel_name'], username: this.username })
                     .then((res) => {
 
                       this.appState[this.appState.findIndex(obj => obj.serverID == servers['s_list'][i])].storedChannels.push({ 'channelTag': channels[j]['channel_name'], 'messages': JSON.parse(res)['m_list'] });
@@ -307,7 +307,7 @@ export default {
 	  this.settingsOpen = false;
 	},
     get_messages(channel, server, token) {
-      invoke('getmessages', { host_url: 'https://onlinedi.vision/servers', token: token, server: server, channel: channel })
+      invoke('getmessages', { host_url: 'https://api.onlinedi.vision/servers', token: token, server: server, channel: channel })
         .then((res) => {
           console.log(res);
         })
@@ -349,7 +349,7 @@ export default {
     },
     createChannel() {
       if(this.nchn.length > 15) return;
-      invoke('create_channel', { host_url: 'https://onlinedi.vision/servers', "username": this.username, "server_id": this.serverID, "token": this.token, "channel_name": this.nchn })
+      invoke('create_channel', { host_url: 'https://api.onlinedi.vision/servers', "username": this.username, "server_id": this.serverID, "token": this.token, "channel_name": this.nchn })
         .then((res) => {
           this.token = JSON.parse(res)['token'];
           this.appState[this.appState.findIndex(obj => obj.serverID === this.serverID)].storedChannels.push({ 'channelTag': this.nchn, 'messages': [] });
@@ -364,7 +364,7 @@ export default {
         });
     },
 	deleteChannel(sid, channelName) {
-		invoke("delete_channel", { host_url: 'https://onlinedi.vision/servers', "username": this.username, "server_id": sid, "token": this.token, "channel_name": channelName })
+		invoke("delete_channel", { host_url: 'https://api.onlinedi.vision/servers', "username": this.username, "server_id": sid, "token": this.token, "channel_name": channelName })
 		  .then((res) => {
 			  if(res == "Channel deleted successfully") {
 				this.appState[this.appState.findIndex(obj => obj.serverID === sid)].storedChannels =
@@ -394,7 +394,7 @@ export default {
             })
 
           this.appState.push({ 'serverID': new_sid, 'storedChannels': [], 'serverUsers': [] });
-          invoke('getchannels', { host_url: 'https://onlinedi.vision/servers', token: this.token, server: new_sid, username: this.username })
+          invoke('getchannels', { host_url: 'https://api.onlinedi.vision/servers', token: this.token, server: new_sid, username: this.username })
             .then((res) => {
               let channels = JSON.parse(res)['c_list'];
               for (let j = 0; j < channels.length; j++) {
@@ -402,7 +402,7 @@ export default {
                 this.storedChannels.push({ 'serverID': new_sid, 'channelTag': channels[j]['channel_name'], 'messages': []})
               }
               
-              invoke('get_server_users', { host_url: 'https://onlinedi.vision/servers', token: this.token, server: new_sid, username: this.username })
+              invoke('get_server_users', { host_url: 'https://api.onlinedi.vision/servers', token: this.token, server: new_sid, username: this.username })
                 .then((res) => {
                   let users = JSON.parse(res)['u_list'];
                   for (let user_iter = 0; user_iter < users.length; user_iter++) {
@@ -427,7 +427,7 @@ export default {
       this.showSIDvar = !this.showSIDvar;
     },
     joinServer() {
-      invoke('join_server', { host_url: 'https://onlinedi.vision/servers', "username": this.username, "token": this.token, "server_id": this.joinserverID })
+      invoke('join_server', { host_url: 'https://api.onlinedi.vision/servers', "username": this.username, "token": this.token, "server_id": this.joinserverID })
         .then((res) => {
           this.token = JSON.parse(res)['token'];
           invoke('write_credentials', { creds: JSON.stringify({ 'username': this.username, 'token': this.token }) })
