@@ -56,8 +56,21 @@
                     placeholder="https://example.com/avatar.png"
                   />
 
+                  <label class="field-label" for="pfp-file">Local image</label>
                   <div class="panel-actions">
-                    <button class="settings-primary-btn" :disabled="!newUrl.trim()" @click="setPfp">Save picture</button>
+                    <label class="settings-secondary-btn settings-file-btn" for="pfp-file">Choose file</label>
+                    <span v-if="newFile" class="file-name">{{ newFile.name }}</span>
+                    <input
+                      id="pfp-file"
+                      class="settings-file-input"
+                      type="file"
+                      accept="image/*"
+                      @change="onProfileFileChange"
+                    />
+                  </div>
+
+                  <div class="panel-actions">
+                    <button class="settings-primary-btn" :disabled="!canSavePfp" @click="setPfp">Save picture</button>
                     <button class="settings-secondary-btn" @click="closeChangePfp">Reset</button>
                   </div>
                 </div>
@@ -121,6 +134,8 @@ export default {
 		return {
 			pfpDialog: false,
 			newUrl: "",
+			newFile: null,
+			localPreviewUrl: "",
 			activeSection: "customize",
 			sections: [
 				{ key: "customize", label: "Customize" },
@@ -146,7 +161,10 @@ export default {
 			return descriptions[this.activeSection] || "Settings";
 		},
 		previewProfilePic() {
-			return this.newUrl.trim() || this.profilePic;
+			return this.localPreviewUrl || this.newUrl.trim() || this.profilePic;
+		},
+		canSavePfp() {
+			return Boolean(this.newUrl.trim() || this.newFile);
 		}
 	},
 	methods: {
@@ -157,12 +175,28 @@ export default {
 		closeChangePfp() {
 			this.pfpDialog = false;
 			this.newUrl = "";
+			this.clearSelectedPfpFile();
 		},
 		setPfp() {
-			if (!this.newUrl.trim()) return;
-			this.$emit('setOwnPfp', this.newUrl);
+			if (!this.canSavePfp) return;
+			this.$emit('setOwnPfp', { url: this.newUrl, file: this.newFile });
 			this.pfpDialog = false;
 			this.newUrl = "";
+			this.clearSelectedPfpFile();
+		},
+		onProfileFileChange(event) {
+			const [file] = event.target.files || [];
+			this.clearSelectedPfpFile();
+			if (!file) return;
+			this.newFile = file;
+			this.localPreviewUrl = URL.createObjectURL(file);
+		},
+		clearSelectedPfpFile() {
+			if (this.localPreviewUrl) {
+				URL.revokeObjectURL(this.localPreviewUrl);
+			}
+			this.newFile = null;
+			this.localPreviewUrl = "";
 		}
 	}
 }
@@ -363,6 +397,11 @@ export default {
   color: rgba(255, 255, 255, 0.72);
 }
 
+.file-name {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.9rem;
+}
+
 .settings-input {
   width: 100%;
   padding: 12px 14px;
@@ -413,6 +452,11 @@ export default {
   color: var(--main-font-color);
 }
 
+.settings-file-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
 .settings-danger-btn,
 .sidebar-logout {
   background: rgba(208, 66, 66, 0.16);
@@ -430,6 +474,10 @@ export default {
 .settings-danger-btn:hover,
 .sidebar-logout:hover {
   background: rgba(208, 66, 66, 0.26);
+}
+
+.settings-file-input {
+  display: none;
 }
 
 /* close button */
