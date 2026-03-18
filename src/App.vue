@@ -1,6 +1,9 @@
-<template >
+<template>
+  <button v-if="isMobile" @click="viewChannels = !viewChannels" id="mobi-switch" class="button">
+    {{ viewChannels ? 'Show Chat' : 'Show Menu' }}
+  </button>
   <main class="container" v-if="done && loggedin">
-	<div class="container-v">
+	<div class="container-v" v-show="!isMobile || viewChannels">
 	  <img @click="openSettings()" v-bind:src='myPfp' width='60px' height='60px' class='cui'
       style='margin-bottom:0px;' />
 	  
@@ -26,8 +29,9 @@
 	@changeChannel="change_channel"
 	@createChannel="create_channel"
 	@deleteChannel="deleteChannel"
+	v-show="!isMobile || viewChannels"
 	/>
-	<div class="container-v" style="flex-shrink: 1; min-width: 0;">
+	<div class="container-v" style="flex-shrink: 1; min-width: 0;" v-show="!isMobile || !viewChannels">
 	  <div id="channel-header">
         <h3>{{this.textChannel}}</h3>
       </div>
@@ -65,7 +69,7 @@
     </form>
 	</div>
 	</div>
-    <div>
+    <div v-show="!isMobile || viewChannels" style="margin-left: auto;">
 	  <ServerUsersList
       :appState="appState"
       :serverID="serverID"
@@ -102,6 +106,20 @@
 	<div @click="closeSettings()" class="settings-background" v-if="settingsOpen" />
 	<SettingsWindow :userName="username" :profilePic="myPfp" v-if="settingsOpen" @closeSettings="closeSettings" @logOut="logOut" @setOwnPfp="setOwnPfp" />
 </template>
+
+<script setup>
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+const MOBILE_BREAKPOINT = 768;
+
+
+const width = ref(window.innerWidth);
+function onResize() { width.value = window.innerWidth };
+onMounted(() => window.addEventListener('resize', onResize));
+onUnmounted(() => window.removeEventListener('resize', onResize));
+
+const isMobile = computed(() => width.value < MOBILE_BREAKPOINT);
+const viewChannels = ref(false);
+</script>
 
 <script>
 import app from "./app.js"
