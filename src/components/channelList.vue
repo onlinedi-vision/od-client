@@ -111,6 +111,7 @@ export default {
 <style>
 .chanels {
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
 }
 .server-header {
