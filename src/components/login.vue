@@ -6,7 +6,7 @@
         <h1 style="margin-top: 100px;">Login</h1>
         <input class="username" v-model="lusername" placeholder="Username..." />      
         <input type="password" class="password" v-model="password" placeholder="Password..." /> 
-        <button class="loginb" type="submit" @click="$emit('login', this.lusername, this.password)">Login</button>
+        <button class="loginb" type="submit" @click="$emit('login', lusername, password)">Login</button>
         </div>
         <button class="change-login" type="submit" @click="$emit('changeLogIn')">I don't have an account</button>
       </main>
@@ -18,7 +18,7 @@
         <input class="e-mail" v-model="lemail" placeholder="E-mail Address..." />      
         <input class="username" style="margin-top: 10px" v-model="lusername" placeholder="Username..." />      
         <input type="password" class="password" v-model="password" placeholder="Password..." /> 
-        <button class="loginb" type="submit" @click="$emit('signup', this.lusername, this.password, this.lemail)">SignUp</button>
+        <button class="loginb" type="submit" @click="$emit('signup', lusername, password, lemail)">SignUp</button>
         </div>
         <button class="change-login" type="submit" @click="$emit('changeLogIn')">I have an account</button>
       </main>
