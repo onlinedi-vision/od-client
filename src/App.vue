@@ -1,7 +1,48 @@
-<template >
+<template>
+  <button v-if="isMobile" @click="viewChannels = !viewChannels" id="mobi-switch" class="button">
+    {{ viewChannels ? 'Show Chat' : 'Show Menu' }}
+  </button>
   <main class="container" v-if="done && loggedin">
-
-    <form enctype='multipart/form-data' id="file-form" class="row" @submit.prevent="greet">
+	<div class="container-v" v-show="!isMobile || viewChannels">
+	  <img @click="openSettings()" v-bind:src='myPfp' width='60px' height='60px' class='cui'
+      style='margin-bottom:0px;' />
+	  
+	  <ServerList
+      :userServers="userServers"
+      :appState="appState"
+      :serverID="serverID"
+      :textChannel="textChannel"
+      @changeServer="change_server"
+      /> 
+	  
+	  <button class="createSButton" @click="createServer()">
+        <h2 style="margin-top: 12px">+</h2>
+      </button>
+	</div>
+	<ChannelList
+	:appState="appState"
+	:serverID="serverID"
+	:textChannel="textChannel"
+	:done="done"
+	:userServers="userServers"
+	@showSID="showSID"
+	@changeChannel="change_channel"
+	@createChannel="create_channel"
+	@deleteChannel="deleteChannel"
+	v-show="!isMobile || viewChannels"
+	/>
+	<div class="container-v" style="flex-shrink: 1; min-width: 0;" v-show="!isMobile || !viewChannels">
+	  <div id="channel-header">
+        <h3>{{textChannel}}</h3>
+      </div>
+	  <ChatWindow
+        :appState="appState"
+        :serverID="serverID"
+        :textChannel="textChannel"
+        :get_date="get_date"
+      />
+	<div>
+	<form enctype='multipart/form-data' id="file-form" class="row" @submit.prevent="greet">
       <input id="file-upload" type="file" @change="onFileChange" />
       <div v-if="selectedFileUrl" class="file-preview">
         <div style="font-size:12px;color:#aaa;">
@@ -26,38 +67,17 @@
       />
       <button id="send" type="submit" @click="send_message(message)">Send</button>
     </form>
-
-    
-    <img @click="openSettings()" v-bind:src='myPfp' width='60px' height='60px' class='cui'
-      style='margin-bottom:0px;' />
-    <button class="createSButton" @click="createServer()">
-      <h2 style="margin-top: 12px">+</h2>
-    </button>
-
-
-    <ServerList
-      :userServers="userServers"
+	</div>
+	</div>
+    <div v-show="!isMobile || viewChannels" style="margin-left: auto;">
+	  <ServerUsersList
       :appState="appState"
       :serverID="serverID"
-      :textChannel="textChannel"
-      @changeServer="change_server"
-    />  
-    
+      />
+	</div>
     <div v-if="showSIDvar" class="login" style="display:flex;flex-direction:row; left:100px; top:50px; height:30px; width:660px; z-index:999999;">
       <i style="font-size: 12px"> {{serverID}} </i>
     </div>
-
-      <ChannelList
-      :appState="appState"
-      :serverID="serverID"
-      :textChannel="textChannel"
-      :done="done"
-      :userServers="userServers"
-      @showSID="showSID"
-      @changeChannel="change_channel"
-      @createChannel="create_channel"
-	  @deleteChannel="deleteChannel"
-      />
 
       <div v-if="createChannelPopUp" class="login" style="display:flex;flex-direction:row; left:200px; top:100px; height:50px; width:280px">
         <input id="greet-input" v-model="nchn" style="width:200px" placeholder="new_channel_name..."/>
@@ -79,22 +99,6 @@
         <button class="csvb" @click="createServerCancel()">Cancel</button>
       </div>
 
-      <ChatWindow
-        :appState="appState"
-        :serverID="serverID"
-        :textChannel="textChannel"
-        :get_date="get_date"
-      />
-
-      <div id="channel-header">
-        <h3>{{this.textChannel}}</h3>
-      </div>
-
-      <ServerUsersList
-      :appState="appState"
-      :serverID="serverID"
-      />
-
   </main>
     <main v-else-if="!loggedin">
       <LogInWindow :logInSelected='logInSelected' :lError='lError' :lErrorText='lErrorText' @changeLogIn='changeLogIn' @login='logIn' @signup='signUp' />
@@ -102,6 +106,20 @@
 	<div @click="closeSettings()" class="settings-background" v-if="settingsOpen" />
 	<SettingsWindow :userName="username" :profilePic="myPfp" v-if="settingsOpen" @closeSettings="closeSettings" @logOut="logOut" @setOwnPfp="setOwnPfp" />
 </template>
+
+<script setup>
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+const MOBILE_BREAKPOINT = 768;
+
+
+const width = ref(window.innerWidth);
+function onResize() { width.value = window.innerWidth };
+onMounted(() => window.addEventListener('resize', onResize));
+onUnmounted(() => window.removeEventListener('resize', onResize));
+
+const isMobile = computed(() => width.value < MOBILE_BREAKPOINT);
+const viewChannels = ref(false);
+</script>
 
 <script>
 import app from "./app.js"
