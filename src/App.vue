@@ -33,7 +33,7 @@
 	/>
 	<div class="container-v" style="flex-shrink: 1; min-width: 0;" v-show="!isMobile || !viewChannels">
 	  <div id="channel-header">
-        <h3>{{this.textChannel}}</h3>
+        <h3>{{textChannel}}</h3>
       </div>
 	  <ChatWindow
         :appState="appState"
