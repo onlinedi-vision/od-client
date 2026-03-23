@@ -64,14 +64,19 @@
                       id="pfp-file"
                       class="settings-file-input"
                       type="file"
-                      accept="image/*"
-                      @change="onProfileFileChange"
+                      accept="image/*,image/gif"
+                      @change="onPfpFileChange"
                     />
                   </div>
 
+                  <div v-if="newFileUrl" class="profile-local-preview">
+                    <img :src="newFileUrl" alt="preview" class="profile-local-preview-img" />
+                    <button class="settings-secondary-btn" type="button" @click="clearFile">Remove</button>
+                  </div>
+
                   <div class="panel-actions">
-                    <button class="settings-primary-btn" :disabled="!canSavePfp" @click="setPfp">Save picture</button>
-                    <button class="settings-secondary-btn" @click="closeChangePfp">Reset</button>
+                    <button class="settings-primary-btn" type="button" :disabled="!canSavePfp" @click="setPfp">Save picture</button>
+                    <button class="settings-secondary-btn" type="button" @click="closeChangePfp">Reset</button>
                   </div>
                 </div>
               </div>
@@ -135,7 +140,7 @@ export default {
 			pfpDialog: false,
 			newUrl: "",
 			newFile: null,
-			localPreviewUrl: "",
+			newFileUrl: "",
 			activeSection: "customize",
 			sections: [
 				{ key: "customize", label: "Customize" },
@@ -161,7 +166,7 @@ export default {
 			return descriptions[this.activeSection] || "Settings";
 		},
 		previewProfilePic() {
-			return this.localPreviewUrl || this.newUrl.trim() || this.profilePic;
+			return this.newFileUrl || this.newUrl.trim() || this.profilePic;
 		},
 		canSavePfp() {
 			return Boolean(this.newUrl.trim() || this.newFile);
@@ -175,28 +180,30 @@ export default {
 		closeChangePfp() {
 			this.pfpDialog = false;
 			this.newUrl = "";
-			this.clearSelectedPfpFile();
+			this.clearFile();
 		},
 		setPfp() {
 			if (!this.canSavePfp) return;
 			this.$emit('setOwnPfp', { url: this.newUrl, file: this.newFile });
 			this.pfpDialog = false;
 			this.newUrl = "";
-			this.clearSelectedPfpFile();
+			this.clearFile();
 		},
-		onProfileFileChange(event) {
-			const [file] = event.target.files || [];
-			this.clearSelectedPfpFile();
+		onPfpFileChange(event) {
+			const file = event?.target?.files?.[0];
+			this.clearFile();
 			if (!file) return;
 			this.newFile = file;
-			this.localPreviewUrl = URL.createObjectURL(file);
+			this.newFileUrl = URL.createObjectURL(file);
 		},
-		clearSelectedPfpFile() {
-			if (this.localPreviewUrl) {
-				URL.revokeObjectURL(this.localPreviewUrl);
+		clearFile() {
+			if (this.newFileUrl) {
+				try { URL.revokeObjectURL(this.newFileUrl); } catch (_) {}
 			}
 			this.newFile = null;
-			this.localPreviewUrl = "";
+			this.newFileUrl = "";
+			const input = document.getElementById("pfp-file");
+			if (input) input.value = "";
 		}
 	}
 }
@@ -390,6 +397,19 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.profile-local-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-local-preview-img {
+  max-width: 80px;
+  max-height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
 }
 
 .field-label {

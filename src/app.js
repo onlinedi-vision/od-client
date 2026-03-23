@@ -478,12 +478,38 @@ export default {
             .then((res) => console.log(res))
             .catch((err) => console.log(err));
 	},
+	normalizeProfilePicUrl(url) {
+		const trimmedUrl = (url || "").trim();
+		if (!trimmedUrl) return "";
+
+		try {
+			const parsed = new URL(trimmedUrl);
+			parsed.searchParams.set("t", Date.now().toString());
+			return parsed.toString();
+		} catch (err) {
+			console.log("Invalid profile picture URL", err);
+			return trimmedUrl;
+		}
+	},
+	resolveUploadedFileUrl(uploadResponseText) {
+		const rawValue = (uploadResponseText || "").trim();
+		const cleanedValue = rawValue
+			.split(/\r?\n/)
+			.map(line => line.trim())
+			.filter(Boolean)
+			.pop()
+			?.replace(/^["']|["']$/g, "") || "";
+
+		if (!cleanedValue) return "";
+		if (/^https?:\/\//i.test(cleanedValue)) return cleanedValue;
+		return `https://onlinedi.vision:7377${cleanedValue.startsWith("/") ? cleanedValue : `/${cleanedValue}`}`;
+	},
 	getOwnPfp() {
 		invoke('get_profile_pic', { 'username': this.username, 'token': this.token})
 			.then((res) => {
 				this.refreshToken(JSON.parse(res)['token']);
 				let url = JSON.parse(res)['img_url'];
-				this.myPfp = url ? url : this.myPfp;
+				this.myPfp = url ? this.normalizeProfilePicUrl(url) : this.myPfp;
 		}).catch((err) => {
           console.log(err);
         })
@@ -504,12 +530,11 @@ export default {
 					return;
 				}
 				const text = (await res.text()).trim();
-				const path = text.split(/\r?\n/).filter(Boolean).pop();
-				if (!path) {
+				finalUrl = this.resolveUploadedFileUrl(text);
+				if (!finalUrl) {
 					console.log("Upload returned empty path, raw:", text);
 					return;
 				}
-				finalUrl = "https://onlinedi.vision:7377" + path;
 			} catch (err) {
 				console.log("Upload error", err);
 				return;
@@ -526,7 +551,7 @@ export default {
 				this.refreshToken(JSON.parse(res)["token"]);
 				const newUrl = JSON.parse(res)["img_url"];
 				if (!newUrl) console.log("WARN: problem encountered while setting pfp");
-				this.myPfp = newUrl ? newUrl : this.myPfp;
+				this.myPfp = newUrl ? this.normalizeProfilePicUrl(newUrl) : this.myPfp;
 			})
 			.catch((err) => console.log(err));
 	},
