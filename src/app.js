@@ -147,12 +147,12 @@ export default {
 
         fileData.append("file", file);
 
-        fetch("https://onlinedi.vision:7377/upload", {
+        fetch("https://onlinedi.vision/ash/upload", {
           method: 'POST',
           body: fileData
         }).then(response => {
           response.text().then(mess => {
-            const to_append = "https://onlinedi.vision:7377" + mess.split(/\r?\n/).pop();
+            const to_append = "https://onlinedi.vision" + mess.split(/\r?\n/).pop();
             message += to_append;
 
             if (this.serverID === '1') { message = ''; this.message; }
@@ -264,7 +264,7 @@ export default {
           this.loggedin = true;
 
           invoke('write_credentials', { creds: JSON.stringify({ 'username': this.username, 'token': this.token }) });
-          reloadApp();
+		  setTimeout(reloadApp, 500);
         })
         .catch((err) => console.log(err));
     },

@@ -1,40 +1,16 @@
+use tauri::Manager;
 use crate::prelude;
-
-fn get_credential_file() -> String {
-    if cfg!(windows) {
-        "\\AppData\\Roaming\\OnlineDivision\\credentials.json".to_string()
-    } else if cfg!(unix) {
-        "/.division-online/credentials.json".to_string()
-    } else {
-        panic!("FATAL ERROR: unidentified OS type");
-    }
+#[tauri::command(rename_all = "snake_case")]
+pub(crate) async fn get_local_token(app: tauri::AppHandle) -> String {
+    let path = app.path().app_data_dir().unwrap().join("credentials.json");
+    std::fs::read_to_string(&path).unwrap_or_else(|_| "Failed".to_string())
 }
 
 #[tauri::command(rename_all = "snake_case")]
-pub(crate) async fn get_local_token() -> String {
-    match std::env::home_dir() {
-        Some(home_dih) => {
-            std::fs::read_to_string(format!("{}{}", home_dih.display(), get_credential_file()))
-                .expect("Should have been able to read the file")
-        }
-        _ => "Failed".to_string(),
-    }
+pub(crate) async fn write_credentials(app: tauri::AppHandle, creds: String) {
+    let dir = app.path().app_data_dir().unwrap();
+    std::fs::create_dir_all(&dir).expect("Should have been able to create app data directory");
+    let path = dir.join("credentials.json");
+    prelude::debug_only_print(&format!("credentials written to: {}", path.display()));
+    std::fs::write(&path, creds).expect("Should have been able to write the file");
 }
-
-#[tauri::command(rename_all = "snake_case")]
-pub(crate) async fn write_credentials(creds: String) -> () {
-    prelude::debug_only_print(&"write");
-    match std::env::home_dir() {
-        Some(home_dih) => {
-            std::fs::write(
-                format!("{}{}", home_dih.display(), get_credential_file()),
-                creds,
-            )
-            .expect("Should have been able to write the file");
-        }
-        _ => {
-            prelude::debug_only_print(&"Failed Write");
-        }
-    }
-}
-
