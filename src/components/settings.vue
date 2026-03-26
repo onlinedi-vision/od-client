@@ -191,6 +191,7 @@ export default {
 		},
 		onPfpFileChange(event) {
 			const file = event?.target?.files?.[0];
+     
 			this.clearFile();
 			if (!file) return;
 			this.newFile = file;
