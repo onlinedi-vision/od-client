@@ -502,7 +502,7 @@ export default {
 
 		if (!cleanedValue) return "";
 		if (/^https?:\/\//i.test(cleanedValue)) return cleanedValue;
-		return `https://onlinedi.vision:7377${cleanedValue.startsWith("/") ? cleanedValue : `/${cleanedValue}`}`;
+		return `https://onlinedi.vision${cleanedValue.startsWith("/") ? cleanedValue : `/${cleanedValue}`}`;
 	},
 	getOwnPfp() {
 		invoke('get_profile_pic', { 'username': this.username, 'token': this.token})
@@ -515,45 +515,57 @@ export default {
         })
 	},
 	async setOwnPfp(payload) {
-		const safePayload = payload || {};
-		const url = (safePayload.url || "").trim();
-		const file = safePayload.file || null;
-		let finalUrl = url;
+    const safePayload = payload || {};
+    const url = (safePayload.url || "").trim();
+    const file = safePayload.file || null;
+    let finalUrl = url;
 
-		if (file) {
-			try {
-				const fileData = new FormData();
-				fileData.append("file", file);
-				const res = await fetch("https://onlinedi.vision:7377/upload", { method: "POST", body: fileData });
-				if (!res.ok) {
-					console.log("Upload failed", res.status);
-					return;
-				}
-				const text = (await res.text()).trim();
-				finalUrl = this.resolveUploadedFileUrl(text);
-				if (!finalUrl) {
-					console.log("Upload returned empty path, raw:", text);
-					return;
-				}
-			} catch (err) {
-				console.log("Upload error", err);
-				return;
-			}
-		}
+    if (file) {
+      try {
+        const fileData = new FormData();
+        fileData.append("file", file);
+        const res = await fetch("https://onlinedi.vision/ash/upload", {
+          method: "POST",
+          body: fileData
+        });
 
-		if (!finalUrl) {
-			console.log("No URL provided for profile picture");
-			return;
-		}
+        if (!res.ok){
+          console.log("Upload failed", res.status);
+          return;
+        }
+        const text = (await res.text()).trim();
+        finalUrl = this.resolveUploadedFileUrl(text);
 
-		return invoke('set_profile_pic', { username: this.username, token: this.token, img_url: finalUrl })
-			.then((res) => {
-				this.refreshToken(JSON.parse(res)["token"]);
-				const newUrl = JSON.parse(res)["img_url"];
-				if (!newUrl) console.log("WARN: problem encountered while setting pfp");
-				this.myPfp = newUrl ? this.normalizeProfilePicUrl(newUrl) : this.myPfp;
-			})
-			.catch((err) => console.log(err));
+        if (!finalUrl){
+          console.log("Upload returned empty path, raw:", text);
+          return;
+        }
+      } catch (err){
+          console.log("Upload error", err);
+          return;
+        }
+    }
+
+    if (!finalUrl)return;
+
+    return invoke('set_profile_pic', {
+      username: this.username,
+      token: this.token,
+      img_url: finalUrl
+    })
+    .then((res) => {
+      this.refreshToken(JSON.parse(res)["token"]);
+      const newUrl = JSON.parse(res)["img_url"];
+
+      if (!newUrl) {
+        return;
+      }
+
+      this.myPfp = this.normalizeProfilePicUrl(newUrl);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 	},
 	initWebsocket(){
     this.ws = new wsConnection(this.username);
