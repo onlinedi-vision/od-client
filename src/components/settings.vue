@@ -214,6 +214,10 @@ export default {
 /* overlay */
 .settings-background,
 .settings-overlay {
+  --settings-bg: var(--normal-foreground-element-color);
+  --settings-surface: var(--dark-foreground-element-color);
+  --settings-text: var(--main-font-color);
+  --settings-app-bg: var(--background-color);
   background-color: rgba(0, 0, 0, 0.45);
   position: fixed;
   inset: 0;
@@ -227,12 +231,12 @@ export default {
 /* modal */
 .settings,
 .settings-modal {
-  background-color: #292222;
+  background-color: var(--settings-bg);
   width: min(1200px, 90vw);
   height: min(760px, 85vh);
   z-index: 10010;
-  color: var(--main-font-color);
-  border: 2px solid #4ebedb;
+  color: var(--settings-text);
+  border: 2px solid var(--settings-text);
   display: grid;
   grid-template-columns: 280px 1fr;
   position: relative;
@@ -245,12 +249,12 @@ export default {
   gap: 12px;
   min-height: 104px;
   padding: 18px 16px;
-  border-bottom: 1px solid rgba(139, 63, 166, 0.55);
+  border-bottom: 1px solid var(--settings-text);
 }
 
 /* left panel */
 .settings-sidebar {
-  border-right: 2px solid #1b4f9c;
+  border-right: 2px solid var(--settings-text);
   display: flex;
   flex-direction: column;
 }
@@ -262,8 +266,8 @@ export default {
   object-fit: cover;
   flex-shrink: 0;
   display: block;
-  border: 2px solid #4ebedb;
-  background: #171313;
+  border: 2px solid var(--settings-text);
+  background: var(--settings-surface);
 }
 
 .sidebar-user {
@@ -287,13 +291,13 @@ export default {
   padding: 0;
   border: 0;
   background: transparent;
-  color: #7fc8df;
+  color: var(--settings-text);
   font-size: 0.9rem;
   cursor: pointer;
 }
 
 .sidebar-edit-btn:hover {
-  color: #b8ebf8;
+  color: #fff;
 }
 
 /* section list */
@@ -307,20 +311,31 @@ export default {
   text-align: left;
   padding: 0 16px;
   border: 0;
-  border-bottom: 1px solid #8b3fa6;
+  border-bottom: 1px solid var(--settings-text);
   background: transparent;
-  color: var(--main-font-color);
+  color: var(--settings-text);
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
 }
+
+.sidebar-nav-item:hover {
+  background: var(--main-font-color);
+  color: #fff;
+}
+
 .sidebar-nav-item.active {
-  background: #dfeef8;
-  color: #111;
+  background: var(--settings-app-bg);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: inset 4px 0 0 #fff;
 }
 
 /* logout at bottom */
 .sidebar-footer {
   margin-top: auto;
-  border-top: 1px solid #8b3fa6;
-  padding: 12px;
+  border-top: 1px solid var(--settings-text);
+  padding: 0;
+  min-height: 56px;
 }
 
 /* right panel */
@@ -348,7 +363,7 @@ export default {
 
 .content-subtitle {
   margin: 0;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--settings-text);
 }
 
 .content-body,
@@ -359,8 +374,8 @@ export default {
 }
 
 .settings-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(78, 190, 219, 0.22);
+  background: var(--settings-surface);
+  border: 1px solid var(--settings-text);
   border-radius: 16px;
   padding: 20px;
 }
@@ -373,7 +388,7 @@ export default {
 .card-heading p,
 .settings-placeholder p {
   margin: 0;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--settings-text);
 }
 
 .profile-editor {
@@ -388,13 +403,14 @@ export default {
   height: 96px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #4ebedb;
-  background: #171313;
+  border: 2px solid var(--settings-text);
+  background: var(--settings-surface);
   flex-shrink: 0;
 }
 
 .profile-fields {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -415,21 +431,23 @@ export default {
 
 .field-label {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--settings-text);
 }
 
 .file-name {
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--settings-text);
   font-size: 0.9rem;
 }
 
 .settings-input {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 12px 14px;
   border-radius: 12px;
-  border: 1px solid rgba(78, 190, 219, 0.32);
-  background: rgba(0, 0, 0, 0.2);
-  color: var(--main-font-color);
+  border: 1px solid var(--settings-text);
+  background: var(--settings-app-bg);
+  color: var(--settings-text);
 }
 
 .panel-actions {
@@ -464,13 +482,13 @@ export default {
 }
 
 .settings-primary-btn {
-  background: #4ebedb;
-  color: #111;
+  background: var(--settings-text);
+  color: #fff;
 }
 
 .settings-secondary-btn {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--main-font-color);
+  background: var(--settings-surface);
+  color: var(--settings-text);
 }
 
 .settings-file-btn {
@@ -484,12 +502,21 @@ export default {
   color: #ff9090;
 }
 
+.sidebar-logout {
+  width: 100%;
+  height: 100%;
+  min-height: 56px;
+  border-radius: 0;
+  text-align: left;
+}
+
 .settings-primary-btn:hover {
-  background: #79d4eb;
+  opacity: 0.85;
 }
 
 .settings-secondary-btn:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--settings-bg);
+  color: #fff;
 }
 
 .settings-danger-btn:hover,
@@ -509,12 +536,21 @@ export default {
   z-index: 2;
   width: 34px;
   height: 34px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--main-font-color);
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1;
+  font-size: 16px;
+  background: var(--settings-surface);
+  color: var(--settings-text);
+  box-shadow: 0 0 6px rgba(128, 128, 128, 0.5);
 }
 
 .settings-close-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
+  background: var(--settings-bg);
+  color: #fff;
 }
 
 
