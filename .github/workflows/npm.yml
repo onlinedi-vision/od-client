@@ -1,9 +1,5 @@
 name: npm CI
 
-on:
-  pull_request:
-    branches: ["main"]
-
 jobs:
   build:
 
