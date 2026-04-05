@@ -13,13 +13,8 @@
         </div>
 
         <nav class="sidebar-nav">
-          <button
-            v-for="section in sections"
-            :key="section.key"
-            class="sidebar-nav-item"
-            :class="{ active: activeSection === section.key }"
-            @click="activeSection = section.key"
-          >
+          <button v-for="section in sections" :key="section.key" class="sidebar-nav-item"
+            :class="{ active: activeSection === section.key }" @click="activeSection = section.key">
             {{ section.label }}
           </button>
         </nav>
@@ -48,25 +43,15 @@
 
                 <div class="profile-fields">
                   <label class="field-label" for="pfp-url">Image URL</label>
-                  <input
-                    id="pfp-url"
-                    v-model="newUrl"
-                    class="settings-input"
-                    type="text"
-                    placeholder="https://example.com/avatar.png"
-                  />
+                  <input id="pfp-url" v-model="newUrl" class="settings-input" type="text"
+                    placeholder="https://example.com/avatar.png" />
 
                   <label class="field-label" for="pfp-file">Local image</label>
                   <div class="panel-actions">
                     <label class="settings-secondary-btn settings-file-btn" for="pfp-file">Choose file</label>
                     <span v-if="newFile" class="file-name">{{ newFile.name }}</span>
-                    <input
-                      id="pfp-file"
-                      class="settings-file-input"
-                      type="file"
-                      accept="image/*,image/gif"
-                      @change="onPfpFileChange"
-                    />
+                    <input id="pfp-file" class="settings-file-input" type="file" accept="image/*,image/gif"
+                      @change="onPfpFileChange" />
                   </div>
 
                   <div v-if="newFileUrl" class="profile-local-preview">
@@ -75,7 +60,8 @@
                   </div>
 
                   <div class="panel-actions">
-                    <button class="settings-primary-btn" type="button" :disabled="!canSavePfp" @click="setPfp">Save picture</button>
+                    <button class="settings-primary-btn" type="button" :disabled="!canSavePfp" @click="setPfp">Save
+                      picture</button>
                     <button class="settings-secondary-btn" type="button" @click="closeChangePfp">Reset</button>
                   </div>
                 </div>
@@ -98,7 +84,8 @@
           <div v-else-if="activeSection === 'voice'" class="settings-panel">
             <div class="settings-card settings-placeholder">
               <h3>Voice & Video</h3>
-              <p>This section is ready for microphone, speaker and camera controls when those settings exist in the app.</p>
+              <p>This section is ready for microphone, speaker and camera controls when those settings exist in the app.
+              </p>
             </div>
           </div>
 
@@ -124,89 +111,89 @@
 
 <script>
 export default {
-	name: 'SettingsWindow',
-	props: {
-		userName: {
-			type: String,
-			required: true
-		},
-		profilePic: {
-			type: String,
-			required: true
-		}
-	},
-	data() {
-		return {
-			pfpDialog: false,
-			newUrl: "",
-			newFile: null,
-			newFileUrl: "",
-			activeSection: "customize",
-			sections: [
-				{ key: "customize", label: "Customize" },
-				{ key: "voice", label: "Voice & Video" },
-				{ key: "keybinds", label: "Keybinds" },
-				{ key: "notifications", label: "Notifications" }
-			]
-		};
-	},
-	computed: {
-		activeSectionLabel() {
-			const current = this.sections.find(s => s.key === this.activeSection);
-			return current ? current.label : "Settings";
-		},
-		activeSectionDescription() {
-			const descriptions = {
-				customize: "Manage your profile image and session actions.",
-				voice: "Reserved for audio input, output and device preferences.",
-				keybinds: "Reserved for keyboard shortcuts and action bindings.",
-				notifications: "Reserved for alert and notification behavior."
-			};
+  name: 'SettingsWindow',
+  props: {
+    userName: {
+      type: String,
+      required: true
+    },
+    profilePic: {
+      type: String,
+      required: true
+    }
+  },
+  data() {
+    return {
+      pfpDialog: false,
+      newUrl: "",
+      newFile: null,
+      newFileUrl: "",
+      activeSection: "customize",
+      sections: [
+        { key: "customize", label: "Customize" },
+        { key: "voice", label: "Voice & Video" },
+        { key: "keybinds", label: "Keybinds" },
+        { key: "notifications", label: "Notifications" }
+      ]
+    };
+  },
+  computed: {
+    activeSectionLabel() {
+      const current = this.sections.find(s => s.key === this.activeSection);
+      return current ? current.label : "Settings";
+    },
+    activeSectionDescription() {
+      const descriptions = {
+        customize: "Manage your profile image and session actions.",
+        voice: "Reserved for audio input, output and device preferences.",
+        keybinds: "Reserved for keyboard shortcuts and action bindings.",
+        notifications: "Reserved for alert and notification behavior."
+      };
 
-			return descriptions[this.activeSection] || "Settings";
-		},
-		previewProfilePic() {
-			return this.newFileUrl || this.newUrl.trim() || this.profilePic;
-		},
-		canSavePfp() {
-			return Boolean(this.newUrl.trim() || this.newFile);
-		}
-	},
-	methods: {
-		openChangePfp() {
-			this.activeSection = "customize";
-			this.pfpDialog = true;
-		},
-		closeChangePfp() {
-			this.pfpDialog = false;
-			this.newUrl = "";
-			this.clearFile();
-		},
-		setPfp() {
-			if (!this.canSavePfp) return;
-			this.$emit('setOwnPfp', { url: this.newUrl, file: this.newFile });
-			this.pfpDialog = false;
-			this.newUrl = "";
-			this.clearFile();
-		},
-		onPfpFileChange(event) {
-			const file = event?.target?.files?.[0];
-     
-			this.clearFile();
-			if (!file) return;
-			this.newFile = file;
-			this.newFileUrl = URL.createObjectURL(file);
-		},
-		clearFile() {
-			if (this.newFileUrl) {
-				try { URL.revokeObjectURL(this.newFileUrl); } catch (_) {}
-			}
-			this.newFile = null;
-			this.newFileUrl = "";
-			const input = document.getElementById("pfp-file");
-			if (input) input.value = "";
-		}
-	}
+      return descriptions[this.activeSection] || "Settings";
+    },
+    previewProfilePic() {
+      return this.newFileUrl || this.newUrl.trim() || this.profilePic;
+    },
+    canSavePfp() {
+      return Boolean(this.newUrl.trim() || this.newFile);
+    }
+  },
+  methods: {
+    openChangePfp() {
+      this.activeSection = "customize";
+      this.pfpDialog = true;
+    },
+    closeChangePfp() {
+      this.pfpDialog = false;
+      this.newUrl = "";
+      this.clearFile();
+    },
+    setPfp() {
+      if (!this.canSavePfp) return;
+      this.$emit('setOwnPfp', { url: this.newUrl, file: this.newFile });
+      this.pfpDialog = false;
+      this.newUrl = "";
+      this.clearFile();
+    },
+    onPfpFileChange(event) {
+      const file = event?.target?.files?.[0];
+
+      this.clearFile();
+      if (!file) return;
+      this.newFile = file;
+      this.newFileUrl = URL.createObjectURL(file);
+    },
+    clearFile() {
+      if (this.newFileUrl) {
+        try { URL.revokeObjectURL(this.newFileUrl); } catch {/* Silently ignore errors from revokeObjectURL*/ }
+      }
+      this.newFile = null;
+      this.newFileUrl = "";
+      const input = document.getElementById("pfp-file");
+      if (input) input.value = "";
+    }
+  }
 }
 </script>
 
@@ -306,6 +293,7 @@ export default {
   display: flex;
   flex-direction: column;
 }
+
 .sidebar-nav-item {
   height: 56px;
   text-align: left;
@@ -552,6 +540,4 @@ export default {
   background: var(--settings-bg);
   color: #fff;
 }
-
-
 </style>
