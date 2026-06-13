@@ -14,7 +14,7 @@ pub(crate) async fn spellcheck(
     map.insert("username", username.clone());
     map.insert("key", key.clone());
 
-    let res = post_to_text("https://api.onlinedi.vision/api/spell/check", map, "Spell Check Failed").await
+    let res = post_to_text("https://api.onlinedi.vision/spell/check", map, "Spell Check Failed").await
         .expect("err");
     prelude::debug_only_print(&res);
     res

@@ -17,7 +17,7 @@ pub(crate) async fn sendmessage(
     map.insert("m_content", m_content.clone());
     map.insert("username", username.clone());
     prelude::debug_only_print(&m_content.clone());
-    let res = post(&format!("{}/{}/api/{}/send_message",host_url, server, channel), map).await;
+    let res = post(&format!("{}/{}/{}/send_message",host_url, server, channel), map).await;
     prelude::debug_only_print(&res);
     match res {
         Ok(_) => m_content,
@@ -38,7 +38,7 @@ pub(crate) async fn getmessages(
     map.insert("username", username.clone());
     map.insert("limit", "100".to_string());
     map.insert("offset", "0".to_string());
-    let res = post_to_text(&format!("{}/{}/api/{}/get_messages_migration",host_url, server, channel), map, "Failed to retrieve messages")
+    let res = post_to_text(&format!("{}/{}/{}/get_messages_migration",host_url, server, channel), map, "Failed to retrieve messages")
         .await
         .expect("err");
     prelude::debug_only_print(&res);
