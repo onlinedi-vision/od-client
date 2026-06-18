@@ -478,26 +478,94 @@ export default {
             .then((res) => console.log(res))
             .catch((err) => console.log(err));
 	},
+	normalizeProfilePicUrl(url) {
+		const trimmedUrl = (url || "").trim();
+		if (!trimmedUrl) return "";
+
+		try {
+			const parsed = new URL(trimmedUrl);
+			parsed.searchParams.set("t", Date.now().toString());
+			return parsed.toString();
+		} catch (err) {
+			console.log("Invalid profile picture URL", err);
+			return trimmedUrl;
+		}
+	},
+	resolveUploadedFileUrl(uploadResponseText) {
+		const rawValue = (uploadResponseText || "").trim();
+		const cleanedValue = rawValue
+			.split(/\r?\n/)
+			.map(line => line.trim())
+			.filter(Boolean)
+			.pop()
+			?.replace(/^["']|["']$/g, "") || "";
+
+		if (!cleanedValue) return "";
+		if (/^https?:\/\//i.test(cleanedValue)) return cleanedValue;
+		return `https://onlinedi.vision${cleanedValue.startsWith("/") ? cleanedValue : `/${cleanedValue}`}`;
+	},
 	getOwnPfp() {
 		invoke('get_profile_pic', { 'username': this.username, 'token': this.token})
 			.then((res) => {
 				this.refreshToken(JSON.parse(res)['token']);
 				let url = JSON.parse(res)['img_url'];
-				this.myPfp = url ? url : this.myPfp;
+				this.myPfp = url ? this.normalizeProfilePicUrl(url) : this.myPfp;
 		}).catch((err) => {
           console.log(err);
         })
 	},
-	setOwnPfp(url) {
-		invoke('set_profile_pic', { 'username': this.username, 'token': this.token, 'img_url': url})
-			.then((res) => {
-				this.refreshToken(JSON.parse(res)['token']);
-				let url = JSON.parse(res)['img_url'];
-				if(!url) console.log("WARN: problem encountered while setting pfp");
-				this.myPfp = url ? url : this.myPfp;
-		}).catch((err) => {
-          console.log(err);
-        })
+	async setOwnPfp(payload) {
+    const safePayload = payload || {};
+    const url = (safePayload.url || "").trim();
+    const file = safePayload.file || null;
+    let finalUrl = url;
+
+    if (file) {
+      try {
+        const fileData = new FormData();
+        fileData.append("file", file);
+        const res = await fetch("https://onlinedi.vision/ash/upload", {
+          method: "POST",
+          body: fileData
+        });
+
+        if (!res.ok){
+          console.log("Upload failed", res.status);
+          return;
+        }
+        const text = (await res.text()).trim();
+        finalUrl = this.resolveUploadedFileUrl(text);
+
+        if (!finalUrl){
+          console.log("Upload returned empty path, raw:", text);
+          return;
+        }
+      } catch (err){
+          console.log("Upload error", err);
+          return;
+        }
+    }
+
+    if (!finalUrl)return;
+
+    return invoke('set_profile_pic', {
+      username: this.username,
+      token: this.token,
+      img_url: finalUrl
+    })
+    .then((res) => {
+      this.refreshToken(JSON.parse(res)["token"]);
+      const newUrl = JSON.parse(res)["img_url"];
+
+      if (!newUrl) {
+        return;
+      }
+
+      this.myPfp = this.normalizeProfilePicUrl(newUrl);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 	},
 	initWebsocket(){
     this.ws = new wsConnection(this.username);
