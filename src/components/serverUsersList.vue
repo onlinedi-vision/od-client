@@ -30,11 +30,11 @@ export default {
 
 <style scoped>
 .server-users {
+  flex-grow: 1;
   overflow-y: hidden;
   overflow-x: scroll;
   transition: 0.2s;
   background-color: var(--dark-foreground-element-color);
-  position: absolute;
   top: 5px;
   right: 5px;
   height: calc(100vh - 11px);
