@@ -71,7 +71,7 @@
         <input class="csv" v-model="newSvName" placeholder="Server Name..." />
         <input class="csv" v-model="newImgUrl" placeholder="Image URL..." />
         <input class="csv" v-model="newShDesc" placeholder="Short Description...">
-        <button class="csvb" @click="createSeverForReal()">Create Server</button>
+        <button class="csvb" @click="createSever()">Create Server</button>
       
         <h3 style="padding-top:30px" >Join Server</h3>
         <input class="csv" v-model="joinserverID" placeholder="Server ID..."/>

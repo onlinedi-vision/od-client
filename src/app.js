@@ -364,7 +364,7 @@ export default {
         console.log(err);
       }
     },
-    async createSeverForReal() {
+    async createSever() {
       try {
         const res = await invoke("create_server", {
           img_url: this.newImgUrl,
