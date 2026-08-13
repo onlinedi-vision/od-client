@@ -13,14 +13,14 @@
         class="channel_button main"
         :class="{ active: div.channelTag === textChannel }"
       >
-	  <template v-if="this.confirmDelete==index">
+	  <template v-if="confirmDelete==index">
 		Confirm delete?
 	  </template>
 	  <template v-else>
         # {{ div.channelTag }}
 	  </template>
       </button>
-	  <template v-if="this.confirmDelete==index">
+	  <template v-if="confirmDelete==index">
 	    <button class="channel_options always_on" @click="deleteChannel(currentServer.serverID, div.channelTag)">
 		<i class="pi pi-check"/>
 	  </button>
@@ -28,7 +28,7 @@
 		  <i class="pi pi-times" />
 	  </button>
 	  </template>
-	  <template v-else-if="this.optionsOpenIndex==index">
+	  <template v-else-if="optionsOpenIndex==index">
 	  <button class="channel_options always_on" @click="askDelete(index)">
 		  <i class="pi pi-trash"/>
 	  </button>
