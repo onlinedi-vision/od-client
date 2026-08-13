@@ -37,11 +37,8 @@ export default {
 .server_list {
   transition: 0.2s; 
   background-color: var(--dark-foreground-element-color);
-  position: absolute;
-  top: 75px;
-  left: 5px;
-  height: calc(100vh - 155px);
   width: 60px;
+  flex-grow: 1;
   z-index: 9999;
   border-radius: 40px 40px 40px 40px;
   border: 2px solid transparent;

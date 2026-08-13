@@ -152,7 +152,7 @@ export default {
           body: fileData
         }).then(response => {
           response.text().then(mess => {
-            const to_append = "https://onlinedi.vision" + mess.split(/\r?\n/).pop();
+            const to_append = "https://onlinedi.vision/" + mess.split(/\r?\n/).pop();
             message += to_append;
 
             if (this.serverID === '1') { message = ''; this.message; }
