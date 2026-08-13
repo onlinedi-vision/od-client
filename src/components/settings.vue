@@ -205,7 +205,16 @@ export default {
   --settings-surface: var(--dark-foreground-element-color);
   --settings-text: var(--main-font-color);
   --settings-app-bg: var(--background-color);
-  background-color: rgba(0, 0, 0, 0.45);
+
+  --settings-danger: #d04242;
+  --settings-danger-text: #ff9090;
+  --settings-danger-bg: rgba(208, 66, 66, 0.16);
+  --settings-danger-bg-hover: rgba(208, 66, 66, 0.26);
+  --settings-white: #fff;
+  --settings-shadow: rgba(128, 128, 128, 0.5);
+  --settings-overlay-bg: rgba(0, 0, 0, 0.45);
+
+  background-color: var(--settings-overlay-bg);
   position: fixed;
   inset: 0;
   z-index: 10001;
@@ -284,7 +293,7 @@ export default {
 }
 
 .sidebar-edit-btn:hover {
-  color: #fff;
+  color: var(--settings-white);
 }
 
 /* section list */
@@ -308,14 +317,14 @@ export default {
 
 .sidebar-nav-item:hover {
   background: var(--main-font-color);
-  color: #fff;
+  color: var(--settings-white);
 }
 
 .sidebar-nav-item.active {
   background: var(--settings-app-bg);
-  color: #fff;
+  color: var(--settings-white);
   font-weight: 700;
-  box-shadow: inset 4px 0 0 #fff;
+  box-shadow: inset 4px 0 0 var(--settings-white);
 }
 
 /* logout at bottom */
@@ -471,7 +480,7 @@ export default {
 
 .settings-primary-btn {
   background: var(--settings-text);
-  color: #fff;
+  color: var(--settings-white);
 }
 
 .settings-secondary-btn {
@@ -486,8 +495,8 @@ export default {
 
 .settings-danger-btn,
 .sidebar-logout {
-  background: rgba(208, 66, 66, 0.16);
-  color: #ff9090;
+  background: var(--settings-danger-bg);
+  color: var(--settings-danger-text);
 }
 
 .sidebar-logout {
@@ -504,12 +513,12 @@ export default {
 
 .settings-secondary-btn:hover {
   background: var(--settings-bg);
-  color: #fff;
+  color: var(--settings-white);
 }
 
 .settings-danger-btn:hover,
 .sidebar-logout:hover {
-  background: rgba(208, 66, 66, 0.26);
+  background: var(--settings-danger-bg-hover);
 }
 
 .settings-file-input {
@@ -533,11 +542,11 @@ export default {
   font-size: 16px;
   background: var(--settings-surface);
   color: var(--settings-text);
-  box-shadow: 0 0 6px rgba(128, 128, 128, 0.5);
+  box-shadow: 0 0 6px var(--settings-shadow);
 }
 
 .settings-close-btn:hover {
   background: var(--settings-bg);
-  color: #fff;
+  color: var(--settings-white);
 }
 </style>
