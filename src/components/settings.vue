@@ -1,9 +1,11 @@
 <template>
   <div class="settings-overlay">
     <div class="settings-modal">
-      <button class="settings-close-btn" @click="$emit('closeSettings')">X</button>
-
-      <aside class="settings-sidebar">
+	  <div class="settings-nav-buttons">
+	    <button class="settings-nav-btn" @click="activeSection = 'main'" v-if="activeSection != 'main'">&#x2190;</button>
+        <button class="settings-nav-btn" @click="$emit('closeSettings')">X</button>
+	  </div>
+      <aside class="settings-sidebar" v-if="!isMobile || activeSection === 'main'">
         <div class="sidebar-profile">
           <img :src="profilePic" class="sidebar-avatar" />
           <div class="sidebar-user">
@@ -24,7 +26,7 @@
         </div>
       </aside>
 
-      <main class="settings-content">
+      <main class="settings-content" v-if="!isMobile || activeSection != 'main'">
         <header class="content-header">
           <h2 class="content-title">{{ activeSectionLabel }}</h2>
           <p class="content-subtitle">{{ activeSectionDescription }}</p>
@@ -102,12 +104,25 @@
               <p>Use this area later for message alerts, sound toggles and channel notification preferences.</p>
             </div>
           </div>
+
         </section>
       </main>
     </div>
   </div>
 </template>
 
+<script setup>
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+const MOBILE_BREAKPOINT = 768;
+
+
+const width = ref(window.innerWidth);
+function onResize() { width.value = window.innerWidth };
+onMounted(() => window.addEventListener('resize', onResize));
+onUnmounted(() => window.removeEventListener('resize', onResize));
+
+const isMobile = computed(() => width.value < MOBILE_BREAKPOINT);
+</script>
 
 <script>
 export default {
@@ -128,7 +143,7 @@ export default {
       newUrl: "",
       newFile: null,
       newFileUrl: "",
-      activeSection: "customize",
+      activeSection: "main",
       sections: [
         { key: "customize", label: "Customize" },
         { key: "voice", label: "Voice & Video" },
@@ -150,7 +165,7 @@ export default {
         notifications: "Reserved for alert and notification behavior."
       };
 
-      return descriptions[this.activeSection] || "Settings";
+      return descriptions[this.activeSection] || "Select a category of settings to get started.";
     },
     previewProfilePic() {
       return this.newFileUrl || this.newUrl.trim() || this.profilePic;
@@ -233,8 +248,8 @@ export default {
   z-index: 10010;
   color: var(--settings-text);
   border: 2px solid var(--settings-text);
-  display: grid;
-  grid-template-columns: 280px 1fr;
+  display: flex;
+  flex-direction: row;
   position: relative;
   padding: 0;
 }
@@ -253,6 +268,8 @@ export default {
   border-right: 2px solid var(--settings-text);
   display: flex;
   flex-direction: column;
+  flex-basis: 280px;
+  flex-grow: 1;
 }
 
 .sidebar-avatar {
@@ -340,6 +357,7 @@ export default {
 .settings-content {
   padding: 20px;
   overflow: auto;
+  width: 100%;
 }
 
 .settings-content {
@@ -525,15 +543,19 @@ export default {
   display: none;
 }
 
-/* close button */
-.settings-close-btn {
+.settings-nav-buttons{
   position: absolute;
   top: 12px;
   right: 12px;
+}
+
+/* close/back button */
+.settings-nav-btn {
   z-index: 2;
   width: 34px;
   height: 34px;
   padding: 0;
+  margin: 0 6px 0 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -545,7 +567,7 @@ export default {
   box-shadow: 0 0 6px var(--settings-shadow);
 }
 
-.settings-close-btn:hover {
+.settings-nav-btn:hover {
   background: var(--settings-bg);
   color: var(--settings-white);
 }
