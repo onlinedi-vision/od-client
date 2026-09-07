@@ -12,6 +12,15 @@ pub(crate) async fn getservers(token: String, username: String) -> String {
     let res = post_to_text("https://api.onlinedi.vision/get_user_servers", map, "Failed to get use servers.")
         .await
         .expect("err");
+    
+    // TODO: get this out of the code base as soon as get_user_servers gets fixed in the
+    //       next release of od-official-server
+    //       bandaid fix for: https://github.com/onlinedi-vision/od-client/issues/47
+    let res = if res == "No servers found for user" {
+        format!(r#"{{"token":"{token}","s_list":[]}}"#)
+    } else {
+        res
+    };
     prelude::debug_only_print(&res);
     res
 }
