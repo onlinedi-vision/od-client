@@ -166,6 +166,7 @@ height: 40px; text-align:center; background-color: var(--bg-sidebar);
   left: 5px;
   border-radius: 40px 40px 40px 40px;
   border: 2px solid transparent;
+  cursor: pointer;
 transition: 0.2s;
 }
 

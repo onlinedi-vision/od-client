@@ -4,21 +4,12 @@
       width="50"
       height="50"
     >
-      <img
-        v-if="getUser(msg.username)?.img_url"
-        :src="getUser(msg.username).img_url"
-        width="40"
-        height="40"
-        class="user-icon"
-        style="margin-top: 10px; margin-bottom: 10px;"
-      />
-      <img
-        v-else
-        src="/placeholder.png"
-        width="40"
-        height="40"
-        class="user-icon"
-        style="margin-top: 10px; margin-bottom: 10px;"
+      <AvatarImg
+        :src="getUser(msg.username)?.img_url"
+        :width="40"
+        :height="40"
+        img-class="user-icon"
+        :img-style="{ marginTop: '10px', marginBottom: '10px' }"
       />
     </div>
     
@@ -58,6 +49,7 @@ import { onMounted, ref } from 'vue'
 import MarkdownRender from 'vue-renderer-markdown'
 import ImageMessage from './messages/ImageMessage.vue'
 import VideoMessage from './messages/VideoMessage.vue'
+import AvatarImg from './AvatarImg.vue'
 
 const mounted = ref(false)
 onMounted(() => {

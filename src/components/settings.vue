@@ -7,7 +7,7 @@
 	  </div>
       <aside class="settings-sidebar" v-if="!isMobile || activeSection === 'main'">
         <div class="sidebar-profile">
-          <img :src="profilePic" class="sidebar-avatar" />
+          <AvatarImg :src="profilePic" :width="64" :height="64" img-class="sidebar-avatar" />
           <div class="sidebar-user">
             <h3 class="sidebar-name">{{ userName }}</h3>
             <button class="sidebar-edit-btn" @click="openChangePfp">Edit profile</button>
@@ -41,7 +41,7 @@
               </div>
 
               <div class="profile-editor">
-                <img :src="previewProfilePic" class="profile-preview" />
+                <AvatarImg :src="previewProfilePic" :width="96" :height="96" img-class="profile-preview" />
 
                 <div class="profile-fields">
                   <label class="field-label" for="pfp-url">Image URL</label>
@@ -125,8 +125,11 @@ const isMobile = computed(() => width.value < MOBILE_BREAKPOINT);
 </script>
 
 <script>
+import AvatarImg from './AvatarImg.vue'
+
 export default {
   name: 'SettingsWindow',
+  components: { AvatarImg },
   props: {
     userName: {
       type: String,
@@ -272,15 +275,12 @@ export default {
   flex-grow: 1;
 }
 
-.sidebar-avatar {
+:deep(.sidebar-avatar) {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-  display: block;
   border: 2px solid var(--settings-text);
-  background: var(--settings-surface);
+  box-sizing: border-box;
 }
 
 .sidebar-user {
@@ -413,14 +413,12 @@ export default {
   margin-top: 18px;
 }
 
-.profile-preview {
+:deep(.profile-preview) {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  object-fit: cover;
   border: 2px solid var(--settings-text);
-  background: var(--settings-surface);
-  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .profile-fields {

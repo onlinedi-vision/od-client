@@ -5,8 +5,14 @@
   </button>
   <main class="container" v-if="done && loggedin">
 	<div class="container-v" v-show="!isMobile || viewChannels">
-	  <img @click="openSettings()" v-bind:src='myPfp' width='60px' height='60px' class='cui'
-      style='margin-bottom:0px;' />
+	  <AvatarImg
+        @click="openSettings()"
+        :src="myPfp"
+        :width="60"
+        :height="60"
+        img-class="cui"
+        :img-style="{ marginBottom: '0px' }"
+      />
 	  
 	  <ServerList
       :userServers="userServers"
@@ -131,6 +137,7 @@ import ChannelList from "./components/channelList.vue";
 import ServerList from "./components/serverList.vue";
 import ServerUsersList from "./components/serverUsersList.vue";
 import LoadingScreen from "./components/LoadingScreen.vue";
+import AvatarImg from "./components/AvatarImg.vue";
 
 export default {
   ...app,
@@ -142,7 +149,8 @@ export default {
     ChannelList,
     ServerList,
     ServerUsersList,
-    LoadingScreen
+    LoadingScreen,
+    AvatarImg
   }
 }
 </script>
