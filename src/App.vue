@@ -1,5 +1,6 @@
 <template>
-  <button v-if="isMobile" @click="viewChannels = !viewChannels" id="mobi-switch" class="button">
+  <LoadingScreen v-if="!done" />
+  <button v-if="isMobile && done" @click="viewChannels = !viewChannels" id="mobi-switch" class="button">
     {{ viewChannels ? 'Show Chat' : 'Show Menu' }}
   </button>
   <main class="container" v-if="done && loggedin">
@@ -100,7 +101,7 @@
       </div>
 
   </main>
-    <main v-else-if="!loggedin">
+    <main v-else-if="done && !loggedin">
       <LogInWindow :logInSelected='logInSelected' :lError='lError' :lErrorText='lErrorText' @changeLogIn='changeLogIn' @login='logIn' @signup='signUp' />
     </main>
 	<div @click="closeSettings()" class="settings-background" v-if="settingsOpen" />
@@ -129,6 +130,7 @@ import SettingsWindow from './components/settings.vue'
 import ChannelList from "./components/channelList.vue";
 import ServerList from "./components/serverList.vue";
 import ServerUsersList from "./components/serverUsersList.vue";
+import LoadingScreen from "./components/LoadingScreen.vue";
 
 export default {
   ...app,
@@ -139,7 +141,8 @@ export default {
   	SettingsWindow,
     ChannelList,
     ServerList,
-    ServerUsersList
+    ServerUsersList,
+    LoadingScreen
   }
 }
 </script>
