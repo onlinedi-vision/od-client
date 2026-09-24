@@ -45,7 +45,7 @@ export default {
 }
 .server-users:hover {
   width: 200px;
-  border-color: rgba(196, 138, 146, 0.18);
+  border-color: rgba(196, 138, 146, 0.24);
   border-radius: 20px 20px 20px 20px;
   transition: 0.2s;
 }

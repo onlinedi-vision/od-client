@@ -46,7 +46,7 @@ export default {
 }
 
 .server_list:hover {
-  border-color: rgba(196, 138, 146, 0.18);
+  border-color: rgba(196, 138, 146, 0.24);
   border-radius: 20px 20px 20px 20px;
 
   transition: border-radius 0.2s;

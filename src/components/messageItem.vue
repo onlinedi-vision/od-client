@@ -1,9 +1,6 @@
 <template>
-  <div class="comp-mess" height="100px">
-    <div
-      width="50"
-      height="50"
-    >
+  <div class="comp-mess" :class="{ 'comp-mess-compact': !showHeader }">
+    <div v-if="showHeader" class="avatar-col">
       <AvatarImg
         :src="getUser(msg.username)?.img_url"
         :width="40"
@@ -12,39 +9,52 @@
         :img-style="{ marginTop: '10px', marginBottom: '10px' }"
       />
     </div>
-    
+    <div v-else class="avatar-spacer" aria-hidden="true" />
+
     <div class="message">
-      <div class="user" style="padding-top:6px;">
-        <div><b style="font-size:18px;">{{ msg.username }}</b></div>
+      <div v-if="showHeader" class="user" style="padding-top: 6px">
+        <div><b style="font-size: 18px">{{ msg.username }}</b></div>
         <div
           class="mdate"
-          style="font-size:12px; padding-left:5px; padding-top:1px;"
+          style="font-size: 12px; padding-left: 5px; padding-top: 1px"
         >
           <i>{{ getDate(Number(msg.datetime)) }}</i>
         </div>
       </div>
+      <div
+        v-else
+        class="mdate mdate-compact"
+        style="font-size: 12px; padding-top: 1px"
+      >
+        <i>{{ getDate(Number(msg.datetime)) }}</i>
+      </div>
 
-      <!-- Image messages -->
       <ImageMessage
         v-if="isImage(msg.m_content)"
         :source="msg.m_content"
-      />      
+      />
 
       <VideoMessage
         v-else-if="isVideo(msg.m_content)"
         :source="msg.m_content"
       />
 
-      <!-- Text messages -->
-      <div v-else-if='mounted' style="font-size: 17px;"><MarkdownRender :content="msg.m_content" :render-code-blocks-as-pre="true"/></div>
+      <div v-else-if="mounted" style="font-size: 17px">
+        <MarkdownRender
+          :content="msg.m_content"
+          :render-code-blocks-as-pre="true"
+        />
+      </div>
 
-      <div v-else style="font-size: 17px;"><pre style='margin:0px'>{{ msg.m_content }}</pre></div>
+      <div v-else style="font-size: 17px">
+        <pre style="margin: 0px">{{ msg.m_content }}</pre>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue"
+import { computed } from 'vue'
 import { onMounted, ref } from 'vue'
 import MarkdownRender from 'vue-renderer-markdown'
 import ImageMessage from './messages/ImageMessage.vue'
@@ -62,6 +72,7 @@ const props = defineProps({
   textChannel: String,
   get_date: Function,
   msg: Object,
+  showHeader: { type: Boolean, default: true },
 })
 
 const currentServer = computed(() =>
@@ -76,9 +87,9 @@ function getUser(username) {
 
 function isImage(content) {
   return (
-    typeof content === "string" &&
-    content.startsWith("https:") &&
-    [".jpg", ".png", ".jpeg", ".gif"].some((ext) =>
+    typeof content === 'string' &&
+    content.startsWith('https:') &&
+    ['.jpg', '.png', '.jpeg', '.gif'].some((ext) =>
       content.toLowerCase().endsWith(ext)
     )
   )
@@ -86,9 +97,9 @@ function isImage(content) {
 
 function isVideo(content) {
   return (
-    typeof content === "string" &&
-    content.startsWith("https:") &&
-    [".ogg", ".mp4", ".webm"].some((ext) =>
+    typeof content === 'string' &&
+    content.startsWith('https:') &&
+    ['.ogg', '.mp4', '.webm'].some((ext) =>
       content.toLowerCase().endsWith(ext)
     )
   )
@@ -107,7 +118,32 @@ function getDate(ms) {
   align-items: flex-start;
 }
 
+.avatar-col {
+  flex-shrink: 0;
+  width: 50px;
+}
+
+.avatar-spacer {
+  flex-shrink: 0;
+  width: 50px;
+}
+
 .message {
   margin-left: 10px;
+  min-width: 0;
+}
+
+.mdate-compact {
+  color: transparent;
+  height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0 !important;
+}
+
+.comp-mess-compact:hover .mdate-compact {
+  color: var(--text-muted);
+  height: auto;
+  margin-bottom: 2px;
 }
 </style>
