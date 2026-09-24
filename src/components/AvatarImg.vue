@@ -1,5 +1,10 @@
 <template>
-  <span class="avatar-img" :class="imgClass" v-bind="$attrs" :style="boxStyle">
+  <span
+    class="avatar-img"
+    :class="[imgClass, { 'avatar-img--square': square }]"
+    v-bind="$attrs"
+    :style="boxStyle"
+  >
     <img
       v-if="!useFallback"
       :src="normalizedSrc"
@@ -22,6 +27,7 @@ const props = defineProps({
   height: { type: [Number, String], default: 40 },
   imgClass: { type: String, default: '' },
   imgStyle: { type: Object, default: () => ({}) },
+  square: { type: Boolean, default: false },
 })
 
 const failed = ref(false)
@@ -60,6 +66,10 @@ const boxStyle = computed(() => ({
   user-select: none;
   -webkit-user-select: none;
   cursor: default;
+}
+
+.avatar-img--square {
+  border-radius: 0;
 }
 
 .avatar-img-el {

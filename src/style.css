@@ -260,18 +260,17 @@ transition: 0.2s;
   }
 
 
-  .message {
-    text-align: left;
-    padding-left: 10px;
-  }
-
   .comp-mess {
     text-align: left;
-    padding-left: 10px;
-    display: flex;
+    padding: 0;
+    display: block;
     overflow-wrap: break-word;
     word-wrap: break-word;
-    word-break: break-word;  
+    word-break: break-word;
+  }
+
+  #chat .message {
+    padding-left: 0;
   }
 
 
@@ -301,6 +300,8 @@ transition: 0.2s;
   overflow-y: scroll;
   flex-grow: 1;
   background-color: var(--bg-chat);
+  padding: 0;
+  box-sizing: border-box;
 }
 
 #chat .message img{
