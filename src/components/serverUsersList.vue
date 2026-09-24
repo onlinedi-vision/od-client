@@ -34,18 +34,18 @@ export default {
   overflow-y: hidden;
   overflow-x: scroll;
   transition: 0.2s;
-  background-color: var(--dark-foreground-element-color);
+  background-color: var(--bg-rail);
   top: 5px;
   right: 5px;
   height: calc(100vh - 11px);
   width: 60px;
   border-radius: 40px 40px 40px 40px;
-  border: 2px solid transparent;
+  border: 1px solid var(--border-subtle);
   z-index: 9999;
 }
 .server-users:hover {
   width: 200px;
-  border-color: var(--dark-foreground-element-color);
+  border-color: rgba(196, 138, 146, 0.18);
   border-radius: 20px 20px 20px 20px;
   transition: 0.2s;
 }

@@ -31,7 +31,7 @@
 	@deleteChannel="deleteChannel"
 	v-show="!isMobile || viewChannels"
 	/>
-	<div class="container-v" style="flex-shrink: 1; min-width: 0;" v-show="!isMobile || !viewChannels">
+	<div class="container-v chat-column" v-show="!isMobile || !viewChannels">
 	  <div id="channel-header">
         <h3>{{textChannel}}</h3>
       </div>
@@ -42,10 +42,10 @@
         :get_date="get_date"
       />
 	<div>
-	<form enctype='multipart/form-data' id="file-form" class="row" @submit.prevent="greet">
+	<form enctype='multipart/form-data' id="file-form" class="row composer-bar" @submit.prevent="greet">
       <input id="file-upload" type="file" @change="onFileChange" />
       <div v-if="selectedFileUrl" class="file-preview">
-        <div style="font-size:12px;color:#aaa;">
+        <div style="font-size:12px;color:var(--text-muted);">
           {{ selectedFile?.name }} ({{ Math.round(selectedFile.size / 1024) }} KB)
         </div>
         <div v-if="selectedFile && selectedFile.type.startsWith('image/')">

@@ -115,33 +115,50 @@ export default {
   flex-direction: column;
 }
 .server-header {
-  border-bottom: 2px solid #141414;
+  border-bottom: 1px solid var(--border-subtle);
   height: 60px;
+  background: var(--bg-rail);
+  border-radius: 14px 14px 0 0;
 }
 .server-header h3 {
   margin: 5px 0 0 0;
 }
-.channel_button {
+.channel_button,
+.channel_options {
   padding: 6px 5px;
   border: none;
-  background: none;
-  color: var(--main-font-color);
+  background-color: var(--bg-sidebar);
+  color: var(--text-primary);
   cursor: pointer;
   text-align: left;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.15s ease;
 }
+
+.channel_options {
+  padding: 6px 3px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.channel_button:hover,
 .channel_button:hover ~ .channel_options {
-  background-color: var(--main-font-color);
-  color: white;
+  background-color: var(--bg-hover);
+}
+
+.channel_button:hover ~ .channel_options {
+  color: var(--text-muted);
   animation: fadeIn 0.2s forwards;
   pointer-events: auto;
 }
+
 .channel_button.active {
-  background-color: --main-font-color;
-  color: white;
+  background-color: var(--bg-active);
+  color: var(--text-primary);
+  box-shadow: inset 3px 0 0 var(--accent);
 }
+
 .channel_button.active ~ .channel_options {
-  background-color: --main-font-color;
+  background-color: var(--bg-active);
   opacity: 1;
   pointer-events: auto;
 }
@@ -165,27 +182,18 @@ export default {
   animation: fadeIn 0.2s forwards;
   pointer-events: auto;
 }
-.channel_options{
-  padding: 6px 3px;
-  border: none;
-  background: none;
-  color: var(--main-font-color);
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.15s ease;
-  opacity: 0;
-  pointer-events: none;
-}
 
 @keyframes fadeIn {
-	to {
-		opacity: 1;
-	}
+  to {
+    opacity: 1;
+  }
 }
 
 .channel_options:hover {
   opacity: 1;
   pointer-events: auto;
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
 }
 .always_on{
   opacity: 1;

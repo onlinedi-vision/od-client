@@ -216,10 +216,10 @@ export default {
 /* overlay */
 .settings-background,
 .settings-overlay {
-  --settings-bg: var(--normal-foreground-element-color);
-  --settings-surface: var(--dark-foreground-element-color);
-  --settings-text: var(--main-font-color);
-  --settings-app-bg: var(--background-color);
+  --settings-bg: var(--bg-elevated);
+  --settings-surface: var(--bg-sidebar);
+  --settings-text: var(--text-primary);
+  --settings-app-bg: var(--bg-chat);
 
   --settings-danger: #d04242;
   --settings-danger-text: #ff9090;
@@ -333,7 +333,7 @@ export default {
 }
 
 .sidebar-nav-item:hover {
-  background: var(--main-font-color);
+  background: var(--accent);
   color: var(--settings-white);
 }
 
@@ -341,7 +341,7 @@ export default {
   background: var(--settings-app-bg);
   color: var(--settings-white);
   font-weight: 700;
-  box-shadow: inset 4px 0 0 var(--settings-white);
+  box-shadow: inset 4px 0 0 var(--accent);
 }
 
 /* logout at bottom */
@@ -497,8 +497,8 @@ export default {
 }
 
 .settings-primary-btn {
-  background: var(--settings-text);
-  color: var(--settings-white);
+  background: var(--accent);
+  color: #1a1214;
 }
 
 .settings-secondary-btn {
