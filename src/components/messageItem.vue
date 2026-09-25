@@ -175,12 +175,7 @@ function getDate(ms) {
   font-weight: 700;
 }
 
-.mdate {
-  font-size: 12px;
-  color: transparent;
-}
-
-.comp-mess:hover .mdate {
+.user-meta .mdate {
   color: var(--text-muted);
 }
 
@@ -190,11 +185,13 @@ function getDate(ms) {
   overflow: hidden;
   margin: 0;
   padding: 0;
+  color: transparent;
 }
 
 .comp-mess-compact:hover .mdate-compact {
   height: auto;
   margin-bottom: 2px;
+  color: var(--text-muted);
 }
 
 .mess-text {

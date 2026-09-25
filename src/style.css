@@ -277,12 +277,15 @@ transition: 0.2s;
   .user {
     display:flex;
   }
-  .mdate {
+  .user-meta .mdate {
+    color: var(--text-muted);
+  }
+  .mdate-compact {
     color: transparent;
-}
-.comp-mess:hover  .mdate  {
-  color: var(--text-muted);
-}
+  }
+  .comp-mess-compact:hover .mdate-compact {
+    color: var(--text-muted);
+  }
 .chat-column {
   flex: 1;
   min-width: 0;
