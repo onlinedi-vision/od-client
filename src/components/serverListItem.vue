@@ -1,10 +1,13 @@
 <template>
-  <img  v-bind:src="sv['img_url']" class='server-icon'/>
+  <AvatarImg :src="sv['img_url']" :width="50" :height="50" img-class="server-icon" />
 </template>
 
 <script>
+import AvatarImg from './AvatarImg.vue'
+
 export default {
   name: "ServerListItem",
+  components: { AvatarImg },
   props: {
     sv: Object,
     appState: Array,
@@ -19,17 +22,12 @@ export default {
 
 <style scoped>
 
-.server-icon {
-  margin-top: 0px;
-  margin-top:10px;
-  width:  50px;
-  height: 50px;
-  border-radius: 40px 40px 40px 40px;
+:deep(.server-icon) {
   margin-top: 10px;
 }
 
-.server-icon:hover {
-  border-radius: 25px 25px 25px 25px;
+:deep(.server-icon:hover) {
+  border-radius: 25px;
   transition: 0.2s;
 }
 

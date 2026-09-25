@@ -7,7 +7,7 @@
 	  </div>
       <aside class="settings-sidebar" v-if="!isMobile || activeSection === 'main'">
         <div class="sidebar-profile">
-          <img :src="profilePic" class="sidebar-avatar" />
+          <AvatarImg :src="profilePic" :width="64" :height="64" img-class="sidebar-avatar" />
           <div class="sidebar-user">
             <h3 class="sidebar-name">{{ userName }}</h3>
             <button class="sidebar-edit-btn" @click="openChangePfp">Edit profile</button>
@@ -41,7 +41,7 @@
               </div>
 
               <div class="profile-editor">
-                <img :src="previewProfilePic" class="profile-preview" />
+                <AvatarImg :src="previewProfilePic" :width="96" :height="96" img-class="profile-preview" />
 
                 <div class="profile-fields">
                   <label class="field-label" for="pfp-url">Image URL</label>
@@ -125,8 +125,11 @@ const isMobile = computed(() => width.value < MOBILE_BREAKPOINT);
 </script>
 
 <script>
+import AvatarImg from './AvatarImg.vue'
+
 export default {
   name: 'SettingsWindow',
+  components: { AvatarImg },
   props: {
     userName: {
       type: String,
@@ -213,45 +216,32 @@ export default {
 </script>
 
 <style scoped>
-/* overlay */
-.settings-background,
 .settings-overlay {
-  --settings-bg: var(--normal-foreground-element-color);
-  --settings-surface: var(--dark-foreground-element-color);
-  --settings-text: var(--main-font-color);
-  --settings-app-bg: var(--background-color);
+  --settings-danger-bg: rgba(224, 122, 132, 0.16);
+  --settings-danger-bg-hover: rgba(224, 122, 132, 0.26);
 
-  --settings-danger: #d04242;
-  --settings-danger-text: #ff9090;
-  --settings-danger-bg: rgba(208, 66, 66, 0.16);
-  --settings-danger-bg-hover: rgba(208, 66, 66, 0.26);
-  --settings-white: #fff;
-  --settings-shadow: rgba(128, 128, 128, 0.5);
-  --settings-overlay-bg: rgba(0, 0, 0, 0.45);
-
-  background-color: var(--settings-overlay-bg);
+  background-color: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
   position: fixed;
   inset: 0;
   z-index: 10001;
-  /* remove blur */
-  backdrop-filter: none;
   display: grid;
   place-items: center;
 }
 
-/* modal */
-.settings,
 .settings-modal {
-  background-color: var(--settings-bg);
+  background-color: var(--bg-chat);
   width: min(1200px, 90vw);
   height: min(760px, 85vh);
   z-index: 10010;
-  color: var(--settings-text);
-  border: 2px solid var(--settings-text);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
   display: flex;
   flex-direction: row;
   position: relative;
   padding: 0;
+  overflow: hidden;
 }
 
 .sidebar-profile {
@@ -260,27 +250,25 @@ export default {
   gap: 12px;
   min-height: 104px;
   padding: 18px 16px;
-  border-bottom: 1px solid var(--settings-text);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-/* left panel */
 .settings-sidebar {
-  border-right: 2px solid var(--settings-text);
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
   flex-basis: 280px;
   flex-grow: 1;
+  min-width: 0;
 }
 
-.sidebar-avatar {
+:deep(.sidebar-avatar) {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-  display: block;
-  border: 2px solid var(--settings-text);
-  background: var(--settings-surface);
+  border: 1px solid var(--border-subtle);
+  box-sizing: border-box;
 }
 
 .sidebar-user {
@@ -304,16 +292,16 @@ export default {
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--settings-text);
+  color: var(--link);
   font-size: 0.9rem;
   cursor: pointer;
 }
 
 .sidebar-edit-btn:hover {
-  color: var(--settings-white);
+  color: var(--link-hover);
+  background: transparent;
 }
 
-/* section list */
 .sidebar-nav {
   flex: 1;
   display: flex;
@@ -325,42 +313,37 @@ export default {
   text-align: left;
   padding: 0 16px;
   border: 0;
-  border-bottom: 1px solid var(--settings-text);
+  border-bottom: 1px solid var(--border-subtle);
   background: transparent;
-  color: var(--settings-text);
+  color: var(--text-primary);
   cursor: pointer;
   transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .sidebar-nav-item:hover {
-  background: var(--main-font-color);
-  color: var(--settings-white);
+  background: var(--bg-hover);
+  color: var(--text-primary);
 }
 
 .sidebar-nav-item.active {
-  background: var(--settings-app-bg);
-  color: var(--settings-white);
+  background: var(--bg-active);
+  color: var(--text-primary);
   font-weight: 700;
-  box-shadow: inset 4px 0 0 var(--settings-white);
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 
-/* logout at bottom */
 .sidebar-footer {
   margin-top: auto;
-  border-top: 1px solid var(--settings-text);
+  border-top: 1px solid var(--border-subtle);
   padding: 0;
   min-height: 56px;
 }
 
-/* right panel */
-.settings-right,
 .settings-content {
   padding: 20px;
   overflow: auto;
   width: 100%;
-}
-
-.settings-content {
+  background-color: var(--bg-chat);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -378,7 +361,7 @@ export default {
 
 .content-subtitle {
   margin: 0;
-  color: var(--settings-text);
+  color: var(--text-muted);
 }
 
 .content-body,
@@ -389,9 +372,9 @@ export default {
 }
 
 .settings-card {
-  background: var(--settings-surface);
-  border: 1px solid var(--settings-text);
-  border-radius: 16px;
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
   padding: 20px;
 }
 
@@ -403,7 +386,7 @@ export default {
 .card-heading p,
 .settings-placeholder p {
   margin: 0;
-  color: var(--settings-text);
+  color: var(--text-muted);
 }
 
 .profile-editor {
@@ -413,14 +396,12 @@ export default {
   margin-top: 18px;
 }
 
-.profile-preview {
+:deep(.profile-preview) {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--settings-text);
-  background: var(--settings-surface);
-  flex-shrink: 0;
+  border: 1px solid var(--border-subtle);
+  box-sizing: border-box;
 }
 
 .profile-fields {
@@ -442,15 +423,16 @@ export default {
   max-height: 80px;
   border-radius: 8px;
   object-fit: cover;
+  border: 1px solid var(--border-subtle);
 }
 
 .field-label {
   font-size: 0.9rem;
-  color: var(--settings-text);
+  color: var(--text-muted);
 }
 
 .file-name {
-  color: var(--settings-text);
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
@@ -459,10 +441,15 @@ export default {
   max-width: 100%;
   box-sizing: border-box;
   padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--settings-text);
-  background: var(--settings-app-bg);
-  color: var(--settings-text);
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-input);
+  color: var(--text-primary);
+}
+
+.settings-input:focus {
+  outline: none;
+  border-color: var(--accent-muted);
 }
 
 .panel-actions {
@@ -476,11 +463,11 @@ export default {
 .settings-secondary-btn,
 .settings-danger-btn,
 .sidebar-logout,
-.settings-close-btn {
+.settings-nav-btn {
   border: 0;
   border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.18s ease, color 0.18s ease, opacity 0.18s ease;
+  transition: background-color 0.18s ease, color 0.18s ease, opacity 0.18s ease, border-color 0.18s ease;
 }
 
 .settings-primary-btn:disabled {
@@ -497,13 +484,24 @@ export default {
 }
 
 .settings-primary-btn {
-  background: var(--settings-text);
-  color: var(--settings-white);
+  background: var(--accent);
+  color: #1a1214;
+}
+
+.settings-primary-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  opacity: 1;
 }
 
 .settings-secondary-btn {
-  background: var(--settings-surface);
-  color: var(--settings-text);
+  background: var(--bg-rail);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}
+
+.settings-secondary-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
 }
 
 .settings-file-btn {
@@ -514,7 +512,7 @@ export default {
 .settings-danger-btn,
 .sidebar-logout {
   background: var(--settings-danger-bg);
-  color: var(--settings-danger-text);
+  color: var(--danger);
 }
 
 .sidebar-logout {
@@ -523,35 +521,27 @@ export default {
   min-height: 56px;
   border-radius: 0;
   text-align: left;
-}
-
-.settings-primary-btn:hover {
-  opacity: 0.85;
-}
-
-.settings-secondary-btn:hover {
-  background: var(--settings-bg);
-  color: var(--settings-white);
+  padding: 0 16px;
 }
 
 .settings-danger-btn:hover,
 .sidebar-logout:hover {
   background: var(--settings-danger-bg-hover);
+  color: var(--danger);
 }
 
 .settings-file-input {
   display: none;
 }
 
-.settings-nav-buttons{
+.settings-nav-buttons {
   position: absolute;
   top: 12px;
   right: 12px;
+  z-index: 2;
 }
 
-/* close/back button */
 .settings-nav-btn {
-  z-index: 2;
   width: 34px;
   height: 34px;
   padding: 0;
@@ -562,13 +552,13 @@ export default {
   text-align: center;
   line-height: 1;
   font-size: 16px;
-  background: var(--settings-surface);
-  color: var(--settings-text);
-  box-shadow: 0 0 6px var(--settings-shadow);
+  background: var(--bg-sidebar);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
 }
 
 .settings-nav-btn:hover {
-  background: var(--settings-bg);
-  color: var(--settings-white);
+  background: var(--bg-hover);
+  color: var(--text-primary);
 }
 </style>

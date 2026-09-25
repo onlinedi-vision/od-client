@@ -70,10 +70,11 @@ export default {
         this.username = username;
         await this.fetchServers(token, username);
         this.getOwnPfp();
-        this.done = true;
       } catch (err) {
         console.log(err);
         this.loggedin = false;
+      } finally {
+        this.done = true;
       }
     },
     async fetchServers(token, username) {
