@@ -5,7 +5,7 @@
   --bg-rail: #0d0a0c;
   --bg-sidebar: #0b090a;
   --bg-header: #131012;
-  --bg-chat: #161314;
+  --bg-chat: var(--bg-sidebar);
   --bg-composer: var(--bg-sidebar);
   --bg-elevated: #181516;
   --bg-input: #0a0809;
