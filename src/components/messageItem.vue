@@ -130,8 +130,8 @@ function getDate(ms) {
 }
 
 .mess-avatar:not(.mess-avatar-empty) {
-  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 38%, transparent 100%);
-  mask-image: linear-gradient(to right, #000 0%, #000 38%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 60%, transparent 100%);
+  mask-image: linear-gradient(to right, #000 0%, #000 60%, transparent 100%);
 }
 
 .mess-avatar-empty {
