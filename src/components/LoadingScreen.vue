@@ -8,7 +8,7 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
 
-const GRID_ROWS = 50
+const GRID_ROWS = 62
 const BALL_RADIUS_CELLS = 1.8
 const SPEED_PX_S = 800
 const GAP_RATIO = 0.12
