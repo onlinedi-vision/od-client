@@ -7,7 +7,7 @@
           :src="getUser(msg.username)?.img_url"
           :width="avatarSize"
           :height="avatarSize"
-          square
+          :square="messageIconsSquare"
           img-class="mess-pfp"
         />
       </div>
@@ -30,14 +30,14 @@
           :source="msg.m_content"
         />
 
-        <div v-else-if="mounted" class="mess-text">
+        <div v-else-if="mounted" class="mess-text" :style="messageTextStyle">
           <MarkdownRender
             :content="msg.m_content"
             :render-code-blocks-as-pre="true"
           />
         </div>
 
-        <pre v-else class="mess-text">{{ msg.m_content }}</pre>
+        <pre v-else class="mess-text" :style="messageTextStyle">{{ msg.m_content }}</pre>
       </div>
     </div>
   </div>
@@ -66,7 +66,13 @@ const props = defineProps({
   get_date: Function,
   msg: Object,
   showHeader: { type: Boolean, default: true },
+  messageIconsSquare: { type: Boolean, default: true },
+  messageFont: { type: String, default: '' },
 })
+
+const messageTextStyle = computed(() =>
+  props.messageFont ? { fontFamily: props.messageFont } : undefined
+)
 
 const currentServer = computed(() =>
   props.appState.find((sv) => sv.serverID === props.serverID)

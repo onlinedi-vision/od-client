@@ -51,7 +51,7 @@
           </div>
         </div>
         <div class="mobi-panel mobi-panel--chat">
-          <div class="container-v chat-column">
+          <div class="container-v chat-column" :style="chatColumnStyle">
             <div id="channel-header">
               <h3>{{ textChannel }}</h3>
             </div>
@@ -60,6 +60,8 @@
               :serverID="serverID"
               :textChannel="textChannel"
               :get_date="get_date"
+              :message-icons-square="activeServerFeConfig.messageIconsSquare"
+              :message-font="activeServerFeConfig.messageFont"
             />
             <div>
               <form
@@ -146,7 +148,7 @@
         @createChannel="create_channel"
         @deleteChannel="deleteChannel"
       />
-      <div class="container-v chat-column">
+      <div class="container-v chat-column" :style="chatColumnStyle">
         <div id="channel-header">
           <h3>{{ textChannel }}</h3>
         </div>
@@ -155,6 +157,8 @@
           :serverID="serverID"
           :textChannel="textChannel"
           :get_date="get_date"
+          :message-icons-square="activeServerFeConfig.messageIconsSquare"
+          :message-font="activeServerFeConfig.messageFont"
         />
         <div>
           <form

@@ -13,6 +13,8 @@
         :textChannel="textChannel"
         :get_date="get_date"
         :show-header="showHeader(index)"
+        :message-icons-square="messageIconsSquare"
+        :message-font="messageFont"
         v-for="(msg, index) in currentChannel.messages"
         :msg="msg"
         :key="index"
@@ -36,7 +38,9 @@ const props = defineProps({
   appState: Array,
   serverID: String,
   textChannel: String,
-  get_date: Function
+  get_date: Function,
+  messageIconsSquare: { type: Boolean, default: true },
+  messageFont: { type: String, default: '' },
 })
 
 const currentServer = computed(() =>

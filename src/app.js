@@ -1,6 +1,11 @@
 import { invoke } from '@tauri-apps/api/core';
 import { wsConnection } from './websocket.js';
 import { reloadApp } from './AppWrapper.vue';
+import {
+  DEFAULT_SERVER_FE_CONFIG,
+  parseServerFeConfig,
+  chatColumnStyleFromFeConfig,
+} from './serverFeConfig.js';
 
 export default {
   name: "App",
@@ -56,8 +61,14 @@ export default {
       selectedFile: null,
       selectedFileUrl: '',
       settingsOpen: false,
-      myPfp: 'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif'
+      myPfp: 'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif',
+      activeServerFeConfig: { ...DEFAULT_SERVER_FE_CONFIG },
     };
+  },
+  computed: {
+    chatColumnStyle() {
+      return chatColumnStyleFromFeConfig(this.activeServerFeConfig);
+    },
   },
   async created() {
     await this.initializeApp();
@@ -89,6 +100,7 @@ export default {
           await this.addServerInfo(serverID);
           await this.fetchChannelsAndUsers(serverID, token, username);
         }
+        this.syncActiveServerFeConfig();
       } catch (err) {
         console.log(err);
         this.loggedin = false;
@@ -98,16 +110,32 @@ export default {
       try {
         const si = await invoke('get_server_info', { server_id: serverID });
         const serverInfo = JSON.parse(si);
+        const feConfig = parseServerFeConfig(serverInfo.fe_config);
         this.userServers.push({
           serverID,
           name: serverInfo.name,
           desc: serverInfo.desc,
-          img_url: serverInfo.img_url
+          img_url: serverInfo.img_url,
+          feConfig,
         });
         this.appState.push({ serverID, storedChannels: [], serverUsers: [] });
       } catch (err) {
         console.log(err);
+        this.userServers.push({
+          serverID,
+          name: 'Unknown Server',
+          desc: '',
+          img_url: '',
+          feConfig: { ...DEFAULT_SERVER_FE_CONFIG },
+        });
+        this.appState.push({ serverID, storedChannels: [], serverUsers: [] });
       }
+    },
+    syncActiveServerFeConfig() {
+      const sv = this.userServers.find((s) => s.serverID === this.serverID);
+      this.activeServerFeConfig = sv?.feConfig
+        ? { ...sv.feConfig }
+        : { ...DEFAULT_SERVER_FE_CONFIG };
     },
     async fetchChannelsAndUsers(serverID, token, username) {
       try {
@@ -325,6 +353,7 @@ export default {
       if (state && state.storedChannels.length > 0) {
         this.textChannel = state.storedChannels[0].channelTag;
       }
+      this.syncActiveServerFeConfig();
     },
     async createChannel() {
       if (this.nchn.length > 15) return;

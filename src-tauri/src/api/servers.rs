@@ -27,9 +27,25 @@ pub(crate) async fn getservers(token: String, username: String) -> String {
 
 #[tauri::command(rename_all = "snake_case")]
 pub(crate) async fn get_server_info(server_id: String) -> String {
-    let res = get_to_text(&format!("https://api.onlinedi.vision/servers/{}/get_server_info",server_id), "Failed to get server info.")
-        .await
-        .expect("err");
+    let v1_url = format!(
+        "https://api.onlinedi.vision/v1/servers/{}/info",
+        server_id
+    );
+    if let Ok(body) = get_to_text(&v1_url, "v1 server info failed").await {
+        if body.trim_start().starts_with('{') {
+            prelude::debug_only_print(&body);
+            return body;
+        }
+    }
+    let res = get_to_text(
+        &format!(
+            "https://api.onlinedi.vision/servers/{}/get_server_info",
+            server_id
+        ),
+        "Failed to get server info.",
+    )
+    .await
+    .expect("err");
     prelude::debug_only_print(&res);
     res
 }
