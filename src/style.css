@@ -295,6 +295,29 @@ transition: 0.2s;
   border: 1px solid var(--border-subtle);
 }
 
+.chat-column--wallpaper {
+  position: relative;
+  isolation: isolate;
+}
+
+.chat-column--wallpaper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 6, 7, 0.42);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.chat-column--wallpaper > * {
+  position: relative;
+  z-index: 1;
+}
+
+.chat-column--wallpaper #chat {
+  background-color: transparent;
+}
+
 #chat {
   display: flex;
   flex-direction: column-reverse;

@@ -2,8 +2,8 @@ import { invoke } from '@tauri-apps/api/core';
 import { wsConnection } from './websocket.js';
 import { reloadApp } from './AppWrapper.vue';
 import {
-  DEFAULT_SERVER_FE_CONFIG,
-  parseServerFeConfig,
+  defaultFeConfigForServer,
+  resolveServerFeConfig,
   chatColumnStyleFromFeConfig,
 } from './serverFeConfig.js';
 
@@ -62,7 +62,7 @@ export default {
       selectedFileUrl: '',
       settingsOpen: false,
       myPfp: 'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif',
-      activeServerFeConfig: { ...DEFAULT_SERVER_FE_CONFIG },
+      activeServerFeConfig: defaultFeConfigForServer('1'),
     };
   },
   computed: {
@@ -110,7 +110,7 @@ export default {
       try {
         const si = await invoke('get_server_info', { server_id: serverID });
         const serverInfo = JSON.parse(si);
-        const feConfig = parseServerFeConfig(serverInfo.fe_config);
+        const feConfig = resolveServerFeConfig(serverInfo.fe_config, serverID);
         this.userServers.push({
           serverID,
           name: serverInfo.name,
@@ -126,7 +126,7 @@ export default {
           name: 'Unknown Server',
           desc: '',
           img_url: '',
-          feConfig: { ...DEFAULT_SERVER_FE_CONFIG },
+          feConfig: defaultFeConfigForServer(serverID),
         });
         this.appState.push({ serverID, storedChannels: [], serverUsers: [] });
       }
@@ -135,7 +135,7 @@ export default {
       const sv = this.userServers.find((s) => s.serverID === this.serverID);
       this.activeServerFeConfig = sv?.feConfig
         ? { ...sv.feConfig }
-        : { ...DEFAULT_SERVER_FE_CONFIG };
+        : defaultFeConfigForServer(this.serverID);
     },
     async fetchChannelsAndUsers(serverID, token, username) {
       try {

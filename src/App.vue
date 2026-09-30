@@ -51,7 +51,11 @@
           </div>
         </div>
         <div class="mobi-panel mobi-panel--chat">
-          <div class="container-v chat-column" :style="chatColumnStyle">
+          <div
+            class="container-v chat-column"
+            :class="{ 'chat-column--wallpaper': !!activeServerFeConfig.backgroundImage }"
+            :style="chatColumnStyle"
+          >
             <div id="channel-header">
               <h3>{{ textChannel }}</h3>
             </div>
@@ -148,7 +152,11 @@
         @createChannel="create_channel"
         @deleteChannel="deleteChannel"
       />
-      <div class="container-v chat-column" :style="chatColumnStyle">
+      <div
+        class="container-v chat-column"
+        :class="{ 'chat-column--wallpaper': !!activeServerFeConfig.backgroundImage }"
+        :style="chatColumnStyle"
+      >
         <div id="channel-header">
           <h3>{{ textChannel }}</h3>
         </div>
