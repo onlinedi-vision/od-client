@@ -1,12 +1,12 @@
 def npmChecks = {
 	sh '''
 		docker run --rm \
-			-v "$PWD:/workspace:ro" \
+			-v "$PWD:/workspace" \
 			-v /workspace/node_modules \
 			-v od-client-npm-cache:/root/.npm \
 			-w /workspace \
 			node:22 \
-			sh -lc 'npm ci && npm run lint'
+			sh -c 'npm ci && npm run lint'
 	'''
 }
 
@@ -19,13 +19,14 @@ def rustChecks = {
 
 		docker run --rm \
 			-e CARGO_TERM_COLOR=always \
-			-v "$PWD:/workspace:ro" \
-            -v od-client-cargo-target:/workspace/src-tauri/target
+			-e CARGO_TARGET_DIR=/cargo-target \
+			-v "$PWD:/source:ro" \
+			-v od-client-cargo-target:/cargo-target \
 			-v od-client-cargo-registry:/usr/local/cargo/registry \
 			-v od-client-cargo-git:/usr/local/cargo/git \
-			-w /workspace/src-tauri \
+			-w /workspace \
 			od-client-rust-ci \
-            sh -c 'cargo build --verbose && cargo test --verbose && cargo clippy --verbose'
+			sh -c 'cp -a /source/. /workspace/ && cd src-tauri && cargo build --verbose && cargo test --verbose && cargo clippy --verbose'
 	'''
 }
 
