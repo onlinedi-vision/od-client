@@ -41,7 +41,7 @@
             :textChannel="textChannel"
             :done="done"
             :userServers="userServers"
-            @showSID="showSID"
+            @openServerSettings="openServerSettings"
             @changeChannel="onMobileChannelSelect"
             @createChannel="create_channel"
             @deleteChannel="deleteChannel"
@@ -147,7 +147,7 @@
         :textChannel="textChannel"
         :done="done"
         :userServers="userServers"
-        @showSID="showSID"
+        @openServerSettings="openServerSettings"
         @changeChannel="change_channel"
         @createChannel="create_channel"
         @deleteChannel="deleteChannel"
@@ -280,6 +280,19 @@
       @signup="signUp"
     />
   </main>
+  <div @click="closeServerSettings()" class="settings-background" v-if="serverSettingsOpen" />
+  <ServerSettingsWindow
+    v-if="serverSettingsOpen"
+    :server-id="serverID"
+    :server-name="currentServerSettingsMeta.name"
+    :server-img="currentServerSettingsMeta.img"
+    :fe-config="currentServerSettingsMeta.feConfig"
+    :apply-error="serverSettingsApplyError"
+    :apply-success="serverSettingsApplySuccess"
+    :applying="serverSettingsApplying"
+    @close="closeServerSettings"
+    @apply="onApplyServerFeConfig"
+  />
   <div @click="closeSettings()" class="settings-background" v-if="settingsOpen" />
   <SettingsWindow
     :userName="username"
@@ -387,6 +400,7 @@ import app from "./app.js"
 import ChatWindow from "./components/chatWindow.vue"
 import LogInWindow from "./components/login.vue"
 import SettingsWindow from './components/settings.vue'
+import ServerSettingsWindow from './components/serverSettings.vue'
 import ChannelList from "./components/channelList.vue";
 import ServerList from "./components/serverList.vue";
 import ServerUsersList from "./components/serverUsersList.vue";
@@ -400,6 +414,7 @@ export default {
     LogInWindow,
     ChatWindow,
   	SettingsWindow,
+    ServerSettingsWindow,
     ChannelList,
     ServerList,
     ServerUsersList,

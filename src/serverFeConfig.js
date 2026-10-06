@@ -149,6 +149,32 @@ export function chatColumnStyleFromFeConfig(feConfig) {
   return style
 }
 
+export function feConfigToEditorFields(feConfig) {
+  const c = feConfig ?? DEFAULT_SERVER_FE_CONFIG
+  return {
+    backgroundColor: c.backgroundColor ?? '',
+    backgroundImage: c.backgroundImage ?? '',
+    messageIcons: c.messageIconsSquare === false ? 'circle' : 'square',
+    messageFont: c.messageFont ?? '',
+  }
+}
+
+/** JSON string for PATCH /v1/servers/{id}/frontend `config` field */
+export function editorFieldsToConfigJson(fields) {
+  const o = {}
+  if (fields.backgroundColor?.trim()) {
+    o.backgroundColor = fields.backgroundColor.trim()
+  }
+  if (fields.backgroundImage?.trim()) {
+    o.backgroundImage = fields.backgroundImage.trim()
+  }
+  o.messageIcons = fields.messageIcons === 'circle' ? 'circle' : 'square'
+  if (fields.messageFont?.trim()) {
+    o.messageFont = fields.messageFont.trim()
+  }
+  return JSON.stringify(o)
+}
+
 if (import.meta.env.DEV) {
   const img = parseServerFeConfig(
     '{"backgroundImage":"https://example.com/a.gif","color":"#111"}'

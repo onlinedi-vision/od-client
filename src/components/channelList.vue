@@ -1,6 +1,13 @@
 <template>
   <div class="chanels">
-    <div class="server-header" @click="$emit('showSID')">
+    <div
+      class="server-header"
+      role="button"
+      tabindex="0"
+      title="Server settings"
+      @click="$emit('openServerSettings')"
+      @keydown.enter="$emit('openServerSettings')"
+    >
       <h3>{{ serverName }}</h3>
     </div>
 
@@ -119,6 +126,7 @@ export default {
   height: 60px;
   background: var(--bg-rail);
   border-radius: 14px 14px 0 0;
+  cursor: pointer;
 }
 .server-header h3 {
   margin: 5px 0 0 0;

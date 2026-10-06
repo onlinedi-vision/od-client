@@ -1,7 +1,7 @@
 use crate::prelude;
 use crate::net;
                     
-use net::{post_to_text, get_to_text};
+use net::{post_to_text, get_to_text, patch_to_text};
 
 #[tauri::command(rename_all = "snake_case")]
 pub(crate) async fn getservers(token: String, username: String) -> String {
@@ -101,6 +101,28 @@ pub(crate) async fn get_server_users(
     map.insert("token", token.clone());
     map.insert("username", username.clone());
     let res = post_to_text(&format!("{}/{}/get_server_users",host_url, server), map, "Failed to get server users.")
+        .await
+        .expect("err");
+    prelude::debug_only_print(&res);
+    res
+}
+
+#[tauri::command(rename_all = "snake_case")]
+pub(crate) async fn patch_server_frontend(
+    server_id: String,
+    username: String,
+    token: String,
+    config: String,
+) -> String {
+    let mut map = std::collections::HashMap::new();
+    map.insert("username", username);
+    map.insert("token", token);
+    map.insert("config", config);
+    let url = format!(
+        "https://api.onlinedi.vision/v1/servers/{}/frontend",
+        server_id
+    );
+    let res = patch_to_text(&url, map, "Failed to patch server frontend config.")
         .await
         .expect("err");
     prelude::debug_only_print(&res);
