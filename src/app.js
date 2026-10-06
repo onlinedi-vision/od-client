@@ -1,6 +1,13 @@
 import { invoke } from '@tauri-apps/api/core';
 import { wsConnection } from './websocket.js';
 import { reloadApp } from './AppWrapper.vue';
+import {
+  defaultFeConfigForServer,
+  resolveServerFeConfig,
+  parseServerFeConfig,
+  editorFieldsToConfigJson,
+  chatColumnStyleFromFeConfig,
+} from './serverFeConfig.js';
 
 export default {
   name: "App",
@@ -56,8 +63,26 @@ export default {
       selectedFile: null,
       selectedFileUrl: '',
       settingsOpen: false,
-      myPfp: 'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif'
+      serverSettingsOpen: false,
+      serverSettingsApplying: false,
+      serverSettingsApplyError: '',
+      serverSettingsApplySuccess: '',
+      myPfp: 'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif',
+      activeServerFeConfig: defaultFeConfigForServer('1'),
     };
+  },
+  computed: {
+    chatColumnStyle() {
+      return chatColumnStyleFromFeConfig(this.activeServerFeConfig);
+    },
+    currentServerSettingsMeta() {
+      const sv = this.userServers.find((s) => s.serverID === this.serverID);
+      return {
+        name: sv?.name ?? 'Server',
+        img: sv?.img_url ?? '',
+        feConfig: sv?.feConfig ?? defaultFeConfigForServer(this.serverID),
+      };
+    },
   },
   async created() {
     await this.initializeApp();
@@ -70,10 +95,11 @@ export default {
         this.username = username;
         await this.fetchServers(token, username);
         this.getOwnPfp();
-        this.done = true;
       } catch (err) {
         console.log(err);
         this.loggedin = false;
+      } finally {
+        this.done = true;
       }
     },
     async fetchServers(token, username) {
@@ -88,6 +114,7 @@ export default {
           await this.addServerInfo(serverID);
           await this.fetchChannelsAndUsers(serverID, token, username);
         }
+        this.syncActiveServerFeConfig();
       } catch (err) {
         console.log(err);
         this.loggedin = false;
@@ -97,16 +124,32 @@ export default {
       try {
         const si = await invoke('get_server_info', { server_id: serverID });
         const serverInfo = JSON.parse(si);
+        const feConfig = resolveServerFeConfig(serverInfo.fe_config, serverID);
         this.userServers.push({
           serverID,
           name: serverInfo.name,
           desc: serverInfo.desc,
-          img_url: serverInfo.img_url
+          img_url: serverInfo.img_url,
+          feConfig,
         });
         this.appState.push({ serverID, storedChannels: [], serverUsers: [] });
       } catch (err) {
         console.log(err);
+        this.userServers.push({
+          serverID,
+          name: 'Unknown Server',
+          desc: '',
+          img_url: '',
+          feConfig: defaultFeConfigForServer(serverID),
+        });
+        this.appState.push({ serverID, storedChannels: [], serverUsers: [] });
       }
+    },
+    syncActiveServerFeConfig() {
+      const sv = this.userServers.find((s) => s.serverID === this.serverID);
+      this.activeServerFeConfig = sv?.feConfig
+        ? { ...sv.feConfig }
+        : defaultFeConfigForServer(this.serverID);
     },
     async fetchChannelsAndUsers(serverID, token, username) {
       try {
@@ -273,10 +316,47 @@ export default {
       this.logInSelected = !this.logInSelected;
     },
     openSettings() {
+      this.closeServerSettings();
       this.settingsOpen = true;
     },
     closeSettings() {
       this.settingsOpen = false;
+    },
+    openServerSettings() {
+      this.closeSettings();
+      this.serverSettingsApplyError = '';
+      this.serverSettingsApplySuccess = '';
+      this.serverSettingsOpen = true;
+    },
+    closeServerSettings() {
+      this.serverSettingsOpen = false;
+      this.serverSettingsApplyError = '';
+      this.serverSettingsApplySuccess = '';
+    },
+    async onApplyServerFeConfig(fields) {
+      this.serverSettingsApplying = true;
+      this.serverSettingsApplyError = '';
+      this.serverSettingsApplySuccess = '';
+      try {
+        const config = editorFieldsToConfigJson(fields);
+        await invoke('patch_server_frontend', {
+          server_id: this.serverID,
+          username: this.username,
+          token: this.token,
+          config,
+        });
+        const feConfig = parseServerFeConfig(config);
+        const idx = this.userServers.findIndex((s) => s.serverID === this.serverID);
+        if (idx !== -1) this.userServers[idx].feConfig = feConfig;
+        this.syncActiveServerFeConfig();
+        this.serverSettingsApplySuccess = 'Frontend configuration saved.';
+      } catch (err) {
+        console.log(err);
+        this.serverSettingsApplyError =
+          'Could not save configuration. You may need CHANGE_FE permission.';
+      } finally {
+        this.serverSettingsApplying = false;
+      }
     },
     async get_messages(channel, server, token) {
       try {
@@ -324,6 +404,7 @@ export default {
       if (state && state.storedChannels.length > 0) {
         this.textChannel = state.storedChannels[0].channelTag;
       }
+      this.syncActiveServerFeConfig();
     },
     async createChannel() {
       if (this.nchn.length > 15) return;
