@@ -1,0 +1,101 @@
+def npmChecks = {
+	sh '''
+		docker run --rm \
+			-v "$PWD:/workspace" \
+			-v /workspace/node_modules \
+			-v od-client-npm-cache:/root/.npm \
+			-w /workspace \
+			node:22 \
+			sh -c 'npm ci && npm run lint'
+	'''
+}
+
+def rustChecks = {
+	sh '''
+		docker build \
+			-f ci/Dockerfile \
+			-t od-client-rust-ci \
+			ci
+
+		docker run --rm \
+			-e CARGO_TERM_COLOR=always \
+			-e CARGO_TARGET_DIR=/cargo-target \
+			-v "$PWD:/source:ro" \
+			-v od-client-cargo-target:/cargo-target \
+			-v od-client-cargo-registry:/usr/local/cargo/registry \
+			-v od-client-cargo-git:/usr/local/cargo/git \
+			-w /workspace \
+			od-client-rust-ci \
+			sh -c 'cp -a /source/. /workspace/ && cd src-tauri && cargo build --verbose && cargo test --verbose && cargo clippy --verbose'
+	'''
+}
+
+pipeline {
+	agent any
+
+	options {
+		timeout(time: 2, unit: 'HOURS')
+	}
+
+	stages {
+		stage('Security Check') {
+			when {
+				anyOf {
+					changeRequest()
+					branch 'main'
+				}
+			}
+
+			steps {
+				withChecks(name: 'Shai-Hulud Security Check') {
+					sh './ci/run-shai-hulud.sh'
+				}
+			}
+		}
+
+		stage('NPM Checks') {
+			when {
+				anyOf {
+					changeRequest()
+					branch 'main'
+				}
+			}
+
+			steps {
+				withChecks(name: 'NPM Install and Lint') {
+					script {
+						npmChecks()
+					}
+				}
+			}
+		}
+
+		stage('Rust Checks') {
+			when {
+				anyOf {
+					changeRequest()
+					branch 'main'
+				}
+			}
+
+			steps {
+				withChecks(name: 'Rust Build, Test and Lint') {
+					script {
+						rustChecks()
+					}
+				}
+			}
+		}
+	}
+
+	post {
+		failure {
+			emailext(
+				from: 'jenkins@mail.onlinedi.vision',
+				subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+				body: "The build failed. Check the console output at ${env.BUILD_URL}.",
+				to: 'TEAM@mail.onlinedi.vision'
+			)
+		}
+	}
+}
