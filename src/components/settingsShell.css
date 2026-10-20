@@ -1,0 +1,345 @@
+.settings-overlay {
+  --settings-danger-bg: rgba(224, 122, 132, 0.16);
+  --settings-danger-bg-hover: rgba(224, 122, 132, 0.26);
+
+  background-color: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  display: grid;
+  place-items: center;
+}
+
+.settings-modal {
+  background-color: var(--bg-chat);
+  width: min(1200px, 90vw);
+  height: min(760px, 85vh);
+  z-index: 10010;
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+
+.sidebar-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 104px;
+  padding: 18px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.settings-sidebar {
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  flex-basis: 280px;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+:deep(.sidebar-avatar) {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  box-sizing: border-box;
+}
+
+.sidebar-user {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-name {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-edit-btn {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--link);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.sidebar-edit-btn:hover {
+  color: var(--link-hover);
+  background: transparent;
+}
+
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-nav-item {
+  height: 56px;
+  text-align: left;
+  padding: 0 16px;
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.sidebar-nav-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.sidebar-nav-item.active {
+  background: var(--bg-active);
+  color: var(--text-primary);
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--border-subtle);
+  padding: 0;
+  min-height: 56px;
+}
+
+.settings-content {
+  padding: 20px;
+  overflow: auto;
+  width: 100%;
+  background-color: var(--bg-chat);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.content-header {
+  max-width: 560px;
+  padding-right: 40px;
+}
+
+.content-title {
+  margin: 0 0 8px;
+  font-size: 1.8rem;
+}
+
+.content-subtitle {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.content-body,
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-card {
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.card-heading h3,
+.settings-placeholder h3 {
+  margin: 0 0 6px;
+}
+
+.card-heading p,
+.settings-placeholder p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.profile-editor {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 18px;
+}
+
+:deep(.profile-preview) {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  box-sizing: border-box;
+}
+
+.profile-fields {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-local-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-local-preview-img {
+  max-width: 80px;
+  max-height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border-subtle);
+}
+
+.field-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.file-name {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.settings-input {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-input);
+  color: var(--text-primary);
+}
+
+.settings-input:focus {
+  outline: none;
+  border-color: var(--accent-muted);
+}
+
+.panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.settings-primary-btn,
+.settings-secondary-btn,
+.settings-danger-btn,
+.sidebar-logout,
+.settings-nav-btn {
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease, opacity 0.18s ease, border-color 0.18s ease;
+}
+
+.settings-primary-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.settings-primary-btn,
+.settings-secondary-btn,
+.settings-danger-btn,
+.sidebar-logout {
+  padding: 10px 14px;
+  font-weight: 600;
+}
+
+.settings-primary-btn {
+  background: var(--accent);
+  color: #1a1214;
+}
+
+.settings-primary-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  opacity: 1;
+}
+
+.settings-secondary-btn {
+  background: var(--bg-rail);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}
+
+.settings-secondary-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.settings-file-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+.settings-danger-btn,
+.sidebar-logout {
+  background: var(--settings-danger-bg);
+  color: var(--danger);
+}
+
+.sidebar-logout {
+  width: 100%;
+  height: 100%;
+  min-height: 56px;
+  border-radius: 0;
+  text-align: left;
+  padding: 0 16px;
+}
+
+.settings-danger-btn:hover,
+.sidebar-logout:hover {
+  background: var(--settings-danger-bg-hover);
+  color: var(--danger);
+}
+
+.settings-file-input {
+  display: none;
+}
+
+.settings-nav-buttons {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+
+.settings-nav-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  margin: 0 6px 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1;
+  font-size: 16px;
+  background: var(--bg-sidebar);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}
+
+.settings-nav-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}

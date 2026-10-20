@@ -36,17 +36,17 @@ export default {
 <style scoped>
 .server_list {
   transition: 0.2s; 
-  background-color: var(--dark-foreground-element-color);
+  background-color: var(--bg-rail);
   width: 60px;
   flex-grow: 1;
   z-index: 9999;
   border-radius: 40px 40px 40px 40px;
-  border: 2px solid transparent;
+  border: 1px solid var(--border-subtle);
   overflow-x: scroll;
 }
 
 .server_list:hover {
-  border-color: var(--dark-foreground-element-color);
+  border-color: rgba(196, 138, 146, 0.24);
   border-radius: 20px 20px 20px 20px;
 
   transition: border-radius 0.2s;

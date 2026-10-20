@@ -18,6 +18,7 @@ pub fn run() {
             api::servers::create_server,
             api::servers::join_server,
             api::servers::get_server_users,
+            api::servers::patch_server_frontend,
 
             api::channels::getchannels,
             api::channels::create_channel,

@@ -28,6 +28,27 @@ pub(crate) async fn post_to_text(
 }
 
 #[inline(always)]
+pub(crate) fn patch(
+    url: &str,
+    payload: HashMap<&str, std::string::String>,
+) -> impl Future<Output = Result<Response, Error>> {
+    REQ_CLIENT.clone().patch(url).json(&payload).send()
+}
+
+#[inline(always)]
+pub(crate) async fn patch_to_text(
+    url: &str,
+    payload: HashMap<&str, std::string::String>,
+    error_message: &str,
+) -> Result<String, Error> {
+    patch(url, payload)
+        .await
+        .expect(error_message)
+        .text()
+        .await
+}
+
+#[inline(always)]
 fn get(url: &str) -> impl Future<Output = Result<Response, Error>> {
     REQ_CLIENT.clone()
         .get(url)

@@ -12,7 +12,9 @@
         :serverID="serverID"
         :textChannel="textChannel"
         :get_date="get_date"
-        
+        :show-header="showHeader(index)"
+        :message-icons-square="messageIconsSquare"
+        :message-font="messageFont"
         v-for="(msg, index) in currentChannel.messages"
         :msg="msg"
         :key="index"
@@ -36,7 +38,9 @@ const props = defineProps({
   appState: Array,
   serverID: String,
   textChannel: String,
-  get_date: Function
+  get_date: Function,
+  messageIconsSquare: { type: Boolean, default: true },
+  messageFont: { type: String, default: '' },
 })
 
 const currentServer = computed(() =>
@@ -48,5 +52,13 @@ const currentChannel = computed(() =>
     (ch) => ch.channelTag === props.textChannel
   )
 )
+
+/** Oldest messages sit at higher indices; hide header when same user posted right above. */
+function showHeader(index) {
+  const messages = currentChannel.value?.messages
+  if (!messages?.length) return true
+  if (index >= messages.length - 1) return true
+  return messages[index + 1].username !== messages[index].username
+}
 
 </script>
