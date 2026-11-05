@@ -26,7 +26,7 @@ def rustChecks = {
 			-v od-client-cargo-git:/usr/local/cargo/git \
 			-w /workspace \
 			od-client-rust-ci \
-			sh -c 'cp -a /source/. /workspace/ && cd src-tauri && cargo build --verbose && cargo test --verbose && cargo clippy --verbose'
+			sh -c 'cp -a /source/. /workspace/ && cd src-tauri && cargo build && cargo test && cargo clippy'
 	'''
 }
 
