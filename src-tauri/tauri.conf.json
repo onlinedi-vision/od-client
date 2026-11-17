@@ -23,6 +23,10 @@
     }
   },
   "bundle": {
+    "macOS": {
+      "minimumSystemVersion": "14.2",
+      "entitlements": "Entitlements.plist"
+    },
     "linux": {
       "appimage": {
         "bundleMediaFramework":true

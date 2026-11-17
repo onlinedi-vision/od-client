@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 import { wsConnection } from './websocket.js';
 import { reloadApp } from './AppWrapper.vue';
+import { audioSession } from './audio/nativeAudio.js';
 import {
   defaultFeConfigForServer,
   resolveServerFeConfig,
@@ -67,6 +68,8 @@ export default {
       serverSettingsApplying: false,
       serverSettingsApplyError: '',
       serverSettingsApplySuccess: '',
+      loginDisposed: false,
+      loginGeneration: 0,
       myPfp: 'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif',
       activeServerFeConfig: defaultFeConfigForServer('1'),
     };
@@ -87,35 +90,58 @@ export default {
   async created() {
     await this.initializeApp();
   },
+  beforeUnmount() {
+    this.loginDisposed = true;
+    this.endAudioSession();
+  },
   methods: {
+    isCurrentLogin(generation) {
+      return !this.loginDisposed && generation === this.loginGeneration;
+    },
+    endAudioSession() {
+      this.loginGeneration++;
+      audioSession.close().catch(() => console.warn('Audio session cleanup could not be confirmed.'));
+    },
     async initializeApp() {
+      const generation = this.loginGeneration;
       try {
         const res = await invoke('get_local_token');
+        if (!this.isCurrentLogin(generation)) return;
         const { token, username } = JSON.parse(res);
         this.username = username;
         await this.fetchServers(token, username);
-        this.getOwnPfp();
+        if (this.isCurrentLogin(generation)) this.getOwnPfp();
       } catch (err) {
+        if (!this.isCurrentLogin(generation)) return;
         console.log(err);
         this.loggedin = false;
       } finally {
-        this.done = true;
+        if (this.isCurrentLogin(generation)) this.done = true;
       }
     },
     async fetchServers(token, username) {
+      const generation = this.loginGeneration;
       try {
         const res = await invoke('getservers', { token, username });
+        if (!this.isCurrentLogin(generation)) return;
         const servers = JSON.parse(res);
         this.token = servers.token;
+        if (this.loggedin && typeof servers.token === 'string' && Array.isArray(servers.s_list)) {
+          audioSession.open().catch(() => { /* The audio panel displays the structured error. */ });
+        }
         await invoke('write_credentials', { creds: JSON.stringify({ username: this.username, token: this.token }) });
+        if (!this.isCurrentLogin(generation)) return;
         this.initWebsocket(this.token);
 
         for (const serverID of servers.s_list) {
           await this.addServerInfo(serverID);
+          if (!this.isCurrentLogin(generation)) return;
           await this.fetchChannelsAndUsers(serverID, token, username);
+          if (!this.isCurrentLogin(generation)) return;
         }
         this.syncActiveServerFeConfig();
       } catch (err) {
+        if (!this.isCurrentLogin(generation)) return;
         console.log(err);
         this.loggedin = false;
       }
@@ -261,14 +287,17 @@ export default {
       }
     },
     async getUserServers() {
+      const generation = this.loginGeneration;
       await this.fetchServers(this.token, this.username);
-      this.done = true;
+      if (this.isCurrentLogin(generation)) this.done = true;
     },
     async logIn(user, password) {
+      const generation = this.loginGeneration;
       this.lusername = user;
       this.password = password;
       try {
         const res = await invoke('login', { username: this.lusername, password: this.password });
+        if (!this.isCurrentLogin(generation)) return;
         const tokenJS = JSON.parse(res);
         this.token = tokenJS.token;
         if (!this.token) {
@@ -280,12 +309,16 @@ export default {
         this.password = "";
         this.loggedin = true;
         await invoke('write_credentials', { creds: JSON.stringify({ username: this.username, token: this.token }) });
-        setTimeout(reloadApp, 500);
+        if (!this.isCurrentLogin(generation)) return;
+        setTimeout(() => {
+          if (this.isCurrentLogin(generation)) reloadApp();
+        }, 500);
       } catch (err) {
-        console.log(err);
+        if (this.isCurrentLogin(generation)) console.log(err);
       }
     },
     async signUp(user, password, email) {
+      const generation = this.loginGeneration;
       this.lusername = user;
       this.password = password;
       this.lemail = email;
@@ -296,6 +329,7 @@ export default {
       }
       try {
         const res = await invoke('signup', { username: this.lusername, password: this.password, email: this.lemail });
+        if (!this.isCurrentLogin(generation)) return;
         const tokenJS = JSON.parse(res);
         this.token = tokenJS.token;
         if (!this.token) {
@@ -307,9 +341,9 @@ export default {
         this.password = "";
         this.loggedin = true;
         await invoke('write_credentials', { creds: JSON.stringify({ username: this.username, token: this.token }) });
-        await this.getUserServers();
+        if (this.isCurrentLogin(generation)) await this.getUserServers();
       } catch (err) {
-        console.log(err);
+        if (this.isCurrentLogin(generation)) console.log(err);
       }
     },
     changeLogIn() {
@@ -487,6 +521,7 @@ export default {
       }
     },
     logOut() {
+      this.endAudioSession();
       this.loggedin = false;
       this.token = '';
       this.username = '';

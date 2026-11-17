@@ -2,8 +2,8 @@
   <div class="settings-overlay">
     <div class="settings-modal">
 	  <div class="settings-nav-buttons">
-	    <button class="settings-nav-btn" @click="activeSection = 'main'" v-if="activeSection != 'main'">&#x2190;</button>
-        <button class="settings-nav-btn" @click="$emit('closeSettings')">X</button>
+	    <button class="settings-nav-btn" type="button" aria-label="Back to settings" @click="activeSection = 'main'" v-if="activeSection != 'main'">&#x2190;</button>
+        <button class="settings-nav-btn" type="button" aria-label="Close settings" @click="$emit('closeSettings')">X</button>
 	  </div>
       <aside class="settings-sidebar" v-if="!isMobile || activeSection === 'main'">
         <div class="sidebar-profile">
@@ -84,11 +84,7 @@
           </div>
 
           <div v-else-if="activeSection === 'voice'" class="settings-panel">
-            <div class="settings-card settings-placeholder">
-              <h3>Voice & Video</h3>
-              <p>This section is ready for microphone, speaker and camera controls when those settings exist in the app.
-              </p>
-            </div>
+            <AudioSettings />
           </div>
 
           <div v-else-if="activeSection === 'keybinds'" class="settings-panel">
@@ -113,6 +109,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import AudioSettings from './AudioSettings.vue';
 const MOBILE_BREAKPOINT = 768;
 
 
@@ -149,7 +146,7 @@ export default {
       activeSection: "main",
       sections: [
         { key: "customize", label: "Customize" },
-        { key: "voice", label: "Voice & Video" },
+        { key: "voice", label: "Voice" },
         { key: "keybinds", label: "Keybinds" },
         { key: "notifications", label: "Notifications" }
       ]
@@ -163,7 +160,7 @@ export default {
     activeSectionDescription() {
       const descriptions = {
         customize: "Manage your profile image and session actions.",
-        voice: "Reserved for audio input, output and device preferences.",
+        voice: "Audio input and output device preferences.",
         keybinds: "Reserved for keyboard shortcuts and action bindings.",
         notifications: "Reserved for alert and notification behavior."
       };
