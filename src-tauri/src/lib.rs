@@ -3,10 +3,13 @@ pub(crate) mod statics;
 pub(crate) mod net;
 mod fs;
 mod api;
+mod audio;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .manage(audio::service())
+        .plugin(api::audio::plugin())
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
@@ -18,6 +21,7 @@ pub fn run() {
             api::servers::create_server,
             api::servers::join_server,
             api::servers::get_server_users,
+            api::servers::patch_server_frontend,
 
             api::channels::getchannels,
             api::channels::create_channel,

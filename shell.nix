@@ -14,6 +14,7 @@ in pkgs.mkShell {
     glib
     gdk-pixbuf.dev
     pkg-config
+    libpulseaudio
     gdk-pixbuf-xlib.dev
     gtk3.dev
     harfbuzz.dev

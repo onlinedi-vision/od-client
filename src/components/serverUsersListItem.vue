@@ -1,17 +1,23 @@
 <template>
     <div style='display:flex'>
       <div class='user-list-icon-container'>
-        <img v-if="svuser['img_url'] != ''" v-bind:src="svuser['img_url']" class="user-list-icon"/>
-        <img v-else v-bind:src="'a'" class="user-list-icon"/>
+        <AvatarImg
+          :src="svuser['img_url']"
+          :width="44"
+          :height="44"
+          img-class="user-list-icon"
+        />
       </div>
       <div class='server-user-username'>{{svuser['username']}}</div>
     </div>
 </template>
 
 <script>
+import AvatarImg from './AvatarImg.vue'
 
 export default {
   name: "ServerUsersListItem",
+  components: { AvatarImg },
   props: {
     appState: Array,
     serverID: String,
@@ -22,11 +28,8 @@ export default {
 </script>
 
 <style scoped>
-.user-list-icon {
+:deep(.user-list-icon) {
   margin-left: 5px;
-  width:  44px;
-  height: 44px;
-  border-radius: 40px 40px 40px 40px;
   margin-top: 2px;
 }
 
@@ -43,4 +46,3 @@ export default {
   padding-left: 3px;
 }
 </style>
-

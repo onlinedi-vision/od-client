@@ -1,6 +1,14 @@
 import { invoke } from '@tauri-apps/api/core';
 import { wsConnection } from './websocket.js';
 import { reloadApp } from './AppWrapper.vue';
+import { audioSession } from './audio/nativeAudio.js';
+import {
+  defaultFeConfigForServer,
+  resolveServerFeConfig,
+  parseServerFeConfig,
+  editorFieldsToConfigJson,
+  chatColumnStyleFromFeConfig,
+} from './serverFeConfig.js';
 
 export default {
   name: "App",
@@ -56,39 +64,84 @@ export default {
       selectedFile: null,
       selectedFileUrl: '',
       settingsOpen: false,
-      myPfp: 'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif'
+      serverSettingsOpen: false,
+      serverSettingsApplying: false,
+      serverSettingsApplyError: '',
+      serverSettingsApplySuccess: '',
+      loginDisposed: false,
+      loginGeneration: 0,
+      myPfp: 'https://media1.tenor.com/m/viIU4ICp1N8AAAAd/dance.gif',
+      activeServerFeConfig: defaultFeConfigForServer('1'),
     };
+  },
+  computed: {
+    chatColumnStyle() {
+      return chatColumnStyleFromFeConfig(this.activeServerFeConfig);
+    },
+    currentServerSettingsMeta() {
+      const sv = this.userServers.find((s) => s.serverID === this.serverID);
+      return {
+        name: sv?.name ?? 'Server',
+        img: sv?.img_url ?? '',
+        feConfig: sv?.feConfig ?? defaultFeConfigForServer(this.serverID),
+      };
+    },
   },
   async created() {
     await this.initializeApp();
   },
+  beforeUnmount() {
+    this.loginDisposed = true;
+    this.endAudioSession();
+  },
   methods: {
+    isCurrentLogin(generation) {
+      return !this.loginDisposed && generation === this.loginGeneration;
+    },
+    endAudioSession() {
+      this.loginGeneration++;
+      audioSession.close().catch(() => console.warn('Audio session cleanup could not be confirmed.'));
+    },
     async initializeApp() {
+      const generation = this.loginGeneration;
       try {
         const res = await invoke('get_local_token');
+        if (!this.isCurrentLogin(generation)) return;
         const { token, username } = JSON.parse(res);
         this.username = username;
         await this.fetchServers(token, username);
-        this.getOwnPfp();
-        this.done = true;
+        if (this.isCurrentLogin(generation)) this.getOwnPfp();
       } catch (err) {
+        if (!this.isCurrentLogin(generation)) return;
         console.log(err);
         this.loggedin = false;
+      } finally {
+        if (this.isCurrentLogin(generation)) this.done = true;
       }
     },
     async fetchServers(token, username) {
+      const generation = this.loginGeneration;
       try {
         const res = await invoke('getservers', { token, username });
+        if (!this.isCurrentLogin(generation)) return;
         const servers = JSON.parse(res);
         this.token = servers.token;
+        if (this.loggedin && typeof servers.token === 'string' && Array.isArray(servers.s_list)) {
+          audioSession.open().catch(() => { /* The audio panel displays the structured error. */ });
+        }
         await invoke('write_credentials', { creds: JSON.stringify({ username: this.username, token: this.token }) });
+        if (!this.isCurrentLogin(generation)) return;
         this.initWebsocket(this.token);
 
         for (const serverID of servers.s_list) {
           await this.addServerInfo(serverID);
+          if (!this.isCurrentLogin(generation)) return;
           await this.fetchChannelsAndUsers(serverID, token, username);
+          if (!this.isCurrentLogin(generation)) return;
         }
+        this.syncActiveServerFeConfig();
       } catch (err) {
+        if (!this.isCurrentLogin(generation)) return;
         console.log(err);
         this.loggedin = false;
       }
@@ -97,16 +150,32 @@ export default {
       try {
         const si = await invoke('get_server_info', { server_id: serverID });
         const serverInfo = JSON.parse(si);
+        const feConfig = resolveServerFeConfig(serverInfo.fe_config, serverID);
         this.userServers.push({
           serverID,
           name: serverInfo.name,
           desc: serverInfo.desc,
-          img_url: serverInfo.img_url
+          img_url: serverInfo.img_url,
+          feConfig,
         });
         this.appState.push({ serverID, storedChannels: [], serverUsers: [] });
       } catch (err) {
         console.log(err);
+        this.userServers.push({
+          serverID,
+          name: 'Unknown Server',
+          desc: '',
+          img_url: '',
+          feConfig: defaultFeConfigForServer(serverID),
+        });
+        this.appState.push({ serverID, storedChannels: [], serverUsers: [] });
       }
+    },
+    syncActiveServerFeConfig() {
+      const sv = this.userServers.find((s) => s.serverID === this.serverID);
+      this.activeServerFeConfig = sv?.feConfig
+        ? { ...sv.feConfig }
+        : defaultFeConfigForServer(this.serverID);
     },
     async fetchChannelsAndUsers(serverID, token, username) {
       try {
@@ -218,14 +287,17 @@ export default {
       }
     },
     async getUserServers() {
+      const generation = this.loginGeneration;
       await this.fetchServers(this.token, this.username);
-      this.done = true;
+      if (this.isCurrentLogin(generation)) this.done = true;
     },
     async logIn(user, password) {
+      const generation = this.loginGeneration;
       this.lusername = user;
       this.password = password;
       try {
         const res = await invoke('login', { username: this.lusername, password: this.password });
+        if (!this.isCurrentLogin(generation)) return;
         const tokenJS = JSON.parse(res);
         this.token = tokenJS.token;
         if (!this.token) {
@@ -237,12 +309,16 @@ export default {
         this.password = "";
         this.loggedin = true;
         await invoke('write_credentials', { creds: JSON.stringify({ username: this.username, token: this.token }) });
-        setTimeout(reloadApp, 500);
+        if (!this.isCurrentLogin(generation)) return;
+        setTimeout(() => {
+          if (this.isCurrentLogin(generation)) reloadApp();
+        }, 500);
       } catch (err) {
-        console.log(err);
+        if (this.isCurrentLogin(generation)) console.log(err);
       }
     },
     async signUp(user, password, email) {
+      const generation = this.loginGeneration;
       this.lusername = user;
       this.password = password;
       this.lemail = email;
@@ -253,6 +329,7 @@ export default {
       }
       try {
         const res = await invoke('signup', { username: this.lusername, password: this.password, email: this.lemail });
+        if (!this.isCurrentLogin(generation)) return;
         const tokenJS = JSON.parse(res);
         this.token = tokenJS.token;
         if (!this.token) {
@@ -264,19 +341,56 @@ export default {
         this.password = "";
         this.loggedin = true;
         await invoke('write_credentials', { creds: JSON.stringify({ username: this.username, token: this.token }) });
-        await this.getUserServers();
+        if (this.isCurrentLogin(generation)) await this.getUserServers();
       } catch (err) {
-        console.log(err);
+        if (this.isCurrentLogin(generation)) console.log(err);
       }
     },
     changeLogIn() {
       this.logInSelected = !this.logInSelected;
     },
     openSettings() {
+      this.closeServerSettings();
       this.settingsOpen = true;
     },
     closeSettings() {
       this.settingsOpen = false;
+    },
+    openServerSettings() {
+      this.closeSettings();
+      this.serverSettingsApplyError = '';
+      this.serverSettingsApplySuccess = '';
+      this.serverSettingsOpen = true;
+    },
+    closeServerSettings() {
+      this.serverSettingsOpen = false;
+      this.serverSettingsApplyError = '';
+      this.serverSettingsApplySuccess = '';
+    },
+    async onApplyServerFeConfig(fields) {
+      this.serverSettingsApplying = true;
+      this.serverSettingsApplyError = '';
+      this.serverSettingsApplySuccess = '';
+      try {
+        const config = editorFieldsToConfigJson(fields);
+        await invoke('patch_server_frontend', {
+          server_id: this.serverID,
+          username: this.username,
+          token: this.token,
+          config,
+        });
+        const feConfig = parseServerFeConfig(config);
+        const idx = this.userServers.findIndex((s) => s.serverID === this.serverID);
+        if (idx !== -1) this.userServers[idx].feConfig = feConfig;
+        this.syncActiveServerFeConfig();
+        this.serverSettingsApplySuccess = 'Frontend configuration saved.';
+      } catch (err) {
+        console.log(err);
+        this.serverSettingsApplyError =
+          'Could not save configuration. You may need CHANGE_FE permission.';
+      } finally {
+        this.serverSettingsApplying = false;
+      }
     },
     async get_messages(channel, server, token) {
       try {
@@ -324,6 +438,7 @@ export default {
       if (state && state.storedChannels.length > 0) {
         this.textChannel = state.storedChannels[0].channelTag;
       }
+      this.syncActiveServerFeConfig();
     },
     async createChannel() {
       if (this.nchn.length > 15) return;
@@ -406,6 +521,7 @@ export default {
       }
     },
     logOut() {
+      this.endAudioSession();
       this.loggedin = false;
       this.token = '';
       this.username = '';
